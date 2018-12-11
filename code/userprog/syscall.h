@@ -1,11 +1,14 @@
-/* syscalls.h 
+/**
+ * \file    syscall.h 
+ * \brief Nachos system call interface.
+ *
  * 	Nachos system call interface.  These are Nachos kernel operations
  * 	that can be invoked from user programs, by trapping to the kernel
  *	via the "syscall" instruction.
  *
  *	This file is included by user programs and by the Nachos kernel. 
  *
- * Copyright (c) 1992-1993 The Regents of the University of California.
+ * \copyright Copyright (c) 1992-1993 The Regents of the University of California.
  * All rights reserved.  See copyright.h for copyright notice and limitation 
  * of liability and disclaimer of warranty provisions.
  */
@@ -18,6 +21,7 @@
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
+
 #define SC_Halt		0
 #define SC_Exit		1
 #define SC_Exec		2
@@ -46,30 +50,35 @@
  * from the system call entry point in exception.cc.
  */
 
-/* Stop Nachos, and print out performance stats */
+/**
+ * \brief Stops Nachos, and print out performance stats
+ */
 void Halt () __attribute__((noreturn));
 
 
 /* Address space control operations: Exit, Exec, and Join */
 
-/* This user program is done (status = 0 means exited normally). */
+/// This user program is done (status = 0 means exited normally).
 void Exit (int status) __attribute__((noreturn));
 
-/* A unique identifier for an executing user program (address space) */
+/// A unique identifier for an executing user program (address space)
 typedef int SpaceId;
 
-/* Run the executable, stored in the Nachos file "name", and return the 
+/**
+ * Run the executable, stored in the Nachos file "name", and return the 
  * address space identifier
  */
 SpaceId Exec (char *name);
 
-/* Only return once the the user program "id" has finished.  
- * Return the exit status.
+/**
+ * \brief Only return once the the user program "id" has finished.  
+ * \return Returns the exit status.
  */
 int Join (SpaceId id);
 
 
-/* File system operations: Create, Open, Read, Write, Close
+/**
+ * File system operations: Create, Open, Read, Write, Close
  * These functions are patterned after UNIX -- files represent
  * both files *and* hardware I/O devices.
  *
@@ -78,7 +87,7 @@ int Join (SpaceId id);
  * will work for the purposes of testing out these routines.
  */
 
-/* A unique identifier for an open Nachos file. */
+/// A unique identifier for an open Nachos file.
 typedef int OpenFileId;
 
 /* when an address space starts up, it has two open files, representing 
@@ -90,18 +99,20 @@ typedef int OpenFileId;
 #define ConsoleInput	0
 #define ConsoleOutput	1
 
-/* Create a Nachos file, with "name" */
+/// Create a Nachos file, with "name"
 void Create (char *name);
 
-/* Open the Nachos file "name", and return an "OpenFileId" that can 
+/**
+ * Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
  */
 OpenFileId Open (char *name);
 
-/* Write "size" bytes from "buffer" to the open file. */
+/// Write "size" bytes from "buffer" to the open file.
 void Write (char *buffer, int size, OpenFileId id);
 
-/* Read "size" bytes from the open file into "buffer".  
+/** 
+ * Read "size" bytes from the open file into "buffer".  
  * Return the number of bytes actually read -- if the open file isn't
  * long enough, or if it is an I/O device, and there aren't enough 
  * characters to read, return whatever is available (for I/O devices, 
@@ -109,7 +120,7 @@ void Write (char *buffer, int size, OpenFileId id);
  */
 int Read (char *buffer, int size, OpenFileId id);
 
-/* Close the file, we're done reading and writing to it. */
+/// Close the file, we're done reading and writing to it.
 void Close (OpenFileId id);
 
 
@@ -118,12 +129,15 @@ void Close (OpenFileId id);
  * threads to run within a user program. 
  */
 
-/* Fork a thread to run a procedure ("func") in the *same* address space 
+/**
+ * \param func Fucntion to fork
+ * \brief Fork a thread to run a procedure ("func") in the *same* address space 
  * as the current thread.
  */
 void Fork (void (*func) ());
 
-/* Yield the CPU to another runnable thread, whether in this address space 
+/**
+ * Yield the CPU to another runnable thread, whether in this address space 
  * or not. 
  */
 void Yield ();

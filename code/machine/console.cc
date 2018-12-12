@@ -84,6 +84,7 @@ Console::~Console()
 //----------------------------------------------------------------------
 
 void
+
 Console::CheckCharAvail()
 {
     char c;

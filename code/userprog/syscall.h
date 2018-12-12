@@ -34,6 +34,7 @@
 #define SC_Fork		9
 #define SC_Yield	10
 
+
 #ifdef IN_USER_MODE
 
 // LB: This part is read only on compiling the test/*.c files.
@@ -141,6 +142,7 @@ void Fork (void (*func) ());
  * or not. 
  */
 void Yield ();
+
 
 #endif // IN_USER_MODE
 

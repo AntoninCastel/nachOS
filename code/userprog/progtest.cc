@@ -13,6 +13,7 @@
 #include "console.h"
 #include "addrspace.h"
 #include "synch.h"
+#include "synchconsole.h"
 
 //----------------------------------------------------------------------
 // StartProcess
@@ -96,4 +97,19 @@ ConsoleTest (char *in, char *out)
 	  if (ch == EOF)
 	      return;		// if EOF, quit
       }
+}
+
+void
+SynchConsoleTest (char *in, char *out)
+{
+    char ch;
+
+    SynchConsole *synchconsole = new SynchConsole (in, out, 0);
+    
+
+    for (;;)
+    {
+        ch=synchconsole->SynchGetChar();
+        synchconsole->SynchPutChar(ch);    
+    }
 }

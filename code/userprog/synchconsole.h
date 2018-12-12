@@ -6,7 +6,7 @@
 
 class SynchConsole {
 public:
-    SynchConsole(char *readFile, char *writeFile);
+    SynchConsole(char *readFile, char *writeFile, int callArg);
     // initialize the hardware console device
     ~SynchConsole();                    // clean up console emulation
     void SynchPutChar(const char ch);   // Unix putchar(3S)
@@ -15,5 +15,6 @@ public:
     void SynchGetString(char *s, int n);       // Unix fgets(3S)
 private:
     Console *console;
+    char* buffer;
 };
 #endif // SYNCHCONSOLE_H

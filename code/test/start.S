@@ -49,8 +49,8 @@ Halt:
 	j	$31
 	.end Halt
 
-	.globl PutChar
-	.ent	PutChar
+	.globl Exit
+	.ent	Exit
 
 Exit:
 	addiu $2,$0,SC_Exit

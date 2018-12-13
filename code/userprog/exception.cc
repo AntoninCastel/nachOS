@@ -84,6 +84,13 @@ ExceptionHandler(ExceptionType which)
         break;
 
       }
+      case SC_PutString:{
+        int adr;
+        adr= machine->ReadRegister(4); 
+        copyStringFromMachine(adr,synchconsole->getBuffer(),MAX_STRING_SIZE); 
+        synchconsole->SynchPutString(synchconsole->getBuffer());
+        break;
+      }
       default: 
       {
         printf("Unexpected user mode exception %d %d\n", which, type);

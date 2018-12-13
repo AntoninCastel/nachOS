@@ -34,7 +34,7 @@
 #define SC_Fork		9
 #define SC_Yield	10
 #define SC_PutChar	11
-
+#define SC_PutString 12
 
 #ifdef IN_USER_MODE
 
@@ -153,6 +153,12 @@ void Yield ();
 void PutChar(char c);
 
 
+/**
+ *  Takes as an argument a string s in user mode, and then sets
+ *  SyscallException interrupt. This causes a switch to kernel mode and the
+ *  execution of the standard handle.
+ */
+void PutString(char *s);
 #endif // IN_USER_MODE
 
 #endif /* SYSCALL_H */

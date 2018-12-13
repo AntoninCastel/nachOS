@@ -144,3 +144,10 @@ __main:
         j       $31
         .end    __main
 
+.globl PutString
+	.ent	PutString
+PutString:
+	addiu $2,$0,SC_PutString
+	syscall
+	j	$31
+	.end PutString

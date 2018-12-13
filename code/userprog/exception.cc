@@ -81,6 +81,7 @@ ExceptionHandler(ExceptionType which)
       case SC_PutChar: {
         char c= (char)machine->ReadRegister(4); //on recupere le char
         synchconsole->SynchPutChar(c);
+        break;
 
       }
       default: 

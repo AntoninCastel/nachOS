@@ -110,6 +110,9 @@ SynchConsoleTest (char *in, char *out)
     for (;;)
     {
         ch=synchconsole->SynchGetChar();
+        if (ch==EOF){
+            return;
+        }
         synchconsole->SynchPutChar(ch);    
     }
 }

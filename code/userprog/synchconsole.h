@@ -4,6 +4,14 @@
 #include "utility.h"
 #include "console.h"
 
+/** 
+ * \brief Copie une chaine de caractère du monde MIPS vers le monde Linux.
+ * \param from adresse virtuelle du début de la chaine à lire.
+ * \param to adresse du début de buffer de destination
+ * \param size nombre d'octets à lire.
+ */
+void copyStringFromMachine(int from, char *to, unsigned size);
+
 class SynchConsole {
 public:
     SynchConsole(char *readFile, char *writeFile, int callArg);

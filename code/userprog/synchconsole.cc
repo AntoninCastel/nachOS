@@ -13,7 +13,7 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
-    //buffer= NULL;
+    buffer = new char[MAX_STRING_SIZE];
 }
 
 SynchConsole::~SynchConsole()
@@ -21,6 +21,7 @@ SynchConsole::~SynchConsole()
     delete console;
     delete writeDone;
     delete readAvail;
+    delete[] buffer; 
 }
 
 void SynchConsole::SynchPutChar(const char ch)
@@ -29,7 +30,6 @@ void SynchConsole::SynchPutChar(const char ch)
 	    return;		// if EOF, quit
 	console->PutChar (ch);	
 	writeDone->P ();
-
 }
 
 char SynchConsole::SynchGetChar()
@@ -41,9 +41,8 @@ char SynchConsole::SynchGetChar()
 
 void SynchConsole::SynchPutString(const char s[])
 {	
-    for (int i=0; s[i];i++){
-    	SynchPutChar(s[i]);
-    }
+    
+    
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
@@ -56,3 +55,13 @@ void SynchConsole::SynchGetString(char *s, int n)
 }
 
 
+void copyStringFromMachine(int from, char *to, unsigned size){
+    int c;
+    unsigned i;
+    for( i=0;i<size || c=='\0';i++) {
+        machine->ReadMem(from,1,&c); 
+        to[i]=(char)c; 
+        from++;
+    }
+    to[i]='\0'; 
+}

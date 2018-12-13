@@ -7,3 +7,5 @@ doc/*
 code/tags
 code/userprog/in
 code/userprog/out
+code/test/in
+code/test/out

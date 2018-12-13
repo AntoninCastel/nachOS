@@ -104,9 +104,6 @@ SynchConsoleTest (char *in, char *out)
 {
     char ch;
 
-    SynchConsole *synchconsole = new SynchConsole (in, out, 0);
-    
-
     for (;;)
     {
         ch=synchconsole->SynchGetChar();

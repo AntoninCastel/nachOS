@@ -18,7 +18,6 @@ Interrupt *interrupt;		// interrupt status
 Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device,
 					// for invoking context switches
-SynchConsole *synchconsole; 
 
 #ifdef FILESYS_NEEDED
 FileSystem *fileSystem;
@@ -30,6 +29,7 @@ SynchDisk *synchDisk;
 
 #ifdef USER_PROGRAM		// requires either FILESYS or FILESYS_STUB
 Machine *machine;		// user program memory and registers
+SynchConsole *synchconsole; 
 #endif
 
 #ifdef NETWORK
@@ -84,6 +84,7 @@ Initialize (int argc, char **argv)
 
 #ifdef USER_PROGRAM
     bool debugUserProg = FALSE;	// single step user program
+    char *in = NULL, *out = NULL;
 #endif
 #ifdef FILESYS_NEEDED
     bool format = FALSE;	// format disk
@@ -117,6 +118,13 @@ Initialize (int argc, char **argv)
 #ifdef USER_PROGRAM
 	  if (!strcmp (*argv, "-s"))
 	      debugUserProg = TRUE;
+      // Si on entre un fichier d'entree et un fichier de sortie
+      else if(!strcmp(*argv, "-sc")) {
+          if(argc == 3) {
+              in = *(argv+1);
+              out = *(argv+2);
+          }
+      }
 #endif
 #ifdef FILESYS_NEEDED
 	  if (!strcmp (*argv, "-f"))
@@ -158,6 +166,7 @@ Initialize (int argc, char **argv)
 
 #ifdef USER_PROGRAM
     machine = new Machine (debugUserProg);	// this must come first
+    synchconsole = new SynchConsole(in, out, 0);
 #endif
 
 #ifdef FILESYS
@@ -187,6 +196,7 @@ Cleanup ()
 
 #ifdef USER_PROGRAM
     delete machine;
+    delete synchconsole;
 #endif
 
 #ifdef FILESYS_NEEDED

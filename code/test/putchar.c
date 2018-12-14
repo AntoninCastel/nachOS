@@ -10,6 +10,5 @@ PutChar('\n');
 int
 main()
 {
-print('a',29);
-Halt();
+	return 2;
 }

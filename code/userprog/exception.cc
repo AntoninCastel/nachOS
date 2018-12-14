@@ -21,6 +21,7 @@
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
+#include <cstdio>
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
@@ -97,11 +98,26 @@ ExceptionHandler(ExceptionType which)
         break;
 
       }
-      case SC_PutString:{
+      case SC_PutString: {
         int adr;
         adr= machine->ReadRegister(4); 
         copyStringFromMachine(adr,synchconsole->getBuffer(),MAX_STRING_SIZE); 
         synchconsole->SynchPutString(synchconsole->getBuffer());
+        break;
+      }
+      case SC_PutInt: {
+        char buffer[MAX_STRING_SIZE];
+        int val  = machine->ReadRegister(4);
+        snprintf(buffer, MAX_STRING_SIZE, "%d", val);
+        synchconsole->SynchPutString(buffer);
+        break;
+      } 
+      case SC_GetInt: {
+        int adr = machine->ReadRegister(4), val;
+        char buffer[MAX_STRING_SIZE];
+        synchconsole->SynchGetString(buffer, MAX_STRING_SIZE);
+        sscanf(buffer, "%d", &val);
+        copyStringToMachine(adr,(char*)&val,sizeof(int));
         break;
       }
       default: 

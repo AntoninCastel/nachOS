@@ -78,6 +78,10 @@ ExceptionHandler(ExceptionType which)
         interrupt->Halt();
         break;
       }
+      case SC_GetChar: {
+        machine->WriteRegister(2,synchconsole->SynchGetChar());
+        break;
+      }
       case SC_PutChar: {
         char c= (char)machine->ReadRegister(4); //on recupere le char
         synchconsole->SynchPutChar(c);

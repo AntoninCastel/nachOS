@@ -163,4 +163,11 @@ GetChar:
 	j	$31
 	.end GetChar
 
+.globl GetString
+	.ent	GetString
+GetString:
+	addiu $2,$0,SC_GetString
+	syscall
+	j	$31
+	.end GetString
 

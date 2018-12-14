@@ -82,6 +82,14 @@ ExceptionHandler(ExceptionType which)
         machine->WriteRegister(2,synchconsole->SynchGetChar());
         break;
       }
+      case SC_GetString: {
+        int adr = machine->ReadRegister(4); 
+        char* buffer = synchconsole->getBuffer();
+        int taille = machine->ReadRegister(5);
+        synchconsole->SynchGetString(buffer,taille);
+        copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
+        break;
+      }
       case SC_PutChar: {
         char c= (char)machine->ReadRegister(4); //on recupere le char
         synchconsole->SynchPutChar(c);

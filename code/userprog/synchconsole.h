@@ -11,6 +11,7 @@
  * \param size nombre d'octets à lire.
  */
 void copyStringFromMachine(int from, char *to, unsigned size);
+void copyStringToMachine(int to, char *from, unsigned size);
 
 class SynchConsole {
 public:

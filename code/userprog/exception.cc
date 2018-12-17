@@ -100,6 +100,14 @@ ExceptionHandler(ExceptionType which)
         Syscall_GetInt();
         break;
       }
+      case SC_UserThreadCreate:{
+        Syscall_UserThreadCreate();
+        break;
+      }
+      case SC_UserThreadExit:{
+        Syscall_UserThreadExit();
+        break;
+      }
       default: 
       {
         printf("Unexpected user mode exception %d %d\n", which, type);
@@ -154,3 +162,10 @@ void Syscall_GetInt(){
   copyStringToMachine(adr,(char*)&val,sizeof(int));
 }
 
+void Syscall_UserThreadCreate(){
+ 
+}
+
+void Syscall_UserThreadExit(){
+ 
+}

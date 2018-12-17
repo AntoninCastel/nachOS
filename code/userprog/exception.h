@@ -20,3 +20,7 @@ void Syscall_PutString();
 void Syscall_PutInt();
 
 void Syscall_GetInt();
+
+void Syscall_UserThreadCreate();
+
+void Syscall_UserThreadExit();

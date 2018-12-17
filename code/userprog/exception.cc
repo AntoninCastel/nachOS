@@ -22,6 +22,7 @@
 // of liability and disclaimer of warranty provisions.
 
 
+#include "userthread.h"
 #include "exception.h"
 //----------------------------------------------------------------------
 // UpdatePC : Increments the Program Counter register in order to resume
@@ -163,7 +164,10 @@ void Syscall_GetInt(){
 }
 
 void Syscall_UserThreadCreate(){
- 
+	int fn_adr = machine->ReadRegister(4);
+	int arg_adr = machine->ReadRegister(5);
+	int ret = do_UserThreadCreate(fn_adr, arg_adr);
+	machine->WriteRegister(2, ret);
 }
 
 void Syscall_UserThreadExit(){

@@ -181,7 +181,7 @@ char GetChar();
 void GetString(char *s, int n);
 void PutInt(int n);
 void GetInt(int *n);
-extern int UserThreadCreate(int f, int arg);
+int UserThreadCreate(void f(void *arg), void *arg);
 void UserThreadExit();
 
 #endif // IN_USER_MODE

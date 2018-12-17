@@ -21,11 +21,8 @@
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
-#include <cstdio>
-#include "copyright.h"
-#include "system.h"
-#include "syscall.h"
 
+#include "exception.h"
 //----------------------------------------------------------------------
 // UpdatePC : Increments the Program Counter register in order to resume
 // the user program immediately after the "syscall" instruction.
@@ -76,48 +73,31 @@ ExceptionHandler(ExceptionType which)
       case SC_Exit: 
       case SC_Halt: 
       {
-        DEBUG('a', "Shutdown, initiated by user program.\n");
-        interrupt->Halt();
+        Syscall_Halt();
         break;
       }
       case SC_GetChar: {
-        machine->WriteRegister(2,synchconsole->SynchGetChar());
+        Syscall_GetChar();
         break;
       }
       case SC_GetString: {
-        int adr = machine->ReadRegister(4); 
-        char* buffer = synchconsole->getBuffer();
-        int taille = machine->ReadRegister(5);
-        synchconsole->SynchGetString(buffer,taille);
-        copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
+        Syscall_GetString();
         break;
       }
       case SC_PutChar: {
-        char c= (char)machine->ReadRegister(4); //on recupere le char
-        synchconsole->SynchPutChar(c);
+        Syscall_PutChar();
         break;
-
       }
       case SC_PutString: {
-        int adr;
-        adr= machine->ReadRegister(4); 
-        copyStringFromMachine(adr,synchconsole->getBuffer(),MAX_STRING_SIZE); 
-        synchconsole->SynchPutString(synchconsole->getBuffer());
+        Syscall_PutString();
         break;
       }
       case SC_PutInt: {
-        char buffer[MAX_STRING_SIZE];
-        int val  = machine->ReadRegister(4);
-        snprintf(buffer, MAX_STRING_SIZE, "%d", val);
-        synchconsole->SynchPutString(buffer);
+        Syscall_PutInt();
         break;
       } 
       case SC_GetInt: {
-        int adr = machine->ReadRegister(4), val;
-        char buffer[MAX_STRING_SIZE];
-        synchconsole->SynchGetString(buffer, MAX_STRING_SIZE);
-        sscanf(buffer, "%d", &val);
-        copyStringToMachine(adr,(char*)&val,sizeof(int));
+        Syscall_GetInt();
         break;
       }
       default: 
@@ -129,3 +109,48 @@ ExceptionHandler(ExceptionType which)
   UpdatePC();
   }
 }
+
+void Syscall_Halt(){
+  DEBUG('a', "Shutdown, initiated by user program.\n");
+  interrupt->Halt(); 
+}
+
+void Syscall_GetChar(){
+  machine->WriteRegister(2,synchconsole->SynchGetChar());
+}
+
+void Syscall_GetString(){
+  int adr = machine->ReadRegister(4); 
+  char* buffer = synchconsole->getBuffer();
+  int taille = machine->ReadRegister(5);
+  synchconsole->SynchGetString(buffer,taille);
+  copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
+}
+
+void Syscall_PutChar(){
+  char c= (char)machine->ReadRegister(4); //on recupere le char
+  synchconsole->SynchPutChar(c);
+}
+
+void Syscall_PutString(){
+  int adr;
+  adr= machine->ReadRegister(4); 
+  copyStringFromMachine(adr,synchconsole->getBuffer(),MAX_STRING_SIZE); 
+  synchconsole->SynchPutString(synchconsole->getBuffer());
+}
+
+void Syscall_PutInt(){
+  char buffer[MAX_STRING_SIZE];
+  int val  = machine->ReadRegister(4);
+  snprintf(buffer, MAX_STRING_SIZE, "%d", val);
+  synchconsole->SynchPutString(buffer);
+}
+
+void Syscall_GetInt(){
+  int adr = machine->ReadRegister(4), val;
+  char buffer[MAX_STRING_SIZE];
+  synchconsole->SynchGetString(buffer, MAX_STRING_SIZE);
+  sscanf(buffer, "%d", &val);
+  copyStringToMachine(adr,(char*)&val,sizeof(int));
+}
+

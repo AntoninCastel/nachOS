@@ -171,5 +171,5 @@ void Syscall_UserThreadCreate(){
 }
 
 void Syscall_UserThreadExit(){
- 
+  do_UserThreadExit();
 }

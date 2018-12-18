@@ -1,12 +1,17 @@
 #include "syscall.h" 
 
-void antoestuncon() {
-	PutString("Putain j'avoue !\n");
+void fonction() {
+	PutString("Vive NachOS !\n");
+  UserThreadExit();
 }
 
 int main() {
-	if(UserThreadCreate(antoestuncon, 0) == -1) {
+	/*
+	if(UserThreadCreate(fonction, 0) == -1) {
 		PutString("Erreur\n");
-	}
+	}*/
+	UserThreadCreate(fonction, 0);
+  int i = 10000;
+  while (i != 0){i--;}
 	Halt();
 }

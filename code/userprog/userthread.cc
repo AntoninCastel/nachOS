@@ -25,3 +25,7 @@ static void StartUserThread(int f) {
 void do_UserThreadExit(){
 	currentThread->Finish();
 }
+
+void do_UserThreadJoin() {
+
+}

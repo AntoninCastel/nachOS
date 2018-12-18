@@ -130,7 +130,7 @@ void Syscall_GetChar(){
 
 void Syscall_GetString(){
   int adr = machine->ReadRegister(4); 
-  char* buffer = synchconsole->getBuffer();
+  char buffer[MAX_STRING_SIZE];
   int taille = machine->ReadRegister(5);
   synchconsole->SynchGetString(buffer,taille);
   copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
@@ -142,10 +142,11 @@ void Syscall_PutChar(){
 }
 
 void Syscall_PutString(){
-  int adr;
-  adr= machine->ReadRegister(4); 
-  copyStringFromMachine(adr,synchconsole->getBuffer(),MAX_STRING_SIZE); 
-  synchconsole->SynchPutString(synchconsole->getBuffer());
+  int adr = machine->ReadRegister(4);
+  char buffer[MAX_STRING_SIZE];
+  copyStringFromMachine(adr,buffer,MAX_STRING_SIZE);
+  synchconsole->SynchPutString(buffer);
+  
 }
 
 void Syscall_PutInt(){

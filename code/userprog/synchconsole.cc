@@ -6,6 +6,7 @@
 static Semaphore *readAvail;
 static Semaphore *writeDone;
 static Semaphore *LectureEnCours;
+static Semaphore *EcritureEnCours;
 
 static void ReadAvail(int arg) { readAvail->V(); }
 static void WriteDone(int arg) { writeDone->V(); }
@@ -15,8 +16,8 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
     LectureEnCours = new Semaphore("LectureEnCours", 1);
+    EcritureEnCours = new Semaphore("EcritureEnCours", 1);
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
-    buffer = new char[MAX_STRING_SIZE];
 }
 
 SynchConsole::~SynchConsole()
@@ -25,11 +26,7 @@ SynchConsole::~SynchConsole()
     delete writeDone;
     delete readAvail;
     delete LectureEnCours;
-    delete[] buffer; 
-}
-
-char* SynchConsole::getBuffer(){
-    return this->buffer;
+    delete EcritureEnCours;
 }
 
 void SynchConsole::SynchPutChar(const char ch)
@@ -48,11 +45,13 @@ char SynchConsole::SynchGetChar()
 }
 
 void SynchConsole::SynchPutString(const char s[])
-{	
+{
+    EcritureEnCours->P ();
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
+    EcritureEnCours->V ();
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
@@ -73,10 +72,12 @@ void SynchConsole::SynchGetString(char *s, int n)
 void copyStringFromMachine(int from, char *to, unsigned size){
     int c;
     unsigned i;
-    for( i=0;i<size && c!='\0';i++) {
+    for( i=0;i<size;i++) {
         machine->ReadMem(from,1,&c); 
         to[i]=(char)c; 
         from++;
+        if(c == '\0')
+            break;
     }
     to[i]='\0'; 
 }

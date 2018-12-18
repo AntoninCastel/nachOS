@@ -72,6 +72,8 @@ ExceptionHandler(ExceptionType which)
     switch (type) 
     {
       case SC_Exit: 
+        Syscall_Exit();
+        break;
       case SC_Halt: 
         Syscall_Halt();
         break;
@@ -108,6 +110,11 @@ ExceptionHandler(ExceptionType which)
     }
   UpdatePC();
   }
+}
+
+void Syscall_Exit(){
+  machine->WriteRegister(2,machine->ReadRegister(4));
+  interrupt->Halt();
 }
 
 void Syscall_Halt(){

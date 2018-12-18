@@ -24,3 +24,5 @@ void Syscall_GetInt();
 void Syscall_UserThreadCreate();
 
 void Syscall_UserThreadExit();
+
+void Syscall_UserThreadJoin();

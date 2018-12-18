@@ -72,6 +72,8 @@ ExceptionHandler(ExceptionType which)
     switch (type) 
     {
       case SC_Exit: 
+        Syscall_Exit();
+        break;
       case SC_Halt: 
         Syscall_Halt();
         break;

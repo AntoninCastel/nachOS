@@ -2,15 +2,15 @@
 
 void fonction() {
 	PutString("montagne\n");
-  UserThreadExit();
+    UserThreadExit();
 }
 
 int main() {
-  PutString("salut marianne !\n");
+    PutString("salut marianne !\n");
 
 	UserThreadCreate(fonction, 0);
-  PutString("COUCOUCOUCOUCOUCOUCOUCOUCOU \n");
-  int i = 10000;
-  while (i != 0){i--;}
+    PutString("COUCOUCOUCOUCOUCOUCOUCOUCOU \n");
+    int i;
+    for(i = 0; i < 1000000;++i);
 	Halt();
 }

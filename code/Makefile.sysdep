@@ -11,7 +11,7 @@
 # Remove -Werror if this is a too big constraint
 CPPFLAGS+=-Wall -Wshadow -Werror
 CFLAGS+=-g
-CXXFLAGS+=-g
+CXXFLAGS+=-g -std=c++11
 
 # HOST_CC (and other similar variables) is the compiler used to
 # produce native code

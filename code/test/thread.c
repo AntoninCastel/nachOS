@@ -1,16 +1,14 @@
 #include "syscall.h" 
 
 void fonction() {
-	PutString("montagne\n");
+	while(1){}
   UserThreadExit();
 }
 
-int main() {
-  PutString("salut marianne !\n");
 
+int main() {
 	UserThreadCreate(fonction, 0);
-  PutString("COUCOUCOUCOUCOUCOUCOUCOUCOU \n");
-  int i = 10000;
-  while (i != 0){i--;}
+  	int i = 1000000;
+  	while (i != 0){i--;}
 	Halt();
 }

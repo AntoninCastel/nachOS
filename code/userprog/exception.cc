@@ -110,6 +110,11 @@ ExceptionHandler(ExceptionType which)
   }
 }
 
+void Syscall_Exit(){
+  machine->WriteRegister(2,machine->ReadRegister(4));
+  interrupt->Halt();
+}
+
 void Syscall_Halt(){
   DEBUG('a', "Shutdown, initiated by user program.\n");
   interrupt->Halt(); 

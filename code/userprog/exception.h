@@ -7,6 +7,8 @@ static void UpdatePC ();
 
 void ExceptionHandler(ExceptionType which);
 
+void Syscall_Exit();
+
 void Syscall_Halt();
 
 void Syscall_GetChar();

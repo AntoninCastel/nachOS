@@ -60,8 +60,9 @@ SwapHeader (NoffHeader * noffH)
 //      "executable" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
 
-AddrSpace::AddrSpace (OpenFile * executable)
-{
+AddrSpace::AddrSpace (OpenFile * executable) {
+    threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
+
     NoffHeader noffH;
     unsigned int i, size;
 

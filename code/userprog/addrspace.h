@@ -19,15 +19,16 @@
 
 #include "copyright.h"
 #include "filesys.h"
+#include "synch.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
 
+
 /**
  * \class AddrSpace addrspace.h
  */
-class AddrSpace
-{
+class AddrSpace {
   public:
     /**
     * \brief Create an address space, initializing it with the program 
@@ -43,6 +44,8 @@ class AddrSpace
      * before jumping to user code
      */
     void InitRegisters ();
+
+    Semaphore *threads_sharing_addrspace;
 
     /// Save address space-specific info on a context switch 
     void SaveState ();

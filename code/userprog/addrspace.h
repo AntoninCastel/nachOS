@@ -22,7 +22,7 @@
 #include "filesys.h"
 
 /// increase this as necessary !
-#define UserStackSize		4096
+#define UserStackSize		1024
 
 class Semaphore;
 

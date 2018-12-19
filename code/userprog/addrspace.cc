@@ -19,6 +19,7 @@
 #include "system.h"
 #include "addrspace.h"
 #include "noff.h"
+#include "synch.h"
 
 #include <strings.h>		/* for bzero */
 

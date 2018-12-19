@@ -13,7 +13,6 @@
  * All rights reserved.  See copyright.h for copyright notice and limitation 
  * of liability and disclaimer of warranty provisions.
  */
-#include "synch.h"
 
 #ifndef ADDRSPACE_H
 #define ADDRSPACE_H
@@ -25,6 +24,7 @@
 /// increase this as necessary !
 #define UserStackSize		4096
 
+class Semaphore;
 
 /**
  * \class AddrSpace addrspace.h
@@ -50,7 +50,7 @@ class AddrSpace {
 
     /// Save address space-specific info on a context switch 
     void SaveState ();
-    
+
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
 

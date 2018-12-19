@@ -109,18 +109,30 @@ Semaphore::getValue()
 // the test case in the network assignment won't work!
 Lock::Lock (const char *debugName)
 {
+    name=debugName;
+    sem=new Semaphore(debugName,1);
+
 }
 
 Lock::~Lock ()
 {
+    delete(sem);
 }
 void
 Lock::Acquire ()
 {
+    sem->P();
+    threadHolding= currentThread->getName();
 }
 void
 Lock::Release ()
 {
+    if(strcmp(threadHolding,currentThread->getName()))
+    {
+        sem->V();
+    }else{
+        fprintf(stderr, "Lock::Release() impossible\n");
+    }
 }
 
 Condition::Condition (const char *debugName)

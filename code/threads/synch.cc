@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "synch.h"
 #include "system.h"
+#include "thread.h"
 
 //----------------------------------------------------------------------
 // Semaphore::Semaphore
@@ -104,13 +105,13 @@ Semaphore::V ()
 Lock::Lock (const char *debugName)
 {
     name=debugName;
-    sem=new Semaphore(debugName,1);
+    sem=new Semaphore(name,1);
 
 }
 
 Lock::~Lock ()
 {
-    delete(sem);
+    delete sem;
 }
 void
 Lock::Acquire ()
@@ -131,22 +132,42 @@ Lock::Release ()
 
 Condition::Condition (const char *debugName)
 {
+    name = debugName;
+    mutex = new Semaphore(debugName,1);
+    cond_wait = new Semaphore(debugName,0);
+
+    waiters=0;
 }
 
 Condition::~Condition ()
 {
+    delete mutex;
+    delete cond_wait;
 }
 void
 Condition::Wait (Lock * conditionLock)
 {
-    ASSERT (FALSE);
+    mutex->P();
+    waiters++;
+    conditionLock->Release();
+    mutex->V();
+    cond_wait->P();
+    conditionLock->Acquire();
 }
 
 void
 Condition::Signal (Lock * conditionLock)
 {
+    mutex->P();
+    if(waiters>0)
+    {
+        cond_wait->V();
+        waiters--;
+    }
+    mutex->V();
 }
 void
 Condition::Broadcast (Lock * conditionLock)
 {
+
 }

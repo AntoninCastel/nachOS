@@ -146,5 +146,8 @@ class Condition
   private:
     const char *name;
     // plus some other stuff you'll need to define
+
+    Semaphore *mutex, *cond_wait;
+    int waiters;
 };
 #endif // SYNCH_H

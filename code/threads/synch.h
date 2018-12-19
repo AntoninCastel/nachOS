@@ -43,9 +43,9 @@ class Semaphore
      ~Semaphore ();		// de-allocate semaphore
     const char *getName ()
     {
-	return name;
+	     return name;
     }				// debugging assist
-
+    int getValue();
     void P ();			// these are the only operations on a semaphore
     void V ();			// they are both *atomic*
 

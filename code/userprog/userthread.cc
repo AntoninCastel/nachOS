@@ -1,6 +1,7 @@
 #include "userthread.h"
 #include "system.h"
 #include "thread.h"
+#include "synch.h"
 
 static void StartUserThread(int f);
 
@@ -9,6 +10,8 @@ int do_UserThreadCreate(int f, int arg) {
 	*p = {.fn = f, .param = arg, .SP = machine->ReadRegister(StackReg)};
 	Thread *newthread = new Thread("new Thread");
 	newthread->Fork(StartUserThread, (int)p);
+	currentThread->space->threads_sharing_addrspace->V();
+	fprintf(stderr, "Nombre de thread en cours : %d\n", currentThread->space->threads_sharing_addrspace->getValue());
 	return 0; // non definitif
 }
 

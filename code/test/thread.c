@@ -2,17 +2,14 @@
 #include "syscall.h" 
 
 void fonction() {
-	PutString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  	PutString("MERDE\n");
   	UserThreadExit();
 }
 
 int main() {
-	UserThreadCreate(fonction, 0);
-	UserThreadCreate(fonction2, 0);
-	UserThreadCreate(fonction, 0);
-
-  	int i = 1000000;
-  	
-  	while (i != 0){i--;}
-	return 0;
+	int a = UserThreadCreate(fonction, 0);
+	int i = 1;
+	while(i!=0){i--;}
+  	//UserThreadJoin(a);
+	return a;
 }

@@ -11,7 +11,7 @@ int do_UserThreadCreate(int f, int arg) {
 	Thread *newthread = new Thread("new Thread");
 	newthread->Fork(StartUserThread, (int)p);
 	currentThread->space->threads_sharing_addrspace->V();
-	return newthread->gettid(); // non definitif
+	return newthread->gettid();
 }
 
 static void StartUserThread(int f) {
@@ -21,7 +21,8 @@ static void StartUserThread(int f) {
 	}
 	machine->WriteRegister(PCReg, p->fn);
 	machine->WriteRegister(NextPCReg, p->fn+4);
-	machine->WriteRegister(StackReg, p->SP - 3*PageSize );
+	int prochainSP = ((currentThread->space->threads_sharing_addrspace->getValue()+1)* (3*PageSize))+(3*PageSize) ;
+	machine->WriteRegister(StackReg, /*p->SP - 3*PageSize*/ prochainSP);
 	machine->Run();
 }
 void do_UserThreadExit(){

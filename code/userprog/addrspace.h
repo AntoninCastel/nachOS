@@ -13,23 +13,26 @@
  * All rights reserved.  See copyright.h for copyright notice and limitation 
  * of liability and disclaimer of warranty provisions.
  */
+#include "synch.h"
 
 #ifndef ADDRSPACE_H
 #define ADDRSPACE_H
 
+//#include "system.h"
 #include "copyright.h"
 #include "filesys.h"
-#include "synch.h"
 
 /// increase this as necessary !
-#define UserStackSize		1024
+#define UserStackSize		4096
 
 
 /**
  * \class AddrSpace addrspace.h
  */
 class AddrSpace {
-  public:
+  public:    
+    Semaphore *threads_sharing_addrspace;
+
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
@@ -44,8 +47,6 @@ class AddrSpace {
      * before jumping to user code
      */
     void InitRegisters ();
-
-    Semaphore *threads_sharing_addrspace;
 
     /// Save address space-specific info on a context switch 
     void SaveState ();

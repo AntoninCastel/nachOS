@@ -89,7 +89,26 @@ List::Append (void *item)
 	  last = element;
       }
 }
+int 
+List::SizeList (){
+    int i =0;
+    for(ListElement * ptr = first; ptr != NULL; ptr = ptr->next){
+        i++;
+    }        
+    return i;
+}
 
+int 
+List::Contains (int item){
+    int a = this->SizeList ();
+    ListElement * ptr = first;
+    for(int i = 0; i < a ; i++){
+        if(item == ptr->key)
+          return 1;
+        ptr = ptr->next;
+    }        
+    return 0;
+}
 //----------------------------------------------------------------------
 // List::Prepend
 //      Put an "item" on the front of the list.

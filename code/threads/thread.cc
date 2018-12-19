@@ -34,6 +34,7 @@
 
 Thread::Thread (const char *threadName)
 {
+    id = -2;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
@@ -66,7 +67,7 @@ Thread::~Thread ()
 
     ASSERT (this != currentThread);
     if (stack != NULL)
-	DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
+	  DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 }
 
 //----------------------------------------------------------------------
@@ -106,7 +107,7 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
-
+    this->id = this->space->threads_sharing_addrspace->getValue();
 #endif // USER_PROGRAM
 
     IntStatus oldLevel = interrupt->SetLevel (IntOff);
@@ -114,6 +115,13 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     // are disabled!
     (void) interrupt->SetLevel (oldLevel);
 }
+
+int
+Thread::gettid()
+{
+  return this->id;
+}
+
 
 //----------------------------------------------------------------------
 // Thread::CheckOverflow

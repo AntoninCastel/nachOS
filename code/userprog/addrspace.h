@@ -20,6 +20,7 @@
 //#include "system.h"
 #include "copyright.h"
 #include "filesys.h"
+#include "list.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
@@ -30,7 +31,9 @@ class Semaphore;
  * \class AddrSpace addrspace.h
  */
 class AddrSpace {
-  public:    
+  public:  
+    List * Ended;   // queue of threads that are finished,
+
     Semaphore *threads_sharing_addrspace;
 
     /**
@@ -54,7 +57,8 @@ class AddrSpace {
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
 
-  private:
+  private:      
+
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 
 

@@ -63,7 +63,7 @@ SwapHeader (NoffHeader * noffH)
 
 AddrSpace::AddrSpace (OpenFile * executable) {
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
-
+    Ended = new List;
     NoffHeader noffH;
     unsigned int i, size;
 

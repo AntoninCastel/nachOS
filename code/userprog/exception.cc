@@ -174,5 +174,6 @@ void Syscall_UserThreadExit(){
 }
 
 void Syscall_UserThreadJoin() {
-    do_UserThreadJoin();
+    int param = machine->ReadRegister(4);
+    do_UserThreadJoin(param);
 }

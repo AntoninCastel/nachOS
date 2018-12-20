@@ -12,7 +12,7 @@ int do_UserThreadCreate(int f, int arg) {
 	param_t *p = new param_t;
 	*p = {.fn = f, .param = arg, .SP = machine->ReadRegister(StackReg)};
 	char* Nom = new char[10]; 
-	sprintf(Nom, "%d\n",currentThread->space->nomThread );
+	sprintf(Nom, "t%d",currentThread->space->nomThread );
 	Thread *newthread = new Thread(Nom);
 	currentThread->space->nomThread++;
 	newthread->Fork(StartUserThread, (int)p);

@@ -60,7 +60,7 @@ void SynchConsole::SynchGetString(char *s, int n)
 	LectureEnCours->P ();
     for(i=0; i<n; i++){
     	s[i]=SynchGetChar();
-    	if(!s[i])
+    	if(!s[i] || s[i] == '\n')
     		break;
     }
     s[i]='\0';

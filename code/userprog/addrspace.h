@@ -21,6 +21,7 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
+#include "bitmap.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
@@ -36,6 +37,8 @@ class AddrSpace {
 
     Semaphore *threads_sharing_addrspace;
 
+
+    BitMap* ThreadsPosition;
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
@@ -56,8 +59,15 @@ class AddrSpace {
 
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
+    /**
+     * \brief Permet de savoir combien de threads se partagent l'address space
+     * \return Le nombre de threads dans l'address space.
+     */
+    int AddrSpace::ThreadsCounter();
 
+    
   private:      
+
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

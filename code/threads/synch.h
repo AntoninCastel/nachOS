@@ -90,6 +90,7 @@ class Lock
     // plus some other stuff you'll need to define
     Semaphore *sem;
     const char *threadHolding;
+    int threadHoldingId;
 };
 
 // The following class defines a "condition variable".  A condition
@@ -146,8 +147,8 @@ class Condition
   private:
     const char *name;
     // plus some other stuff you'll need to define
-
-    Semaphore *mutex, *cond_wait;
+    Lock *mutex;
+    Semaphore *cond_wait;
     int waiters;
 };
 #endif // SYNCH_H

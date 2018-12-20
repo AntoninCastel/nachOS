@@ -2,33 +2,33 @@
 #include "syscall.h" 
 
 void fonction() {
-	PutString("MERDE");
+	PutString("désolé j'avais\n");
 	int i = 100000;
   	while (i != 0){i--;}
   	UserThreadExit();
 }
 void fonction2() {
-	PutString("VICENT");
+	PutString("pas pensé\n");
 	int i = 100000;
   	while (i != 0){i--;}
   	UserThreadExit();
 }
 void fonction3() {
-	PutString("VANIO");
+	PutString("au git\n");
 	int i = 100000;
   	while (i != 0){i--;}
   	UserThreadExit();
 }
 int main() {
-	int a = UserThreadCreate(fonction, 0);
-	int b = UserThreadCreate(fonction2, 0);	
-	int c = UserThreadCreate(fonction3, 0);	
-
-  	int i = 100;
-  	while (i != 0){i--;}
-  	UserThreadJoin(c);
+	int a = UserThreadCreate(fonction, 0);	
   	UserThreadJoin(a);
-  	UserThreadJoin(b);
+
+	int b = UserThreadCreate(fonction2, 0);	
+  	
+
+	int c = UserThreadCreate(fonction3, 0);	
+  	UserThreadJoin(c);
+	UserThreadJoin(b);
   	
 	return 0;
 }

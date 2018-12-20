@@ -24,6 +24,7 @@ class Scheduler
     ~Scheduler ();		// De-allocate ready list
 
     void ReadyToRun (Thread * thread);	// Thread can be dispatched.
+    int ReadyListContains (void *arg);
     Thread *FindNextToRun ();	// Dequeue first thread on the ready 
     // list, if any, and return thread.
     void Run (Thread * nextThread);	// Cause nextThread to start running

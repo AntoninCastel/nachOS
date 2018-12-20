@@ -73,6 +73,11 @@ Scheduler::FindNextToRun ()
     return (Thread *) readyList->Remove ();
 }
 
+int
+Scheduler::ReadyListContains (void *arg)
+{
+    return readyList->Contains(arg);
+}
 //----------------------------------------------------------------------
 // Scheduler::Run
 //      Dispatch the CPU to nextThread.  Save the state of the old thread,
@@ -151,4 +156,6 @@ Scheduler::Print ()
 {
     printf ("Ready list contents:\n");
     readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
+     printf ("\n");
+   
 }

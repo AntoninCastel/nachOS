@@ -107,7 +107,7 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
-    this->id = this->space->threads_sharing_addrspace->getValue();
+    this->id = this->space->threads_sharing_addrspace->getValue()+1;
 #endif // USER_PROGRAM
 
     IntStatus oldLevel = interrupt->SetLevel (IntOff);

@@ -2,6 +2,7 @@
 #include "system.h"
 #include "thread.h"
 #include "synch.h"
+#include <string>
 
 static void StartUserThread(int f);
 
@@ -10,7 +11,10 @@ int do_UserThreadCreate(int f, int arg) {
 
 	param_t *p = new param_t;
 	*p = {.fn = f, .param = arg, .SP = machine->ReadRegister(StackReg)};
-	Thread *newthread = new Thread("new Thread");
+	char* Nom = new char[10]; 
+	sprintf(Nom, "%d\n",currentThread->space->nomThread );
+	Thread *newthread = new Thread(Nom);
+	currentThread->space->nomThread++;
 	newthread->Fork(StartUserThread, (int)p);
 	currentThread->space->threads_sharing_addrspace->V();
 

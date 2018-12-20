@@ -52,6 +52,7 @@ void SynchConsole::SynchPutString(const char s[])
         SynchPutChar(s[i]);
     }
     EcritureEnCours->V ();
+
 }
 
 void SynchConsole::SynchGetString(char *s, int n)

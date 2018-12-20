@@ -17,7 +17,6 @@
 #ifndef ADDRSPACE_H
 #define ADDRSPACE_H
 
-//#include "system.h"
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
@@ -25,7 +24,7 @@
 
 /// increase this as necessary !
 #define UserStackSize		1024
-
+#define MAX_THREADS 50
 class Semaphore;
 
 /**
@@ -33,18 +32,22 @@ class Semaphore;
  */
 class AddrSpace {
   public:  
-    List * Ended;   // queue of threads that are finished,
-
+    List * ThreadsEnCours;   // queue of threads that are finished,
+    List * BlockedMain;
     Semaphore *threads_sharing_addrspace;
 
-
     BitMap* ThreadsPosition;
+
+    void ThreadExist(int id);
+    void ThreadNoLongerExist(int id);
+    int TestId(int id);
+
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
     */
     AddrSpace (OpenFile * executable); 
-
+    void InitTabThread();
     /// De-allocate an address space
     ~AddrSpace ();
 
@@ -67,6 +70,7 @@ class AddrSpace {
 
     
   private:      
+    int TabThreads[MAX_THREADS];
 
 
     /// Assume linear page table translation for now !

@@ -65,7 +65,8 @@ UpdatePC ()
 
 void
 ExceptionHandler(ExceptionType which)
-{
+{ 
+  IntStatus oldLevel = interrupt->SetLevel (IntOff);
   int type = machine->ReadRegister(2);
   if (which == SyscallException) 
   {
@@ -110,6 +111,8 @@ ExceptionHandler(ExceptionType which)
     }
   UpdatePC();
   }
+  (void) interrupt->SetLevel (oldLevel);
+ 
 }
 
 void Syscall_Exit(){

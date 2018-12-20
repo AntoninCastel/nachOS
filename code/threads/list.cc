@@ -17,6 +17,7 @@
 
 #include "copyright.h"
 #include "list.h"
+#include "system.h"
 
 //----------------------------------------------------------------------
 // ListElement::ListElement
@@ -99,11 +100,16 @@ List::SizeList (){
 }
 
 int 
-List::Contains (int item){
-    int a = this->SizeList ();
+List::Contains (void *item){
+    int size = this->SizeList ();
     ListElement * ptr = first;
-    for(int i = 0; i < a ; i++){
-        if(item == ptr->key)
+    Thread *current;
+    //if(size == 0)
+      //fprintf(stderr, "Liste vide\n");
+    for(int i = 0; i < size ; i++){
+        current = (Thread *)ptr->item;
+        //fprintf(stderr, "On compare %d et %d\n",(int)item,current->gettid());
+        if((int)item == current->gettid())
           return 1;
         ptr = ptr->next;
     }        

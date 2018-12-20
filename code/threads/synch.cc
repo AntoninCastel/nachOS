@@ -124,23 +124,36 @@ Lock::Acquire ()
 {
     sem->P();
     threadHolding= currentThread->getName();
+    threadHoldingId=currentThread->gettid();
 }
 void
 Lock::Release ()
 {
-    if(strcmp(threadHolding,currentThread->getName()))
+    if(!isHeldByCurrentThread () )
     {
-        sem->V();
+        fprintf(stderr, "Lock::Release() impossible, threadHolding: %d, currentThread: %d\n",threadHoldingId,currentThread->gettid());
+        exit(2);
+        
+    }else if(sem->getValue()!=0){
+        fprintf(stderr, "Lock::Release() impossible 'jeton deja disponible'\n");
+        exit(2);
     }else{
-        fprintf(stderr, "Lock::Release() impossible\n");
+        sem->V();
     }
+}
+
+bool Lock::isHeldByCurrentThread (){
+    if(threadHoldingId == currentThread->gettid())
+        return TRUE;
+    else
+        return FALSE;
 }
 
 Condition::Condition (const char *debugName)
 {
     name = debugName;
-    mutex = new Semaphore(debugName,1);
-    cond_wait = new Semaphore(debugName,0);
+    mutex = new Lock(name);
+    cond_wait = new Semaphore(name,0);
 
     waiters=0;
 }
@@ -153,10 +166,10 @@ Condition::~Condition ()
 void
 Condition::Wait (Lock * conditionLock)
 {
-    mutex->P();
+    mutex->Acquire();
     waiters++;
+    mutex->Release();    
     conditionLock->Release();
-    mutex->V();
     cond_wait->P();
     conditionLock->Acquire();
 }
@@ -164,16 +177,24 @@ Condition::Wait (Lock * conditionLock)
 void
 Condition::Signal (Lock * conditionLock)
 {
-    mutex->P();
+    mutex->Acquire();
     if(waiters>0)
     {
+        conditionLock->Release();
         cond_wait->V();
         waiters--;
     }
-    mutex->V();
+    mutex->Release();
 }
 void
 Condition::Broadcast (Lock * conditionLock)
 {
-
+    mutex->Acquire();
+    while(waiters!=0)
+    {
+        conditionLock->Release();
+        cond_wait->V();
+        waiters--;
+    }
+    mutex->Release();
 }

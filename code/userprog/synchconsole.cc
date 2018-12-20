@@ -5,8 +5,8 @@
 
 static Semaphore *readAvail;
 static Semaphore *writeDone;
-static Semaphore *LectureEnCours;
-static Semaphore *EcritureEnCours;
+static Lock *LectureEnCours;
+static Lock *EcritureEnCours;
 
 static void ReadAvail(int arg) { readAvail->V(); }
 static void WriteDone(int arg) { writeDone->V(); }
@@ -15,8 +15,8 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
 {
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
-    LectureEnCours = new Semaphore("LectureEnCours", 1);
-    EcritureEnCours = new Semaphore("EcritureEnCours", 1);
+    LectureEnCours = new Lock("LectureEnCours");
+    EcritureEnCours = new Lock("EcritureEnCours");
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
 }
 
@@ -46,26 +46,25 @@ char SynchConsole::SynchGetChar()
 
 void SynchConsole::SynchPutString(const char s[])
 {
-    EcritureEnCours->P ();
+    EcritureEnCours->Acquire ();
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
-    EcritureEnCours->V ();
-
+    EcritureEnCours->Release ();
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
 {
 	int i;
-	LectureEnCours->P ();
+	LectureEnCours->Acquire ();
     for(i=0; i<n; i++){
     	s[i]=SynchGetChar();
     	if(!s[i] || s[i] == '\n')
     		break;
     }
     s[i]='\0';
-	LectureEnCours->V ();
+	LectureEnCours->Release ();
 
 }
 

@@ -13,9 +13,9 @@
  * All rights reserved.  See copyright.h for copyright notice and limitation 
  * of liability and disclaimer of warranty provisions.
  */
-
 #ifndef ADDRSPACE_H
 #define ADDRSPACE_H
+#include <string>
 
 #include "copyright.h"
 #include "filesys.h"
@@ -34,6 +34,7 @@ class Semaphore;
  */
 class AddrSpace {
   public:  
+    int nomThread = 1 ;
     List * ThreadsEnCours;   // queue of threads that are finished,
     List * BlockedMain;
     Semaphore *threads_sharing_addrspace;

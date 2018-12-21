@@ -2,30 +2,32 @@
 #include "syscall.h" 
 
 void fonction() {
-	PutString("J'AIMERAIS\n");
-	int i = 1;
+	int i = 10000;
   	while (i != 0){i--;}
+	PutString("J'AIMERAIS\n");
   	UserThreadExit();
 }
 void fonction2() {
-	PutString("RESOUDRE\n");
-	int i = 100000;
+	int i = 10000;
   	while (i != 0){i--;}
+	PutString("RESOUDRE\n");
   	UserThreadExit();
 }
 void fonction3() {
-	PutString("CE BUG\n");
-	int i = 100000;
+	int i = 10000;
   	while (i != 0){i--;}
+ 	PutString("CE BUG\n");
   	UserThreadExit();
 }
 int main() {
 	int a = UserThreadCreate(fonction, 0);	
-  	UserThreadJoin(a);
 	int b = UserThreadCreate(fonction2, 0);	
-	UserThreadJoin(b);
-	/*int c = UserThreadCreate(fonction3, 0);	
-  	UserThreadJoin(c);*/
+	int c = UserThreadCreate(fonction3, 0);	
   	
+  	UserThreadJoin(b);
+  	UserThreadJoin(c);
+  	UserThreadJoin(a);
+ 	
+
 	return 0;
 }

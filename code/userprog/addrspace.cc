@@ -66,6 +66,7 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace (OpenFile * executable) {
 
     BlockedMain = new List;
+    TabThreads = new int[MAX_THREADS];
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
     NoffHeader noffH;
     unsigned int i, size;
@@ -133,10 +134,14 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 
 AddrSpace::~AddrSpace ()
 {
-  // LB: Missing [] for delete
-  // delete pageTable;
-  delete [] pageTable;
-  // End of modification
+    // LB: Missing [] for delete
+    // delete pageTable;
+    delete [] pageTable;
+    delete ThreadsEnCours;
+    delete BlockedMain;
+    delete threads_sharing_addrspace;
+    delete [] TabThreads;
+    // End of modification
 }
 
 //----------------------------------------------------------------------
@@ -155,6 +160,16 @@ AddrSpace::InitTabThread(){
     for (i = 0; i<MAX_THREADS ; i++){
         TabThreads[i] = 0;
     }
+}
+
+void 
+AddrSpace::PrintTabThread(){
+    int i;
+    for (i = 0; i<MAX_THREADS ; i++){
+        fprintf(stderr, "%d ",TabThreads[i]);
+
+    }
+    fprintf(stderr, "\n ");
 }
 
 void 

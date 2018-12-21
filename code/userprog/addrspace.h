@@ -36,10 +36,13 @@ class AddrSpace {
     int nomThread = 1 ;
     List * ThreadsEnCours;   // queue of threads that are finished,
     List * BlockedMain;
-    Semaphore *threads_sharing_addrspace;
+    Semaphore *threads_sharing_addrspace;    
+    int *TabThreads;
+
     void ThreadExist(int id);
     void ThreadNoLongerExist(int id);
     int TestId(int id);
+    void PrintTabThread();
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
@@ -62,7 +65,6 @@ class AddrSpace {
     void RestoreState (); 
 
   private:      
-    int TabThreads[MAX_THREADS];
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

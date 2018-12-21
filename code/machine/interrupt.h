@@ -112,7 +112,6 @@ class Interrupt {
     					// by the hardware device simulators.
     
     void OneTick();       		// Advance simulated time
-
   private:
     IntStatus level;		// are interrupts enabled or disabled?
     List *pending;		// the list of interrupts scheduled

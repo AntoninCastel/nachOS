@@ -343,7 +343,7 @@ Interrupt::CheckIfDue(bool advanceClock)
 // 	Print information about an interrupt that is scheduled to occur.
 //	When, where, why, etc.
 //----------------------------------------------------------------------
-
+ 
 static void
 PrintPending(int arg)
 {

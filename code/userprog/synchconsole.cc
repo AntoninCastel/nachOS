@@ -33,7 +33,7 @@ void SynchConsole::SynchPutChar(const char ch)
 {
 	if (ch == EOF)
 	    return;		// if EOF, quit
-	console->PutChar (ch);	
+	console->PutChar (ch);
 	writeDone->P ();
 }
 
@@ -46,12 +46,16 @@ char SynchConsole::SynchGetChar()
 
 void SynchConsole::SynchPutString(const char s[])
 {
+    //fprintf(stderr, "level %d\n", interrupt->getLevel());
+    IntStatus oldLevel = interrupt->SetLevel (IntOff);
     EcritureEnCours->Acquire ();
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
     EcritureEnCours->Release ();
+    (void) interrupt->SetLevel (oldLevel);
+
 }
 
 void SynchConsole::SynchGetString(char *s, int n)

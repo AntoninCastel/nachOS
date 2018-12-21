@@ -217,19 +217,23 @@ AddrSpace::GetSpMaxMain(){
 // AddrSpace::ThreadsCounter 
 //		Retourne le nombre de threads qui se partagent 
 //		l'address space du processus.
-//-----------------
+//---------------------------------------------------------------------
 int 
 AddrSpace::ThreadsCounter(){
 	return (MAX_THREADS- ThreadsPosition->NumClear());
 }
-
+//---------------------------------------------------------------------
+// AddrSpace::ThreadSP) 
+//		Retourne l'adresse du SP pour placer le thread dans la pile.
+//---------------------------------------------------------------------
+int 
+AddrSpace::numBloc(){
+	return this->ThreadsPosition->Find();
+}
 int
 AddrSpace::ThreadSP(){
-	int indexPosition;
-	if ((indexPosition=ThreadsPosition->Find())==-1)
+	if (currentThread->numBlock==-1)
 		return -1; //il n'y plus de place dans l'adresse space.
-	return 0;
-
+	return (this->GetSpMaxMain()-currentThread->numBlock*PAGES_PER_THREAD*128);
 
 }
-

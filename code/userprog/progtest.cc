@@ -34,10 +34,10 @@ StartProcess (char *filename)
       }
     space = new AddrSpace (executable);
     currentThread->space = space;
-
     delete executable;		// close file
 
     space->InitRegisters ();	// set the initial register values
+    currentThread->space->SetSpMaxMain(machine->ReadRegister(29)-PAGES_PER_THREAD*128); //on place le SP MAX du main PAGE_PER_THREADS pages après son premier SP
     space->RestoreState ();	// load page table register
 
     machine->Run ();		// jump to the user progam

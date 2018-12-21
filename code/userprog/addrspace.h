@@ -74,6 +74,7 @@ class AddrSpace {
 
     int GetSpMaxMain();
     void SetSpMaxMain(int valSP);
+    int numBloc();
     int ThreadSP();
     
   private:      

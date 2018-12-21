@@ -31,8 +31,8 @@ static void StartUserThread(int f) {
 	}
 	machine->WriteRegister(PCReg, p->fn);
 	machine->WriteRegister(NextPCReg, p->fn+4);
-	int prochainSP = ((currentThread->space->threads_sharing_addrspace->getValue()+1)* (3*PageSize))+(3*PageSize) ;
-	machine->WriteRegister(StackReg, /*p->SP - 3*PageSize*/ prochainSP);
+	int prochainSP = currentThread->space->ThreadSP();
+	machine->WriteRegister(StackReg, prochainSP);
 	machine->Run();
 }
 
@@ -45,6 +45,7 @@ void do_UserThreadExit(){
 		scheduler->ReadyToRun ((Thread *)currentThread->space->BlockedMain->Remove());
 	}
 	currentThread->Finish();
+	
 	(void) interrupt->SetLevel (oldLevel);
 }
 

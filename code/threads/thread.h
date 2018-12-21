@@ -91,6 +91,7 @@ class Thread
 
     // basic thread operations
     int id;
+    int numBlock; //numéro du bloc dans la pile 
     int gettid();
     void Fork (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
     void Yield ();		// Relinquish the CPU if any 

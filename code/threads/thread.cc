@@ -39,6 +39,7 @@ Thread::Thread (const char *threadName)
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+
 #ifdef USER_PROGRAM
     space = NULL;
     // FBT: Need to initialize special registers of simulator to 0
@@ -69,10 +70,11 @@ Thread::~Thread ()
     #ifdef USER_PROGRAM
     fprintf(stderr, "on supprime le thread %d\n",this->gettid() );
     this->space->ThreadNoLongerExist(this->id);
+    this->space->ThreadsPosition->Clear(this->numBlock);
     #endif
     if (stack != NULL)
-	  DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
-}
+	     DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
+}      
 
 //----------------------------------------------------------------------
 // Thread::Fork
@@ -111,6 +113,7 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
+    this->numBlock = this->space->numBloc();
     this->id = this->space->threads_sharing_addrspace->getValue()+1;    
     fprintf(stderr, "on créé le thread %d\n",this->gettid() );
 

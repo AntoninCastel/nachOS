@@ -61,20 +61,22 @@ SwapHeader (NoffHeader * noffH)
 //      "executable" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
 
-
-
 AddrSpace::AddrSpace (OpenFile * executable) {
-
-    BlockedMain = new List;
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
+    Ended = new List;
     NoffHeader noffH;
+    
+    ThreadsPosition = new BitMap(MAX_THREADS); 
+    ThreadsPosition->Mark(0); //Le thread qui crée l'addrSpace est le thread 0 (main) donc on met le bit 0 à 1.
+    
     unsigned int i, size;
+
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
     if ((noffH.noffMagic != NOFFMAGIC) &&
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
 	SwapHeader (&noffH);
     ASSERT (noffH.noffMagic == NOFFMAGIC);
-    //InitTabThread();
+
 // how big is address space?
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
     // to leave room for the stack
@@ -136,6 +138,7 @@ AddrSpace::~AddrSpace ()
   // LB: Missing [] for delete
   // delete pageTable;
   delete [] pageTable;
+  delete ThreadsPosition;
   // End of modification
 }
 
@@ -148,29 +151,6 @@ AddrSpace::~AddrSpace ()
 //      will be saved/restored into the currentThread->userRegisters
 //      when this thread is context switched out.
 //----------------------------------------------------------------------
-
-void 
-AddrSpace::InitTabThread(){
-    int i;
-    for (i = 0; i<MAX_THREADS ; i++){
-        TabThreads[i] = 0;
-    }
-}
-
-void 
-AddrSpace::ThreadExist(int id){
-    TabThreads[id] = 1;
-}
-
-void 
-AddrSpace::ThreadNoLongerExist(int id){
-    TabThreads[id] = 0;
-}
-
-int
-AddrSpace::TestId(int id){
-    return TabThreads[id];
-}
 
 void
 AddrSpace::InitRegisters ()
@@ -222,3 +202,34 @@ AddrSpace::RestoreState ()
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
 }
+
+int
+AddrSpace::GetSpMaxMain(){
+	return this->SpMaxMain;
+}
+
+ void 
+ AddrSpace::SetSpMaxMain(int valSP){
+ 	this->SpMaxMain=valSP;
+ }
+
+//---------------------------------------------------------------------
+// AddrSpace::ThreadsCounter 
+//		Retourne le nombre de threads qui se partagent 
+//		l'address space du processus.
+//-----------------
+int 
+AddrSpace::ThreadsCounter(){
+	return (MAX_THREADS- ThreadsPosition->NumClear());
+}
+
+int
+AddrSpace::ThreadSP(){
+	int indexPosition;
+	if ((indexPosition=ThreadsPosition->Find())==-1)
+		return -1; //il n'y plus de place dans l'adresse space.
+	return 0;
+
+
+}
+

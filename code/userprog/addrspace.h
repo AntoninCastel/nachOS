@@ -20,11 +20,12 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
-//#include "system.h"
+#include "bitmap.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
 #define MAX_THREADS 50
+#define PAGES_PER_THREAD 3 
 
 class Semaphore;
 
@@ -37,9 +38,14 @@ class AddrSpace {
     List * ThreadsEnCours;   // queue of threads that are finished,
     List * BlockedMain;
     Semaphore *threads_sharing_addrspace;
+    List * Ended;
+    BitMap* ThreadsPosition;
+
+
     void ThreadExist(int id);
     void ThreadNoLongerExist(int id);
     int TestId(int id);
+
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
@@ -60,9 +66,20 @@ class AddrSpace {
 
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
+    /**
+     * \brief Permet de savoir combien de threads se partagent l'address space
+     * \return Le nombre de threads dans l'address space.
+     */
+    int ThreadsCounter();
 
+    int GetSpMaxMain();
+    void SetSpMaxMain(int valSP);
+    int ThreadSP();
+    
   private:      
     int TabThreads[MAX_THREADS];
+
+    int SpMaxMain;
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

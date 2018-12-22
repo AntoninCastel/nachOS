@@ -37,18 +37,18 @@ class AddrSpace {
     List * ThreadsEnCours;   // queue of threads that are finished,
     List * BlockedMain;
     Semaphore *threads_sharing_addrspace;    
-    int *TabThreads;
-
+    Semaphore **TabThreads;
     void ThreadExist(int id);
     void ThreadNoLongerExist(int id);
-    int TestId(int id);
+    //int TestId(int id);
     void PrintTabThread();
+    void InitTabThread();
+    int CheckNbThreadEnCours();
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
     */
     AddrSpace (OpenFile * executable); 
-    void InitTabThread();
     /// De-allocate an address space
     ~AddrSpace ();
 

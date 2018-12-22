@@ -66,7 +66,7 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace (OpenFile * executable) {
 
     BlockedMain = new List;
-    TabThreads = new int[MAX_THREADS];
+    InitTabThread();
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
     NoffHeader noffH;
     unsigned int i, size;
@@ -157,8 +157,11 @@ AddrSpace::~AddrSpace ()
 void 
 AddrSpace::InitTabThread(){
     int i;
+    char *nom = new char[10]; 
+    TabThreads = new Semaphore*[MAX_THREADS];
     for (i = 0; i<MAX_THREADS ; i++){
-        TabThreads[i] = 0;
+        sprintf(nom,"%d",i);
+        TabThreads[i] = new Semaphore(nom, 1);
     }
 }
 
@@ -166,7 +169,7 @@ void
 AddrSpace::PrintTabThread(){
     int i;
     for (i = 0; i<MAX_THREADS ; i++){
-        fprintf(stderr, "%d ",TabThreads[i]);
+        fprintf(stderr, "%d ",TabThreads[i]->getValue());
 
     }
     fprintf(stderr, "\n ");
@@ -174,18 +177,26 @@ AddrSpace::PrintTabThread(){
 
 void 
 AddrSpace::ThreadExist(int id){
-    TabThreads[id] = 1;
+    fprintf(stderr, "Le Thread %d prend le jeton numero %d\n",currentThread->gettid(),id );
+    TabThreads[id]->P();
 }
 
 void 
 AddrSpace::ThreadNoLongerExist(int id){
-    TabThreads[id] = 0;
+    fprintf(stderr, "Le Thread %d remet un jeton au numero %d\n",currentThread->gettid(),id );
+    TabThreads[id]->V();
 }
 
-int
-AddrSpace::TestId(int id){
-    return TabThreads[id];
+int 
+AddrSpace::CheckNbThreadEnCours(){
+    int i,compteur=0;
+    for (i = 0; i<MAX_THREADS ; i++){
+        if(TabThreads[i]->getValue() == 0)
+            compteur++;
+    }
+    return compteur;
 }
+
 
 void
 AddrSpace::InitRegisters ()

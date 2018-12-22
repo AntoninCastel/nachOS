@@ -6,7 +6,9 @@
 static Semaphore *readAvail;
 static Semaphore *writeDone;
 static Lock *LectureEnCours;
-static Lock *EcritureEnCours;
+static Semaphore *EcritureEnCours;
+static Semaphore *EcritureStringEnCours;
+
 
 static void ReadAvail(int arg) { readAvail->V(); }
 static void WriteDone(int arg) { writeDone->V(); }
@@ -16,7 +18,9 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
     LectureEnCours = new Lock("LectureEnCours");
-    EcritureEnCours = new Lock("EcritureEnCours");
+    EcritureEnCours = new Semaphore("EcritureEnCours", 1);
+    EcritureStringEnCours = new Semaphore("EcritureStringEnCours", 1);
+
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
 }
 
@@ -31,10 +35,13 @@ SynchConsole::~SynchConsole()
 
 void SynchConsole::SynchPutChar(const char ch)
 {
+    EcritureEnCours->P ();
 	if (ch == EOF)
 	    return;		// if EOF, quit
 	console->PutChar (ch);
 	writeDone->P ();
+    EcritureEnCours->V ();
+
 }
 
 char SynchConsole::SynchGetChar()
@@ -47,14 +54,18 @@ char SynchConsole::SynchGetChar()
 void SynchConsole::SynchPutString(const char s[])
 {
     //fprintf(stderr, "level %d\n", interrupt->getLevel());
-    IntStatus oldLevel = interrupt->SetLevel (IntOff);
-    EcritureEnCours->Acquire ();
+    //IntStatus oldLevel = interrupt->SetLevel (IntOff);
+    //EcritureEnCours->Acquire ();
+    EcritureStringEnCours->P ();
+
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
-    EcritureEnCours->Release ();
-    (void) interrupt->SetLevel (oldLevel);
+    EcritureStringEnCours->V ();
+
+    //EcritureEnCours->Release ();
+    //(void) interrupt->SetLevel (oldLevel);
 
 }
 

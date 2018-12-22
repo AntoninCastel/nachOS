@@ -68,7 +68,7 @@ Thread::~Thread ()
     ASSERT (this != currentThread);    
     #ifdef USER_PROGRAM
     fprintf(stderr, "on supprime le thread %d\n",this->gettid() );
-    this->space->ThreadNoLongerExist(this->id);
+    this->space->ThreadNoLongerExist(this->gettid());
     #endif
     if (stack != NULL)
 	  DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
@@ -111,7 +111,7 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
-    this->id = this->space->threads_sharing_addrspace->getValue()+1;    
+    this->id = currentThread->space->threads_sharing_addrspace->getValue();    
     fprintf(stderr, "on créé le thread %d\n",this->gettid() );
 
     this->space->ThreadExist(this->id);

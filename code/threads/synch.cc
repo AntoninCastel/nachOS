@@ -74,7 +74,6 @@ Semaphore::P ()
       }
     value--;			// semaphore available, 
     // consume its value
-
     (void) interrupt->SetLevel (oldLevel);	// re-enable interrupts
 }
 

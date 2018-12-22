@@ -15,7 +15,7 @@ void fonction2() {
 }
 void fonction3() {
 	int i = 1000;
-  	while (i > 0){i--;}
+  	while (i != 0){i--;}
  	PutString("CE BUG\n");
   	UserThreadExit();
 }

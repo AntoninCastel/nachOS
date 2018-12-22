@@ -177,13 +177,13 @@ AddrSpace::PrintTabThread(){
 
 void 
 AddrSpace::ThreadExist(int id){
-    fprintf(stderr, "Le Thread %d prend le jeton numero %d\n",currentThread->gettid(),id );
+    //fprintf(stderr, "Le Thread %d prend le jeton numero %d\n",currentThread->gettid(),id );
     TabThreads[id]->P();
 }
 
 void 
 AddrSpace::ThreadNoLongerExist(int id){
-    fprintf(stderr, "Le Thread %d remet un jeton au numero %d\n",currentThread->gettid(),id );
+    //fprintf(stderr, "Le Thread %d remet un jeton au numero %d\n",currentThread->gettid(),id );
     TabThreads[id]->V();
 }
 

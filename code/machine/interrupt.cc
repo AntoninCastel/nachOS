@@ -178,6 +178,7 @@ Interrupt::OneTick()
  	status = SystemMode;		// yield is a kernel routine
 	currentThread->Yield();
 	status = old;
+    
     }
 }
 

@@ -6,7 +6,7 @@
 #Entrer en parametre le programme de test (sans ".c")
 
 if [ ! -z "$1" ]; then
-	for i in `seq 1 10`;
+	for i in `seq 1 $2`;
 	do
 		echo
 		echo "/////////// TEST $i ////////////"

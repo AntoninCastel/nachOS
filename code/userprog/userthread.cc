@@ -37,11 +37,10 @@ static void StartUserThread(int f) {
 }
 
 void do_UserThreadExit(){
-	fprintf(stderr, "le thread %d termine apres un super appel systeme\n",currentThread->gettid() );
-	currentThread->space->PrintTabThread();
-	fprintf(stderr, "nombre de thread a 0 : %d\n",currentThread->space->CheckNbThreadEnCours() );
+	//fprintf(stderr, "le thread %d termine apres un super appel systeme\n",currentThread->gettid() );
+	//currentThread->space->PrintTabThread();
+	//fprintf(stderr, "nombre de thread a 0 : %d\n",currentThread->space->CheckNbThreadEnCours() );
 	if(currentThread->space->CheckNbThreadEnCours() == 1){
-		fprintf(stderr, "coucou de %d\n",currentThread->gettid() );
 		currentThread->space->TabThreads[currentThread->gettid()]->V();
 	}
 	currentThread->Finish();
@@ -49,9 +48,8 @@ void do_UserThreadExit(){
 }
 
 void do_UserThreadJoin(int IdThreadAttendu) {
-	fprintf(stderr, "Le main attend le thread %d\n",IdThreadAttendu );
+	//fprintf(stderr, "Le main attend le thread %d\n",IdThreadAttendu );
 	currentThread->space->TabThreads[IdThreadAttendu]->P();	
 	currentThread->space->TabThreads[IdThreadAttendu]->V();	
-
-	fprintf(stderr, "Le thread %d s'est surement terminé\n",IdThreadAttendu );
+	//fprintf(stderr, "Le thread %d s'est surement terminé\n",IdThreadAttendu );
 }

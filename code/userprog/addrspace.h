@@ -20,7 +20,6 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
-//#include "system.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
@@ -33,17 +32,29 @@ class Semaphore;
  */
 class AddrSpace {
   public:  
-    int nomThread = 1 ;
-    List * ThreadsEnCours;   // queue of threads that are finished,
-    List * BlockedMain;
+  	//Sera traduit en string pour donner un nom aux futurs threads 
+    int nomThread = 0 ;
+
+    //Semaphore qui represente le nombre de threads total qui ont été lancés 
+    //depuis le début
     Semaphore *threads_sharing_addrspace;    
-    Semaphore **TabThreads;
-    void ThreadExist(int id);
-    void ThreadNoLongerExist(int id);
-    //int TestId(int id);
-    void PrintTabThread();
+
+    //Alloue et initialise le tableau de semaphores.
+    //Les semaphores sont initialisées à 1 jeton.
     void InitTabThread();
+
+    //Prend un jeton sur la semaphore d'index ID
+    void ThreadExist(int id);
+    
+    //Remet un jeton sur la semaphore d'index ID
+    void ThreadNoLongerExist(int id);
+
+    //Affiche les valeurs des des differentes semaphores 
+    void PrintTabThread();
+
+    //Retourne le nombre de semaphores à 0 (Threads en cours d'execution)
     int CheckNbThreadEnCours();
+
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
@@ -65,6 +76,11 @@ class AddrSpace {
     void RestoreState (); 
 
   private:      
+
+    //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
+    //la terminaison du thread qu'il attend
+    //Tableau indexé par l'ID des threads
+    Semaphore **TabThreads;
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

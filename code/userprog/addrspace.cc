@@ -64,8 +64,6 @@ SwapHeader (NoffHeader * noffH)
 
 
 AddrSpace::AddrSpace (OpenFile * executable) {
-
-    BlockedMain = new List;
     InitTabThread();
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
     NoffHeader noffH;
@@ -75,8 +73,7 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
 	SwapHeader (&noffH);
     ASSERT (noffH.noffMagic == NOFFMAGIC);
-    //InitTabThread();
-// how big is address space?
+    // how big is address space?
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
     // to leave room for the stack
     numPages = divRoundUp (size, PageSize);
@@ -137,8 +134,6 @@ AddrSpace::~AddrSpace ()
     // LB: Missing [] for delete
     // delete pageTable;
     delete [] pageTable;
-    delete ThreadsEnCours;
-    delete BlockedMain;
     delete threads_sharing_addrspace;
     delete [] TabThreads;
     // End of modification
@@ -165,8 +160,7 @@ AddrSpace::InitTabThread(){
     }
 }
 
-void 
-AddrSpace::PrintTabThread(){
+void AddrSpace::PrintTabThread(){
     int i;
     for (i = 0; i<MAX_THREADS ; i++){
         fprintf(stderr, "%d ",TabThreads[i]->getValue());
@@ -175,20 +169,15 @@ AddrSpace::PrintTabThread(){
     fprintf(stderr, "\n ");
 }
 
-void 
-AddrSpace::ThreadExist(int id){
-    //fprintf(stderr, "Le Thread %d prend le jeton numero %d\n",currentThread->gettid(),id );
+void AddrSpace::ThreadExist(int id){
     TabThreads[id]->P();
 }
 
-void 
-AddrSpace::ThreadNoLongerExist(int id){
-    //fprintf(stderr, "Le Thread %d remet un jeton au numero %d\n",currentThread->gettid(),id );
+void AddrSpace::ThreadNoLongerExist(int id){
     TabThreads[id]->V();
 }
 
-int 
-AddrSpace::CheckNbThreadEnCours(){
+int AddrSpace::CheckNbThreadEnCours(){
     int i,compteur=0;
     for (i = 0; i<MAX_THREADS ; i++){
         if(TabThreads[i]->getValue() == 0)

@@ -1,10 +1,6 @@
 #include "syscall.h"
 
-int
-main()
-{
-PutString("coucou tout le monde !");
-
-return 42;
-
+int main() {
+    PutString("Test pour le fonctionnement de PutString\n");
+    return 0;
 }

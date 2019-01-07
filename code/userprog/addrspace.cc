@@ -236,18 +236,19 @@ AddrSpace::ThreadsCounter(){
     return (MAX_THREADS- ThreadsPosition->NumClear());
 }
 
-//---------------------------------------------------------------------
-// AddrSpace::ThreadSP) 
-//      Retourne l'adresse du SP du thread à placer dans la pile.
-//---------------------------------------------------------------------
+
 int 
 AddrSpace::numBloc(){
     return this->ThreadsPosition->Find();
 }
+//---------------------------------------------------------------------
+// AddrSpace::NextThreadSP) 
+//      Retourne l'adresse du SP du thread à placer dans la pile.
+//---------------------------------------------------------------------
+
 int
 AddrSpace::NextThreadSP(){
-    int indexPosition;
-    if ((indexPosition=ThreadsPosition->Find())==-1)
+    if (currentThread->block==-1)
         return -1; //il n'y plus de place dans l'adresse space.
     return (this->GetSpMaxMain()-currentThread->block*PAGES_PER_THREAD*128);
 

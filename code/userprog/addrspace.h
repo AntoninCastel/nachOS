@@ -13,17 +13,17 @@
  * All rights reserved.  See copyright.h for copyright notice and limitation 
  * of liability and disclaimer of warranty provisions.
  */
-
 #ifndef ADDRSPACE_H
 #define ADDRSPACE_H
+#include <string>
 
-//#include "system.h"
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
+#define MAX_THREADS 50
 
 class Semaphore;
 
@@ -32,16 +32,34 @@ class Semaphore;
  */
 class AddrSpace {
   public:  
-    List * Ended;   // queue of threads that are finished,
+  	//Sera traduit en string pour donner un nom aux futurs threads 
+    int nomThread = 0 ;
 
-    Semaphore *threads_sharing_addrspace;
+    //Semaphore qui represente le nombre de threads total qui ont été lancés 
+    //depuis le début
+    Semaphore *threads_sharing_addrspace;    
+
+    //Alloue et initialise le tableau de semaphores.
+    //Les semaphores sont initialisées à 1 jeton.
+    void InitTabThread();
+
+    //Prend un jeton sur la semaphore d'index ID
+    void ThreadExist(int id);
+    
+    //Remet un jeton sur la semaphore d'index ID
+    void ThreadNoLongerExist(int id);
+
+    //Affiche les valeurs des des differentes semaphores 
+    void PrintTabThread();
+
+    //Retourne le nombre de semaphores à 0 (Threads en cours d'execution)
+    int CheckNbThreadEnCours();
 
     /**
     * \brief Create an address space, initializing it with the program 
     * stored in the file "executable"
     */
     AddrSpace (OpenFile * executable); 
-
     /// De-allocate an address space
     ~AddrSpace ();
 
@@ -58,6 +76,11 @@ class AddrSpace {
     void RestoreState (); 
 
   private:      
+
+    //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
+    //la terminaison du thread qu'il attend
+    //Tableau indexé par l'ID des threads
+    Semaphore **TabThreads;
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

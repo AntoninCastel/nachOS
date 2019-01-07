@@ -65,7 +65,11 @@ Thread::~Thread ()
 {
     DEBUG ('t', "Deleting thread \"%s\"\n", name);
 
-    ASSERT (this != currentThread);
+    ASSERT (this != currentThread);    
+    #ifdef USER_PROGRAM
+    this->space->ThreadNoLongerExist(this->gettid());
+    //fprintf(stderr, "thread %d terminé \n",this->gettid() );
+    #endif
     if (stack != NULL)
 	  DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 }
@@ -107,7 +111,9 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
-    this->id = this->space->threads_sharing_addrspace->getValue();
+    this->id = currentThread->space->threads_sharing_addrspace->getValue();    
+
+    this->space->ThreadExist(this->id);
 #endif // USER_PROGRAM
 
     IntStatus oldLevel = interrupt->SetLevel (IntOff);
@@ -251,7 +257,7 @@ Thread::Sleep ()
 
     status = BLOCKED;
     while ((nextThread = scheduler->FindNextToRun ()) == NULL)
-	interrupt->Idle ();	// no one to run, wait for an interrupt
+	  interrupt->Idle ();	// no one to run, wait for an interrupt
 
     scheduler->Run (nextThread);	// returns when we've been signalled
 }

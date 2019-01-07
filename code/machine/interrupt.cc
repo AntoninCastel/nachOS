@@ -178,6 +178,7 @@ Interrupt::OneTick()
  	status = SystemMode;		// yield is a kernel routine
 	currentThread->Yield();
 	status = old;
+    
     }
 }
 
@@ -343,7 +344,7 @@ Interrupt::CheckIfDue(bool advanceClock)
 // 	Print information about an interrupt that is scheduled to occur.
 //	When, where, why, etc.
 //----------------------------------------------------------------------
-
+ 
 static void
 PrintPending(int arg)
 {

@@ -61,19 +61,19 @@ SwapHeader (NoffHeader * noffH)
 //      "executable" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
 
+
+
 AddrSpace::AddrSpace (OpenFile * executable) {
+    InitTabThread();
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
-    Ended = new List;
     NoffHeader noffH;
     unsigned int i, size;
-
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
     if ((noffH.noffMagic != NOFFMAGIC) &&
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
 	SwapHeader (&noffH);
     ASSERT (noffH.noffMagic == NOFFMAGIC);
-
-// how big is address space?
+    // how big is address space?
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
     // to leave room for the stack
     numPages = divRoundUp (size, PageSize);
@@ -131,10 +131,12 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 
 AddrSpace::~AddrSpace ()
 {
-  // LB: Missing [] for delete
-  // delete pageTable;
-  delete [] pageTable;
-  // End of modification
+    // LB: Missing [] for delete
+    // delete pageTable;
+    delete [] pageTable;
+    delete threads_sharing_addrspace;
+    delete [] TabThreads;
+    // End of modification
 }
 
 //----------------------------------------------------------------------
@@ -146,6 +148,44 @@ AddrSpace::~AddrSpace ()
 //      will be saved/restored into the currentThread->userRegisters
 //      when this thread is context switched out.
 //----------------------------------------------------------------------
+
+void 
+AddrSpace::InitTabThread(){
+    int i;
+    char *nom = new char[10]; 
+    TabThreads = new Semaphore*[MAX_THREADS];
+    for (i = 0; i<MAX_THREADS ; i++){
+        sprintf(nom,"%d",i);
+        TabThreads[i] = new Semaphore(nom, 1);
+    }
+}
+
+void AddrSpace::PrintTabThread(){
+    int i;
+    for (i = 0; i<MAX_THREADS ; i++){
+        fprintf(stderr, "%d ",TabThreads[i]->getValue());
+
+    }
+    fprintf(stderr, "\n ");
+}
+
+void AddrSpace::ThreadExist(int id){
+    TabThreads[id]->P();
+}
+
+void AddrSpace::ThreadNoLongerExist(int id){
+    TabThreads[id]->V();
+}
+
+int AddrSpace::CheckNbThreadEnCours(){
+    int i,compteur=0;
+    for (i = 0; i<MAX_THREADS ; i++){
+        if(TabThreads[i]->getValue() == 0)
+            compteur++;
+    }
+    return compteur;
+}
+
 
 void
 AddrSpace::InitRegisters ()

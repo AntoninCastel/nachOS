@@ -65,7 +65,7 @@ UpdatePC ()
 
 void
 ExceptionHandler(ExceptionType which)
-{
+{ 
   int type = machine->ReadRegister(2);
   if (which == SyscallException) 
   {
@@ -109,7 +109,7 @@ ExceptionHandler(ExceptionType which)
         ASSERT(FALSE);
     }
   UpdatePC();
-  }
+  } 
 }
 
 void Syscall_Exit(){

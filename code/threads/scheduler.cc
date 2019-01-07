@@ -73,6 +73,11 @@ Scheduler::FindNextToRun ()
     return (Thread *) readyList->Remove ();
 }
 
+int
+Scheduler::ReadyListContains (void *arg)
+{
+    return readyList->Contains(arg);
+}
 //----------------------------------------------------------------------
 // Scheduler::Run
 //      Dispatch the CPU to nextThread.  Save the state of the old thread,
@@ -99,8 +104,8 @@ Scheduler::Run (Thread * nextThread)
 #ifdef USER_PROGRAM		// ignore until running user programs
     if (currentThread->space != NULL)
       {				// if this thread is a user program,
-	  currentThread->SaveUserState ();	// save the user's CPU registers
-	  currentThread->space->SaveState ();
+	   currentThread->SaveUserState ();	// save the user's CPU registers
+	   currentThread->space->SaveState ();
       }
 #endif
 
@@ -151,4 +156,6 @@ Scheduler::Print ()
 {
     printf ("Ready list contents:\n");
     readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
+     printf ("\n");
+   
 }

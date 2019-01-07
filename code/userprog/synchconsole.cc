@@ -5,8 +5,10 @@
 
 static Semaphore *readAvail;
 static Semaphore *writeDone;
-static Semaphore *LectureEnCours;
-static Semaphore *EcritureEnCours;
+static Lock *LectureEnCours;
+static Lock *EcritureEnCours;
+static Lock *EcritureStringEnCours;
+
 
 static void ReadAvail(int arg) { readAvail->V(); }
 static void WriteDone(int arg) { writeDone->V(); }
@@ -15,8 +17,10 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
 {
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
-    LectureEnCours = new Semaphore("LectureEnCours", 1);
-    EcritureEnCours = new Semaphore("EcritureEnCours", 1);
+    LectureEnCours = new Lock("LectureEnCours");
+    EcritureEnCours = new Lock("EcritureEnCours");
+    EcritureStringEnCours = new Lock("EcritureStringEnCours");
+
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
 }
 
@@ -27,14 +31,18 @@ SynchConsole::~SynchConsole()
     delete readAvail;
     delete LectureEnCours;
     delete EcritureEnCours;
+    delete EcritureStringEnCours;
 }
 
 void SynchConsole::SynchPutChar(const char ch)
 {
+    EcritureEnCours->Acquire ();
 	if (ch == EOF)
 	    return;		// if EOF, quit
-	console->PutChar (ch);	
+	console->PutChar (ch);
 	writeDone->P ();
+    EcritureEnCours->Release ();
+
 }
 
 char SynchConsole::SynchGetChar()
@@ -46,25 +54,26 @@ char SynchConsole::SynchGetChar()
 
 void SynchConsole::SynchPutString(const char s[])
 {
-    EcritureEnCours->P ();
+    EcritureStringEnCours->Acquire ();
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
-    EcritureEnCours->V ();
+    EcritureStringEnCours->Release ();
+
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
 {
 	int i;
-	LectureEnCours->P ();
+	LectureEnCours->Acquire ();
     for(i=0; i<n; i++){
     	s[i]=SynchGetChar();
-    	if(!s[i])
+    	if(!s[i] || s[i] == '\n')
     		break;
     }
     s[i]='\0';
-	LectureEnCours->V ();
+	LectureEnCours->Release ();
 
 }
 

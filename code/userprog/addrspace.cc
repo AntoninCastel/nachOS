@@ -69,6 +69,9 @@ AddrSpace::AddrSpace (OpenFile * executable) {
     NoffHeader noffH;
     unsigned int i, size;
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
+    ThreadsPosition = new BitMap((int)MAX_THREADS); 
+    ThreadsPosition->Mark(0); //Le thread qui crée l'addrSpace est le thread 0 (main) donc on met le bit 0 à 1.
+
     if ((noffH.noffMagic != NOFFMAGIC) &&
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
 	SwapHeader (&noffH);
@@ -136,6 +139,7 @@ AddrSpace::~AddrSpace ()
     delete [] pageTable;
     delete threads_sharing_addrspace;
     delete [] TabThreads;
+    delete ThreadsPosition;
     // End of modification
 }
 
@@ -208,6 +212,45 @@ AddrSpace::InitRegisters ()
     machine->WriteRegister (StackReg, numPages * PageSize - 16);
     DEBUG ('a', "Initializing stack register to %d\n",
 	   numPages * PageSize - 16);
+}
+
+int
+AddrSpace::GetSpMaxMain(){
+    return this->SpMaxMain;
+}
+
+ void 
+ AddrSpace::SetSpMaxMain(int SpMain){
+    this->SpMaxMain=SpMain-PAGES_PER_THREAD*PAGE_SIZE;
+ }
+
+
+//--------------------------------------------------------------------
+// AddrSpace::ThreadsCounter 
+//      Retourne le nombre de threads qui se partagent 
+//      l'address space du processus.
+//---------------------------------------------------------------------
+
+int 
+AddrSpace::ThreadsCounter(){
+    return (MAX_THREADS- ThreadsPosition->NumClear());
+}
+
+//---------------------------------------------------------------------
+// AddrSpace::ThreadSP) 
+//      Retourne l'adresse du SP du thread à placer dans la pile.
+//---------------------------------------------------------------------
+int 
+AddrSpace::numBloc(){
+    return this->ThreadsPosition->Find();
+}
+int
+AddrSpace::NextThreadSP(){
+    int indexPosition;
+    if ((indexPosition=ThreadsPosition->Find())==-1)
+        return -1; //il n'y plus de place dans l'adresse space.
+    return (this->GetSpMaxMain()-currentThread->block*PAGES_PER_THREAD*128);
+
 }
 
 //----------------------------------------------------------------------

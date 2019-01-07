@@ -17,7 +17,9 @@ int do_UserThreadCreate(int f, int arg) {
 	currentThread->space->nomThread++;
 	newthread->Fork(StartUserThread, (int)p);
 	currentThread->space->threads_sharing_addrspace->V();
-
+	if(currentThread->space->nomThread==1){ //Lors de la création du premier Thread, on place le SP max du main.
+		currentThread->space->SetSpMaxMain(machine->ReadRegister(29));
+	}
     (void) interrupt->SetLevel (oldLevel);
 
 	return newthread->gettid();
@@ -31,8 +33,7 @@ static void StartUserThread(int f) {
 	}
 	machine->WriteRegister(PCReg, p->fn);
 	machine->WriteRegister(NextPCReg, p->fn+4);
-	int prochainSP = ((currentThread->space->threads_sharing_addrspace->getValue()+1)* (3*PageSize))+(3*PageSize) ;
-	machine->WriteRegister(StackReg,  prochainSP);
+	machine->WriteRegister(StackReg, currentThread->space->prochainSP);
 	machine->Run();
 }
 

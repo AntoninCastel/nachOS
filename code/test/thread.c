@@ -24,10 +24,8 @@ void fonction3() {
 int main() {
 	int a = UserThreadCreate(fonction, 0);	
 	int b = UserThreadCreate(fonction2, 0);	
-	UserThreadJoin(a);
 	int c = UserThreadCreate(fonction3, 0);	
-
-  
+  	UserThreadJoin(a);
 	UserThreadJoin(b);
   	UserThreadJoin(c);
 	return 0;

@@ -42,7 +42,6 @@ void SynchConsole::SynchPutChar(const char ch)
 	console->PutChar (ch);
 	writeDone->P ();
     EcritureEnCours->Release ();
-
 }
 
 char SynchConsole::SynchGetChar()
@@ -54,27 +53,21 @@ char SynchConsole::SynchGetChar()
 
 void SynchConsole::SynchPutString(const char s[])
 {
-    EcritureStringEnCours->Acquire ();
     int taille = strlen(s);
     for (int i=0; i<taille && s[i]; i++){
         SynchPutChar(s[i]);
     }
-    EcritureStringEnCours->Release ();
-
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
 {
 	int i;
-	LectureEnCours->Acquire ();
     for(i=0; i<n; i++){
     	s[i]=SynchGetChar();
     	if(!s[i] || s[i] == '\n')
     		break;
     }
     s[i]='\0';
-	LectureEnCours->Release ();
-
 }
 
 

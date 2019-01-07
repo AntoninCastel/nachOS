@@ -75,12 +75,12 @@ class AddrSpace {
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
 
-  private:      
-
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
     Semaphore **TabThreads;
+
+  private:      
 
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 

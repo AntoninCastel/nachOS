@@ -2,7 +2,10 @@ code/build/*
 code/bin/coff2noff
 code/bin/*.o
 code/bin/.*.d
-doc/*
+doc/html/*
+doc/latex/*
+doc/report/*
+!doc/report/*.tex
 *.swp
 code/tags
 code/userprog/in

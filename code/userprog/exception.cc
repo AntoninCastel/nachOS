@@ -129,7 +129,7 @@ void Syscall_GetChar(){
 void Syscall_GetString(){
   int adr = machine->ReadRegister(4); 
   char buffer[MAX_STRING_SIZE];
-  int taille = machine->ReadRegister(5);
+  int taille = machine->ReadRegister(5) > MAX_STRING_SIZE ? MAX_STRING_SIZE : machine->ReadRegister(5);
   synchconsole->SynchGetString(buffer,taille);
   copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
 }

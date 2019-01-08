@@ -24,7 +24,9 @@
 
 /// increase this as necessary !
 #define UserStackSize		1024
+
 #define NB_MAX_THREADS 50
+
 
 class Semaphore;
 
@@ -35,7 +37,7 @@ class AddrSpace {
   public:  
   	//Sera traduit en string pour donner un nom aux futurs threads 
     int nomThread = 0 ;
-
+    int prochainSP;
     //Semaphore qui represente le nombre de threads total qui ont été lancés 
     //depuis le début
     Semaphore *threads_sharing_addrspace;    
@@ -69,6 +71,15 @@ class AddrSpace {
      * before jumping to user code
      */
     void InitRegisters ();
+    int ThreadsCounter();
+
+    int GetSpMaxMain();
+
+    void SetSpMaxMain(int valSP);
+
+    int numBloc();
+
+    int NextThreadSP();
 
     /// Save address space-specific info on a context switch 
     void SaveState ();
@@ -83,6 +94,7 @@ class AddrSpace {
 
     void setSpMaxMain(int SpMain);
 
+
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
@@ -92,7 +104,10 @@ class AddrSpace {
 	int SpMaxMain;
 	//Bitmap permettant de placer le SP des nouveaux threads dans la pile
 	BitMap* ThreadsPosition;
+
     /// Assume linear page table translation for now !
+    
+    int SpMaxMain;
     TranslationEntry * pageTable; 
 
     /// Number of pages in the virtual address space

@@ -1,0 +1,288 @@
+\documentclass{report}
+
+\usepackage[a4paper, total={6in, 9.5in}]{geometry}
+\usepackage{listings}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\newcommand{\myparagraph}[1]{\paragraph*{#1}\mbox{}\\}
+
+\title{Rapport NachOS}
+\author{Antonin Castel \and
+		Cyprien Eymond Laritaz \and
+		Marianne Garnier \and
+		Robin Blanc}
+
+\begin{document}
+\maketitle
+
+\section*{Fonctionnalités}
+Notre implémentation de NachOS permet de lancer des programmes écrits en C permettant des entrées et sorties ainsi que de la programmation avec plusieurs threads. Les fonctions d'entrées et sorties sont thread-safes et peuvent être utilisées sans effort côté utilisateur.
+
+\section*{Spécifications}
+\subsection*{Terminaison}
+\myparagraph{Exit}
+
+\textsc{Synopsis}\\
+	\texttt{void Exit(int code)}\\
+	
+\textsc{Description}\\
+	Permet de terminer le programme utilisateur en renvoyant le code d'erreur \texttt{code}\\
+	
+\textsc{Notes}\\
+	Cette fonction consiste en un appel à \texttt{Halt} précédé d'une récupération du code d'erreur afin de faire retourner ce code par le programme. Si \texttt{code} = 0, alors le programme s'est terminé sans erreur.
+	
+	
+	
+	
+	
+\myparagraph{Halt}
+
+\textsc{Synopsis}\\
+	\texttt{void Halt()}\\
+	
+\textsc{Description}\\
+	Permet de mettre fin au programme sans retourner de valeur.\\
+
+\subsection*{Entrées/sorties}
+\myparagraph{PutChar}
+
+\textsc{Synopsis}\\
+	\texttt{void PutChar(char c)}\\
+	
+\textsc{Description}\\
+	Permet d'imprimer sur la sortie standard le caractère codé par le paramètre \texttt{c}.\\
+	
+\textsc{Notes}\\
+	Lorsque le caractère passé en paramètre est \texttt{EOF}, le caractère n'est pas imprimé. Dans tous les autres cas, il l'est.
+
+
+
+
+\myparagraph{PutString}
+
+\textsc{Synopsis}\\
+	\texttt{void PutString(char *string)}\\
+	
+\textsc{Description}\\
+	Permet d'imprimer la chaîne de caractères \texttt{string} passée en paramètre.\\
+	
+\textsc{Notes}\\
+	La longueur de la chaine ne peut être supérieure à 200 caractères.
+
+
+\myparagraph{GetChar}
+
+\textsc{Synopsis}\\
+	\texttt{char GetChar()}\\
+	
+\textsc{Description}\\
+	Permet de récupérer un caractère sur l'entrée standard.\\
+	
+\textsc{Valeur de retour}\\
+	Un \texttt{char} correspondant au caractère lu sur l'entrée standard.\\
+	
+\textsc{Notes}\\
+	Cette fonction est blocante tant qu'il n'y a pas de caractère à lire sur l'entrée standard.
+	
+
+
+
+\myparagraph{GetString}
+
+\textsc{Synopsis}\\
+	\texttt{void GetString(char *string, int len)}\\
+	
+\textsc{Description}\\
+	Permet de récupérer jusqu'à \texttt{len} caractères de l'entrée standard afin de les stocker dans la chaine de caractères \texttt{string}.\\
+	
+\textsc{Notes}\\
+	Lorsque \texttt{EOF} est lu sur l'entrée standard, la lecture s'arrête même si moins de \texttt{n} caractères ont été lus.\\
+	Le nombre maximum de caractères pouvant être lus est 200.\\
+	
+	
+	
+	
+\myparagraph{PutInt}
+
+\textsc{Synopsis}\\
+	\texttt{void PutInt(int n)}\\
+	
+\textsc{Description}\\
+	Permet d'imprimer sur la sortie standard la valeur de l'entier \texttt{n} passé en paramètre.\\
+	
+\textsc{Notes}\\
+	L'appel système est appelable mais non implémenté.
+	
+	
+
+
+
+\myparagraph{GetInt}
+
+\textsc{Synopsis}\\
+	\texttt{void GetInt(int *n)}\\
+	
+\textsc{Description}\\
+	Permet de récupérer un entier sur l'entrée standard et le stocker dans la variable pointée par \texttt{n} passée en paramètre.\\
+	
+\textsc{Notes}\\
+	L'appel système est appelable mais non implémenté.
+	
+	
+
+\subsection*{Multithreading}
+\myparagraph{UserThreadCreate}
+
+\textsc{Synopsis}\\
+	\texttt{int UserThreadCreate(void f(void *arg), void *arg)}\\
+	
+\textsc{Description}\\
+	Permet de créer un nouveau thread utilisateur qui va exécuter la fonction \texttt{f} passée en paramètre, à laquelle l'argument \texttt{arg} passé en paramètre sera passé en paramètre.\\
+	
+\textsc{Valeur de retour}\\
+	Un entier qui correspond à l'identifiant du thread créé ou -1 en cas d'erreur.\\
+	
+\textsc{Notes}\\
+	Les erreurs ne sont pas encore détectées. On considère pour l'instant que l'appelant passe en parmètres des pointeurs valides et cohérents.\\
+	Un appel de la fonction \texttt{UserThreadExit} est nécessaire à la fin de la fonction \texttt{f} afin de terminer correctement le thread. Sans cet appel, le comportement correct du programme n'est pas garanti.\\
+	Il est possible de lancer 50 threads par processus.
+	
+	
+	
+	
+	
+\myparagraph{UserThreadExit}
+
+\textsc{Synopsis}\\
+	\texttt{void UserThreadExit()}\\
+	
+\textsc{Description}\\
+	Permet de quitter un thread correctement.\\
+	
+\textsc{Notes}\\
+	Cette fonction doit toujours être appelée dans un chemin d'éxecution d'une fonction appelée au moyen de l'appel système \texttt{UserThreadCreate}.
+	
+	
+	
+	
+	
+\myparagraph{UserThreadJoin}
+
+\textsc{Synopsis}\\
+	\texttt{void UserThreadJoin(int tid)}\\
+	
+\textsc{Description}\\
+	Permet au thread courant d'attendre la fin de l'exécution du thread dont l'identifiant de thread est \texttt{tid} passé en paramètre.\\
+	
+\textsc{Notes}\\
+	Si le thread avec pour numéro d'identification \texttt{tid} n'est pas terminé, la fonction est bloquante, jusqu'à ce que le thread termine. Si \texttt{tid} est supérieur ou égal à 50, une assertion est levée.
+
+\section*{Tests utilisateurs}
+
+\section*{Implémentation}
+Les appels systèmes sont définis dans \textit{userprog/syscall.h}. Le traitement des appels systèmes doit être fait dans le switch de la procédure \texttt{ExceptionHandler} présent dans le fichier \textit{userprog/exception.cc}. Nous avons fait le choix d'appeler une procédure pour chacun de ces syscalls afin d'alléger le switch.
+
+\subsection*{Entrées/sorties}
+Pour les entrées sorties, nous utilisons un objet de type \texttt{SynchConsole}. Cet objet utilise deux sémaphores: \texttt{LectureEnCours} et \texttt{EcritureEnCours} tous les deux initialisés avec un unique jeton. De cette manière, lorsqu'un appel à une fonction \texttt{PutString} ou \texttt{GetString}, la lecture ou l'écriture se fait du début à la fin par le même thread sans que ça ne gêne la cohérence des données.\\
+
+La méthode \texttt{SynchPutString} de \texttt{SynchConsole} est la méthode qui est appelée lors de l'appel système \texttt{PutString}. Il s'agit d'un enchainement de \texttt{SynchPutChar} en section critique protégés par le sémaphore \texttt{EcritureEnCours}.
+\begin{verbatim}
+void SynchConsole::SynchPutString(const char s[]) {
+    EcritureEnCours->P();
+    int taille = strlen(s);
+    for (int i = 0; i < taille && s[i]; i++)
+        SynchPutChar(s[i]);
+    EcritureEnCours->V();
+}
+\end{verbatim}
+
+La méthode \texttt{SynchGetString} est appelée lors de l'appel système \texttt{GetString}. Il s'agit d'un enchainement de \texttt{SynchGetChar} en section critique protégés par le sémaphore \texttt{LectureEnCours}.
+\begin{verbatim}
+void SynchConsole::SynchGetString(char *s, int n) {
+    int i;
+    LectureEnCours->P();
+    for(i=0; i<n; i++){
+        s[i]=SynchGetChar();
+        if(!s[i])
+            break;
+    }
+    s[i]='\0';
+    LectureEnCours->V();
+}
+\end{verbatim}
+
+Les méthodes \texttt{SynchGetChar} et \texttt{SynchPutChar} sont des wrappers des méthodes \texttt{GetChar} et \texttt{PutChar} de la classe \texttt{Console} qui compose la classe \texttt{SynchConsole}.\\
+
+Deux procédures sont importantes, il s'agit de \texttt{copyStringFromMachine} ainsi que \texttt{copyStringToMachine}. Ces procédures servent respectivement à récupérer depuis la machine MIPS une chaine de caractère jusqu'au noyau, et à stocker dans la machine MIPS une chaine de caractères depuis le noyau. Elles prennent en paramètre une adresse MIPS, un buffer et une taille.\\
+
+Les appels systèmes \texttt{GetChar} et \texttt{PutChar}, sont simplement un appel aux méthodes \texttt{SynchGetChar} et \texttt{SynchPutChar} de \texttt{SynchConsole}, accompagné de la récupération du paramètre via la méthode \texttt{WriteRegister} et \texttt{ReadRegister} sur le registre de premier paramètre (4) de la machine. Concernant les appels \texttt{PutString} et \texttt{GetString}, un buffer est créé afin de manipuler les caractères de la machine MIPS au noyau et inversement. Nous utilisons les procédures idoines décrites précédemment. Par exemple, l'appel \texttt{GetString} est programmé comme suit:
+\begin{verbatim}
+void Syscall_GetString(){
+    int adr = machine->ReadRegister(4); 
+    char buffer[MAX_STRING_SIZE];
+    int taille = machine->ReadRegister(5);
+    synchconsole->SynchGetString(buffer,taille);
+    copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
+}
+\end{verbatim}
+
+\subsection*{Multithreading}
+Le syscall \texttt{UserThreadCreate} consiste en la récupération des deux paramètres sur les registres 4 et 5 de la machine MIPS et à l'appel d'une sous fonction \texttt{do\_UserThreadCreate} avec des arguments qui renvoie le numéro d'identifiant du thread nouvellement créé que l'on écrit dans le registre de retour (2) de la machine MIPS.\\
+
+La fonction \texttt{do\_UserThreadCreate} doit créer un nouveau thread, et pour ça appeler la méthode \texttt{Fork} du thread courant. Nous devons passer à la méthode \texttt{Fork} la fonction MIPS demandée par l'utilisateur, mais il nous faut en premier lieu initialiser correctement le nouveau thread. Pour cela, nous donnons à \texttt{Fork} une fonction (\texttt{StartUserThread}) qui initialise une nouvelle pile pour le thread ainsi que positionne le compteur ordinal vers la fonction MIPS prête à être exécutée.\\
+Nous définisons pour ça une structure qui nous permet de passer à cette fonction le nombre de paramètres dont nous avons besoin.
+\begin{verbatim}
+typedef struct {
+    int fn;
+    int param;
+    int SP;
+} param_t;
+\end{verbatim}
+Les champs de la structure correspondent à:
+\begin{itemize}
+\item \textbf{fn:} Adresse de la fonction MIPS à appeler
+\item \textbf{param:} Adresse MIPS du paramètre à transmettre à la fonction
+\item \textbf{SP:} Adresse du pointeur de pile de l'espace d'adressage du thread courant
+\end{itemize}
+On ajoute par la même occasion un jeton dans le sémaphore \texttt{threads\_sharing\_addspace} qui a pour but de compter le nombre de threads utilisateurs et d'attribuer les bons identifiants de thread.
+La fonction \texttt{do\_UserThreadCreate} est donc implémentée comme décrit précédemment:
+\begin{verbatim}
+int do_UserThreadCreate(int f, int arg) {
+    param_t *p = new param_t;
+    *p = {.fn = f, .param = arg, .SP = machine->ReadRegister(StackReg)};
+    Thread *newthread = new Thread("new Thread");
+    newthread->Fork(StartUserThread, (int)p);
+    currentThread->space->threads_sharing_addrspace->V();
+    return newthread->gettid();
+}
+\end{verbatim}
+
+La procédure \texttt{StartUserThread} prend pour paramètre un entier (impliqué par l'appel par \texttt{Fork}). Nous récupérons de cet \texttt{int} notre structure \texttt{param\_t} qui contient les informations donc nous avons besoin pour initialiser le thread utilisateur.\\
+Nous mettons à 0 tous les registres de la machine, puis ajustons le compteur ordinal à l'adresse de début de la fonction. Le pointeur de prochaine instruction est placé à l'instruction suivante (\texttt{fn+4}).\\
+Nous calculons l'adresse du début de la pile de ce thread dans l'espace d'adressage du thread parent afin de le mettre à 3 pages du sommet de pile précédent. Enfin, nous lançons l'interpréteur MIPS afin de commencer à décoder et exécuter les instructions de la fonction du thread. Le code de la procédure \texttt{StartUserThread} est le suivant:
+\begin{verbatim}
+static void StartUserThread(int f) {
+    param_t* p = (param_t*)f;
+    for(int i = 0; i < NumTotalRegs; i++)
+        machine->WriteRegister(i, 0);
+		
+    machine->WriteRegister(PCReg, p->fn);
+    machine->WriteRegister(NextPCReg, p->fn+4);
+    int prochainSP = ((currentThread->space->threads_sharing_addrspace->getValue()+1) 
+                * (3*PageSize))+(3*PageSize) ;
+    machine->WriteRegister(StackReg, prochainSP);
+    machine->Run();
+}
+\end{verbatim}
+
+L'appel système \texttt{UserThreadExit} appelle la fonction \texttt{do\_UserThreadExit} qui est un wrapper de la fonction \texttt{Finish} sur l'objet \texttt{currentThread} de la classe \texttt{Thread}.
+\section*{Organisation du travail}
+Le travail s'organise le plus souvent avec deux machines. Ces deux machines permettent à tout le groupe d'avancer dans la programmation d'une fonctionnalité et de faire de la recherche d'autre part (prototype exact, fichiers à inclure etc...). La machine où se fait le développement et le débuggage est souvent branchée à un second écran plus grand afin que tout le groupe puisse voir clairement le code ou les étapes de débuggage.\\
+
+Dépendamment de l'étape dans laquelle nous nous trouvons, nous augmentons le nombre de machines afin d'avoir une capacité de lecture/compréhension du code existant plus grande avec une personne du groupe par machine.\\
+
+Le groupe alterne les phases de discussions/débats dans le but de dégager les différents problèmes ou implications de chaque fonctionnalités à développer. Cette étape permet d'orienter la réflexion du groupe vers la même direction ainsi que d'harmoniser les connaissances de chacun et de lever des doutes et clarifier des concepts du cours ou de NachOS que tout le monde n'a pas forcément assimilé de la même façon.\\
+
+Le travail est collectif et n'est pas systématiquement réparti fonctionnalité par fonctionnalité à certains membres du groupe. Il arrive qu'un membre du groupe s'approprie une tâche, mais les autres membres lui apportent de l'aide, que ça soit directement en debuggant le code, ou par le biais d'idées et de discussion à propos de la fonctionnalité. C'est le cas des fonctionnalités plus petites, comme certains appels systèmes d'entrées/sorties.
+
+\end{document}

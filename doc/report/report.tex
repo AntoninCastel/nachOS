@@ -3,6 +3,7 @@
 \usepackage[a4paper, total={6in, 9.5in}]{geometry}
 \usepackage{listings}
 \usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
 \newcommand{\myparagraph}[1]{\paragraph*{#1}\mbox{}\\}
 
 \title{Rapport NachOS}
@@ -66,7 +67,6 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Permet d'imprimer la chaîne de caractères \texttt{string} passée en paramètre.\\
 	
 \textsc{Notes}\\
-	Cette fonction est thread-safe. Si un thread qui commence à imprimer des caractères d'une chaîne est préempté, aucun autre thread ne pourra écrire de caractère via la méthode \texttt{PutString}. À l'inverse, la fonction \texttt{PutChar} n'a pas ce genre de protections et peut imprimer des caractères dau milieu de caractères d'une chaîne d'un thread préempté. Ce comportement ne peut être vérifié car l'appel de \texttt{PutChar} en parallèle d'un \texttt{PutString} lève une assertion.\\
 	La longueur de la chaine ne peut être supérieure à 200 caractères.
 
 
@@ -140,11 +140,12 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Permet de créer un nouveau thread utilisateur qui va exécuter la fonction \texttt{f} passée en paramètre, à laquelle l'argument \texttt{arg} passé en paramètre sera passé en paramètre.\\
 	
 \textsc{Valeur de retour}\\
-	Un entier qui correspond à l'identifiant du thread créé ou -1 en cas d'erreur.
+	Un entier qui correspond à l'identifiant du thread créé ou -1 en cas d'erreur.\\
 	
 \textsc{Notes}\\
 	Les erreurs ne sont pas encore détectées. On considère pour l'instant que l'appelant passe en parmètres des pointeurs valides et cohérents.\\
-	Un appel de la fonction \texttt{UserThreadExit} est nécessaire à la fin de la fonction \texttt{f} afin de terminer correctement le thread. Sans cet appel, le comportement correct du programme n'est pas garanti.
+	Un appel de la fonction \texttt{UserThreadExit} est nécessaire à la fin de la fonction \texttt{f} afin de terminer correctement le thread. Sans cet appel, le comportement correct du programme n'est pas garanti.\\
+	Il est possible de lancer 50 threads par processus.
 	
 	
 	
@@ -174,7 +175,7 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Permet au thread courant d'attendre la fin de l'exécution du thread dont l'identifiant de thread est \texttt{tid} passé en paramètre.\\
 	
 \textsc{Notes}\\
-	Cet appel système est défini mais pas encore implémenté.
+	Si le thread avec pour numéro d'identification \texttt{tid} n'est pas terminé, la fonction est bloquante, jusqu'à ce que le thread termine. Si \texttt{tid} est supérieur ou égal à 50, une assertion est levée.
 
 \section*{Tests utilisateurs}
 

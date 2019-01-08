@@ -49,7 +49,8 @@ void do_UserThreadExit(){
 
 void do_UserThreadJoin(int IdThreadAttendu) {
 	//fprintf(stderr, "Le main attend le thread %d\n",IdThreadAttendu );
-	currentThread->space->TabThreads[IdThreadAttendu]->P();	
-	currentThread->space->TabThreads[IdThreadAttendu]->V();	
+    ASSERT(IdThreadAttendu < MAX_THREADS);
+    currentThread->space->TabThreads[IdThreadAttendu]->P();	
+    currentThread->space->TabThreads[IdThreadAttendu]->V();	
 	//fprintf(stderr, "Le thread %d s'est surement terminé\n",IdThreadAttendu );
 }

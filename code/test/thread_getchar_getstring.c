@@ -1,16 +1,14 @@
 #include "syscall.h" 
 
-char a;
+char a[100];
 
 void fonctionA() {
-	GetString(&a, 1);
-    PutChar(a);
+	GetString(a, 100);
   	UserThreadExit();
 }
 
 void fonctionB() {
-    a = GetChar();
-    PutChar(a);
+    PutString(a);
   	UserThreadExit();
 }
 

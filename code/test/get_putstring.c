@@ -1,8 +1,8 @@
 #include "syscall.h"
 
 int main(){
-	char buffer[6];
-	GetString(buffer, 6);
+	char buffer[500];
+	GetString(buffer, 500);
 	PutString(buffer);
 	Halt();
 }

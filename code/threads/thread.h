@@ -91,7 +91,9 @@ class Thread
 
     // basic thread operations
     int id;
+    int position; //numéro de bloc du thread dans la pile (indice de la bitmap) 
     int gettid();
+
     void Fork (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
     void Yield ();		// Relinquish the CPU if any 
     // other thread is runnable
@@ -113,6 +115,8 @@ class Thread
     {
 	printf ("%s, ", name);
     }
+    
+
 
   private:
     // some of the private data for this class is listed above

@@ -20,10 +20,11 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
+#include "bitmap.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
-#define MAX_THREADS 50
+#define NB_MAX_THREADS 50
 
 class Semaphore;
 
@@ -75,13 +76,22 @@ class AddrSpace {
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
 
-  private:      
+    /// Getter pour la BitMap ThreadsPosition
+    BitMap* getBitMap();
+    
+    int getSpMaxMain();
+
+    void setSpMaxMain(int SpMain);
 
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
     Semaphore **TabThreads;
-
+	
+	private:
+	int SpMaxMain;
+	//Bitmap permettant de placer le SP des nouveaux threads dans la pile
+	BitMap* ThreadsPosition;
     /// Assume linear page table translation for now !
     TranslationEntry * pageTable; 
 

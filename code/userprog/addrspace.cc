@@ -121,7 +121,7 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 			       [noffH.initData.virtualAddr]),
 			      noffH.initData.size, noffH.initData.inFileAddr);
       }
-
+      ThreadsPosition = new BitMap(NB_MAX_THREADS);
 }
 
 //----------------------------------------------------------------------
@@ -153,8 +153,8 @@ void
 AddrSpace::InitTabThread(){
     int i;
     char *nom = new char[10]; 
-    TabThreads = new Semaphore*[MAX_THREADS];
-    for (i = 0; i<MAX_THREADS ; i++){
+    TabThreads = new Semaphore*[NB_MAX_THREADS];
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         sprintf(nom,"%d",i);
         TabThreads[i] = new Semaphore(nom, 1);
     }
@@ -162,7 +162,7 @@ AddrSpace::InitTabThread(){
 
 void AddrSpace::PrintTabThread(){
     int i;
-    for (i = 0; i<MAX_THREADS ; i++){
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         fprintf(stderr, "%d ",TabThreads[i]->getValue());
 
     }
@@ -179,7 +179,7 @@ void AddrSpace::ThreadNoLongerExist(int id){
 
 int AddrSpace::CheckNbThreadEnCours(){
     int i,compteur=0;
-    for (i = 0; i<MAX_THREADS ; i++){
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         if(TabThreads[i]->getValue() == 0)
             compteur++;
     }
@@ -236,4 +236,19 @@ AddrSpace::RestoreState ()
 {
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
+}
+
+BitMap*
+AddrSpace::getBitMap(){
+    return ThreadsPosition;
+}
+
+int 
+AddrSpace::getSpMaxMain(){
+    return this->SpMaxMain;
+}
+
+void 
+AddrSpace::setSpMaxMain(int SpMain){
+    this->SpMaxMain=SpMain-PAGES_PER_THREADS*PageSize;
 }

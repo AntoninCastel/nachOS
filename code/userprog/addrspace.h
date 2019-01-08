@@ -20,10 +20,13 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
+#include "bitmap.h"
 
 /// increase this as necessary !
 #define UserStackSize		1024
 #define MAX_THREADS 50
+#define PAGES_PER_THREAD 3
+#define PAGE_SIZE 128
 
 class Semaphore;
 
@@ -34,7 +37,7 @@ class AddrSpace {
   public:  
   	//Sera traduit en string pour donner un nom aux futurs threads 
     int nomThread = 0 ;
-
+    int prochainSP;
     //Semaphore qui represente le nombre de threads total qui ont été lancés 
     //depuis le début
     Semaphore *threads_sharing_addrspace;    
@@ -68,6 +71,15 @@ class AddrSpace {
      * before jumping to user code
      */
     void InitRegisters ();
+    int ThreadsCounter();
+
+    int GetSpMaxMain();
+
+    void SetSpMaxMain(int valSP);
+
+    int numBloc();
+
+    int NextThreadSP();
 
     /// Save address space-specific info on a context switch 
     void SaveState ();
@@ -75,14 +87,19 @@ class AddrSpace {
     /// Restore address space-specific info on a context switch 
     void RestoreState (); 
 
+    Semaphore **TabThreads;
+    BitMap* ThreadsPosition;
+
+
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
-    Semaphore **TabThreads;
 
   private:      
 
     /// Assume linear page table translation for now !
+    
+    int SpMaxMain;
     TranslationEntry * pageTable; 
 
     /// Number of pages in the virtual address space

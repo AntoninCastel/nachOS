@@ -189,7 +189,7 @@ Initialize (int argc, char **argv)
 void
 Cleanup ()
 {
-    printf ("\nCleaning up...\n");
+    fprintf (stderr, "\nCleaning up...\n");
 #ifdef NETWORK
     delete postOffice;
 #endif

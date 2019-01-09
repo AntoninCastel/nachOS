@@ -178,6 +178,23 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Si le thread avec pour numéro d'identification \texttt{tid} n'est pas terminé, la fonction est bloquante, jusqu'à ce que le thread termine. Si \texttt{tid} est supérieur ou égal à 50, une assertion est levée.
 
 \section*{Tests utilisateurs}
+\subsection*{Entrées/sorties}
+Nous avons réalisé des programmes de tests qui
+\begin{itemize}
+ \item Lit un caractère sur l'entrée standard et l'imprime sur la sortie standard
+ \item Lit un entier sur l'entrée standard et l'imprime sur la sortie standard
+ \item Lit une chaine de caractères sur l'entrée standard et l'imprime sur la sortie
+ standard
+ \item Imprime les entiers -2147483648 et 2147483647 sur la sortie standard.
+\end{itemize}
+Le script \texttt{nachos-step1} teste toutes les fonctionnalités implémentées dans l'étape 1, soit les appels systèmes \texttt{PutChar}, \texttt{PutInt}, \texttt{GetChar}, \texttt{GetInt}, \texttt{PutString} et \texttt{GetString}.
+Les tests effectués sont des cas de
+\begin{itemize}
+ \item \textbf{Bonne utilisation des appels systèmes}: permet de constater que les appels systèmes, lorsqu'ils sont appelés correctement, fonctionnent. Des caractères spéciaux, des chiffres correspondant aux bornes limites, négatifs, positifs sont testés pour vérifier que l'implémentation colle à la spécification.
+ \item \textbf{Dépassement du nombre de caractères maximum à lire}: permet de connaître le type de problème qui peut survenir lorsque la fonction n'est pas utilisée correctement par l'utilisateur. Cela permet de rendre plus robuste les appels systèmes.
+ \item \textbf{Dépassement de capacité des entiers}: Pareil que pour le type de test précédent, nous a permet de détecter le comportement lorsqu'un entier trop grand est soumis à la lecture ou à l'écriture.
+\end{itemize}
+Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} Peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
 
 \section*{Implémentation}
 Les appels systèmes sont définis dans \textit{userprog/syscall.h}. Le traitement des appels systèmes doit être fait dans le switch de la procédure \texttt{ExceptionHandler} présent dans le fichier \textit{userprog/exception.cc}. Nous avons fait le choix d'appeler une procédure pour chacun de ces syscalls afin d'alléger le switch.

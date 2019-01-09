@@ -16,7 +16,7 @@
 #include "stats.h"
 #include "timer.h"
 
-
+#define PAGES_PER_THREADS 3
 #define MAX_STRING_SIZE 200
 // Initialization and cleanup routines
 extern void Initialize (int argc, char **argv);	// Initialization,

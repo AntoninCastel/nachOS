@@ -90,6 +90,10 @@ c2n_V = $(c2n_V_$(V))
 c2n_V_ = $(c2n_V_$(DEFAULT_VERBOSITY))
 c2n_V_0 = @echo "  [NACHOS RELINK]      $@      ($<)"; >/dev/null 
 
+######### PERSO ###########
+pagination: CXXFLAGS+=-DPAGINATION
+pagination: all
+
 ###########################################################################
 define nachos-kernel-rules # 1:flavor 2:prefix 3:target 4:CPPFLAGS
 #$$(warning defining NachOS kernel $3 with flavor $1)

@@ -37,7 +37,6 @@ class AddrSpace {
   public:  
   	//Sera traduit en string pour donner un nom aux futurs threads 
     int nomThread = 0 ;
-    int prochainSP;
     //Semaphore qui represente le nombre de threads total qui ont été lancés 
     //depuis le début
     Semaphore *threads_sharing_addrspace;    
@@ -73,14 +72,6 @@ class AddrSpace {
     void InitRegisters ();
     int ThreadsCounter();
 
-    int GetSpMaxMain();
-
-    void SetSpMaxMain(int valSP);
-
-    int numBloc();
-
-    int NextThreadSP();
-
     /// Save address space-specific info on a context switch 
     void SaveState ();
 
@@ -107,7 +98,6 @@ class AddrSpace {
 
     /// Assume linear page table translation for now !
     
-    int SpMaxMain;
     TranslationEntry * pageTable; 
 
     /// Number of pages in the virtual address space

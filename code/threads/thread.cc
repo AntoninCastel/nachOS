@@ -68,7 +68,6 @@ Thread::~Thread ()
     ASSERT (this != currentThread);    
     #ifdef USER_PROGRAM
     this->space->ThreadNoLongerExist(this->gettid());
-    this->space->ThreadsPosition->Clear(this->block);
     //fprintf(stderr, "thread %d terminé \n",this->gettid() );
     #endif
     if (stack != NULL)
@@ -113,8 +112,6 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     // LB: Observe that currentThread->space may be NULL at that time.
     this->space = currentThread->space;
     this->id = currentThread->space->threads_sharing_addrspace->getValue();    
-    this->block=this->space->numBloc();
-    this->space->prochainSP=this->space->NextThreadSP();
     this->space->ThreadExist(this->id);
     #endif // USER_PROGRAM
 

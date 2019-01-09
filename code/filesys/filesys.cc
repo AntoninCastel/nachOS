@@ -142,6 +142,16 @@ FileSystem::FileSystem(bool format)
     }
 }
 
+void
+FileSystem::Mkdir(const char *name)
+{
+// Create a Nachos file of the same length
+    if (!Create(name, 100)) {   // Create Nachos file
+        printf("Copy: couldn't create output file %s\n", name);
+        return;
+    }
+}
+
 //----------------------------------------------------------------------
 // FileSystem::Create
 // 	Create a file in the Nachos file system (similar to UNIX create).

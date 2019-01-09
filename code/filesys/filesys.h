@@ -76,7 +76,9 @@ class FileSystem {
 
     bool Create(const char *name, int initialSize);  	
 					// Create a file (UNIX creat)
-
+    /////////////////
+    void Mkdir(const char *name);
+    /////////////////
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 
     bool Remove(const char *name); 	// Delete a file (UNIX unlink)

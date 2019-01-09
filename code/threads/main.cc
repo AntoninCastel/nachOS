@@ -141,7 +141,18 @@ main (int argc, char **argv)
 		ASSERT (argc > 1);
 		Print (*(argv + 1));
 		argCount = 2;
+	    }	
+		//////////////////////////  
+	    else if (!strcmp (*argv, "-mkdir"))
+	    {			// create nachos directory
+		ASSERT (argc > 1);
+		fileSystem->Mkdir (*(argv + 1));
+		argCount = 2;
 	    }
+	    /////////////////////////
+
+
+
 	  else if (!strcmp (*argv, "-r"))
 	    {			// remove Nachos file
 		ASSERT (argc > 1);

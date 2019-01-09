@@ -20,6 +20,7 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "list.h"
+#include "frameprovider.h"
 #include "bitmap.h"
 
 /// increase this as necessary !
@@ -92,6 +93,8 @@ class AddrSpace {
     Semaphore **TabThreads;
 	
 	private:
+    FrameProvider *frame_provider;
+
 	int SpMaxMain;
 	//Bitmap permettant de placer le SP des nouveaux threads dans la pile
 	BitMap* ThreadsPosition;

@@ -23,7 +23,7 @@
 #include "bitmap.h"
 
 /// increase this as necessary !
-#define UserStackSize		1024
+#define UserStackSize		4096
 #define MAX_THREADS 50
 #define PAGES_PER_THREAD 3
 #define PAGE_SIZE 128

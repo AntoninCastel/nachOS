@@ -23,6 +23,25 @@
 
 #include <strings.h>		/* for bzero */
 
+#ifdef PAGINATION
+static void ReadAtVirtual(OpenFile *executable, int virtualaddr,
+                            int numBytes, int position, 
+                            TranslationEntry *pageTable,unsigned numPages) {
+    int len = numBytes;
+    char *buf = new char[len];
+    
+    machine->pageTable = pageTable;
+    machine->pageTableSize = numPages;
+
+    executable->ReadAt(buf, len, position);
+    for(int i = 0; i < len; ++i) {
+        machine->WriteMem(virtualaddr+i, 1, buf[i]);
+    }
+    delete [] buf;
+}
+#endif
+
+
 //----------------------------------------------------------------------
 // SwapHeader
 //      Do little endian to big endian conversion on the bytes in the 
@@ -66,6 +85,10 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace (OpenFile * executable) {
     InitTabThread();
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
+
+
+
+
     NoffHeader noffH;
     unsigned int i, size;
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
@@ -103,6 +126,29 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 	  // pages to be read-only
       }
 
+	  DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+		 noffH.code.virtualAddr, noffH.code.size);
+#ifndef PAGINATION
+	    executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
+			      noffH.code.size, noffH.code.inFileAddr);
+#else
+         ReadAtVirtual(executable, noffH.code.virtualAddr, noffH.code.size, noffH.code.inFileAddr, pageTable, numPages);
+#endif
+
+    if (noffH.initData.size > 0)
+      {
+	  DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+		 noffH.initData.virtualAddr, noffH.initData.size);
+#ifndef PAGINATION
+	  executable->ReadAt (&
+			      (machine->mainMemory
+			       [noffH.initData.virtualAddr]),
+			      noffH.initData.size, noffH.initData.inFileAddr);
+#else
+         ReadAtVirtual(executable, noffH.initData.virtualAddr, noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
+#endif
+      }
+      ThreadsPosition = new BitMap(NB_MAX_THREADS);
 // zero out the entire address space, to zero the unitialized data segment 
 // and the stack segment
     bzero (machine->mainMemory, size);
@@ -112,17 +158,25 @@ AddrSpace::AddrSpace (OpenFile * executable) {
       {
 	  DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
 		 noffH.code.virtualAddr, noffH.code.size);
+#ifndef PAGINATION
 	  executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
 			      noffH.code.size, noffH.code.inFileAddr);
+#else
+         ReadAtVirtual(executable, noffH.code.virtualAddr, noffH.code.size, noffH.code.inFileAddr, pageTable, numPages);
+#endif
       }
     if (noffH.initData.size > 0)
       {
 	  DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
 		 noffH.initData.virtualAddr, noffH.initData.size);
+#ifndef PAGINATION
 	  executable->ReadAt (&
 			      (machine->mainMemory
 			       [noffH.initData.virtualAddr]),
 			      noffH.initData.size, noffH.initData.inFileAddr);
+#else
+         ReadAtVirtual(executable, noffH.initData.virtualAddr, noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
+#endif
       }
       ThreadsPosition = new BitMap(NB_MAX_THREADS);
 }

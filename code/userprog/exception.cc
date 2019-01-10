@@ -21,7 +21,8 @@
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
-
+#include "userthread.h"
+#include "userprocess.h"
 #include "exception.h"
 //----------------------------------------------------------------------
 // UpdatePC : Increments the Program Counter register in order to resume
@@ -62,45 +63,41 @@ UpdatePC ()
 //      are in machine.h.
 //----------------------------------------------------------------------
 
-void
-ExceptionHandler(ExceptionType which)
-{ 
+void ExceptionHandler(ExceptionType which) { 
   int type = machine->ReadRegister(2);
-  if (which == SyscallException) 
-  {
-    switch (type) 
-    {
-      case SC_Exit: 
+  if (which == SyscallException) {
+    switch (type) {
+    case SC_Exit: 
         Syscall_Exit();
         break;
-      case SC_Halt: 
+    case SC_Halt: 
         Syscall_Halt();
         break;
-      case SC_GetChar:
+    case SC_GetChar:
         Syscall_GetChar();
         break;
-      case SC_GetString:
+    case SC_GetString:
         Syscall_GetString();
         break;
-      case SC_PutChar:
+    case SC_PutChar:
         Syscall_PutChar();
         break;
-      case SC_PutString:
+    case SC_PutString:
         Syscall_PutString();
         break;
-      case SC_PutInt:
+    case SC_PutInt:
         Syscall_PutInt();
         break;
-      case SC_GetInt:
+    case SC_GetInt:
         Syscall_GetInt();
         break;
-      case SC_UserThreadCreate:
+    case SC_UserThreadCreate:
         Syscall_UserThreadCreate();
         break;
-      case SC_UserThreadExit:
+    case SC_UserThreadExit:
         Syscall_UserThreadExit();
         break;
-      case SC_UserThreadJoin:
+    case SC_UserThreadJoin:
         Syscall_UserThreadJoin();
         break;
       case SC_Sem_Init:
@@ -118,7 +115,10 @@ ExceptionHandler(ExceptionType which)
       case SC_Sem_Destroy:
         Syscall_Sem_Destroy();
         break;
-      default: 
+    case SC_ForkExec:
+        Syscall_ForkExec();
+        break;
+    default: 
         printf("Unexpected user mode exception %d %d\n", which, type);
         ASSERT(FALSE);
     }
@@ -214,4 +214,10 @@ void Syscall_Sem_GetValue(){
 void Syscall_Sem_Destroy(){
   int param=machine->ReadRegister(4);
   machine->WriteRegister(2,do_Sem_Destroy(param));
+}
+void Syscall_ForkExec() {
+    int adr = machine->ReadRegister(4);
+    char buffer[MAX_STRING_SIZE];
+    copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
+    do_UserForkExec(buffer);
 }

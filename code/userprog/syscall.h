@@ -47,6 +47,8 @@
 #define SC_Sem_V 22
 #define SC_Sem_GetValue 23
 #define SC_Sem_Destroy 24
+#define SC_ForkExec 25
+
 
 #ifdef IN_USER_MODE
 
@@ -195,7 +197,7 @@ void GetInt(int *n);
 
 int UserThreadCreate(void f(void *arg), void *arg);
 void UserThreadExit();
-void UserThreadJoin(int IdThreadAttendu);
+void UserThreadJoin(int tid);
 
 semaphore Sem_Init(int nbJetons);
 int Sem_P(semaphore s);
@@ -203,7 +205,7 @@ int Sem_V(semaphore s);
 int Sem_GetValue(semaphore s);
 int Sem_Destroy(semaphore s);
 
-
+void ForkExec(char* file);
 
 #endif // IN_USER_MODE
 

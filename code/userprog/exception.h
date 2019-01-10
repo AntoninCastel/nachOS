@@ -24,9 +24,10 @@ void Syscall_UserThreadCreate();
 void Syscall_UserThreadExit();
 void Syscall_UserThreadJoin();
 
-
 void Syscall_Sem_Init();
 void Syscall_Sem_P();
 void Syscall_Sem_V();
 void Syscall_Sem_GetValue();
 void Syscall_Sem_Destroy();
+
+void Syscall_ForkExec();

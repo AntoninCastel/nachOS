@@ -146,46 +146,78 @@ FileSystem::FileSystem(bool format)
 bool
 FileSystem::Mkdir(const char *name)
 {
+    //booleen retourne
     bool success;
+    //bitmap des "free chunks" pour l'allocation
     BitMap *freeMap;
+    //file header 
     FileHeader *hdr;
+    //secteur pour le nouveau fichier
     int sector;
+    //repertoire courant
     Directory *directory = new Directory(NumDirEntries);
+    //on rempli le repertoire courant
     directory->FetchFrom(directoryFile);
 
+    //on teste si le nom est deja present dans le repertoire
     if (directory->Find(name) != -1)
-        success = FALSE;          // file is already in directory
+        //si oui, on fail
+        success = FALSE;          
     else {  
+        //sinon, allocation d'une bitmap
         freeMap = new BitMap(NumSectors);
+        //remplissage de la bitmap 
         freeMap->FetchFrom(freeMapFile);
-        sector = freeMap->Find();   // find a sector to hold the file header
-        ////////
-        Directory *newDirectory = new Directory(NumDirEntries);
-        OpenFile *newDirSectoryFile = new OpenFile(sector);
-        AddParentDirectory(newDirectory, newDirectoryFile);
-        ///////
+        //on recupere un secteur pour le header du nouveau fichier
+        sector = freeMap->Find();   
+
         if (sector == -1) {
-            success = FALSE;        // no free block for file header 
-        }      
+            //si on ne peux pas trouver de block : fail
+            success = FALSE;        
+        }   
+        //on ajoute le nom au repertoire courant, sur le secteur trouve   
         else if (!directory->Add(name, sector)){
-            success = FALSE;    // no space in directory
+            //fail si pas de place dans le repertoire
+            success = FALSE;    
         }else {
+            //sinon, on cree un nouveau file header
             hdr = new FileHeader;
+            //on le configure en repertoire
             hdr->IsDirectory = TRUE;
-            if (!hdr->Allocate(freeMap, sizeof(newDirectoryFile)))
-                success = FALSE;    // no space on disk for data
+            //on alloue de la place pour le fichier que l'entree contiendra
+            //10 entrees max * (la taille d'une entree + le nombre de caracteres max du nom)
+            if (!hdr->Allocate(freeMap, 10*(10+sizeof(DirectoryEntry))))
+                //fail si pas de place
+                success = FALSE;    
             else {  
+                //sinon reussite
                 success = TRUE;
+                //on cree le nouveau repertoire qui correspondra a l'entree
+                Directory *newDirectory = new Directory(NumDirEntries);
+                //on cree son fichier, qui le representera sur disque
+                OpenFile *newDirectoryFile = new OpenFile(sector);
+                //on lui ajoute son repertoire parent
+                AddParentDirectory(newDirectory, newDirectoryFile);
+               
+                //on remet le header sur disque
                 hdr->WriteBack(sector);   
+                //on remet le repertoire courant avec la nouvelle entree sur dique
                 directory->WriteBack(directoryFile);
+                //on ecrit le contenu du nouveau repertoire sur disque                
                 newDirectory->WriteBack(newDirectoryFile);
+                //on remet la bitmap modifiee sur disque
                 freeMap->WriteBack(freeMapFile);
             }
+            //on supprime le header
             delete hdr;
         }
+        //on delete la bitmap
         delete freeMap;
     }
-
+    /////////////////////
+    ////////TEST/////////
+    /////////////////////
+    /*
     Directory *testDirectory = new Directory(NumDirEntries);
     Directory *testDirectory2 = new Directory(NumDirEntries);
     testDirectory->FetchFrom(directoryFile);
@@ -195,17 +227,21 @@ FileSystem::Mkdir(const char *name)
     testDirectory->List();
     testDirectory2->FetchFrom(testFile);
     testDirectory2->List();
-
+    */
+    /////////////////////
     return success;
 }
 
 void
 FileSystem::AddParentDirectory(Directory *directory, OpenFile *newFile)
 {
+    //nouveau nom pour le repertoire parent
     char *name = new char[2];
+    // ..
     strcpy(name,"..");
-    directory->Find(name);
+    //on ajoute au nouveau repertoire une entree pour retourner à "/"
     directory->Add(name, 1);
+    //modification sur disque du nouveau repertoire
     directory->WriteBack(newFile);
 }
 

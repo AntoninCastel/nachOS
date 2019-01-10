@@ -79,6 +79,7 @@
 
 FileSystem::FileSystem(bool format)
 { 
+
     DEBUG('f', "Initializing the file system.\n");
     if (format) {
         BitMap *freeMap = new BitMap(NumSectors);
@@ -129,10 +130,10 @@ FileSystem::FileSystem(bool format)
 	    freeMap->Print();
 	    directory->Print();
 
-        delete freeMap; 
-	delete directory; 
-	delete mapHdr; 
-	delete dirHdr;
+       delete freeMap; 
+	   delete directory; 
+	   delete mapHdr; 
+	   delete dirHdr;
 	}
     } else {
     // if we are not formatting the disk, just open the files representing
@@ -142,16 +143,87 @@ FileSystem::FileSystem(bool format)
     }
 }
 
-void
+bool
 FileSystem::Mkdir(const char *name)
 {
-// Create a Nachos file of the same length
-    if (!Create(name, 100)) {   // Create Nachos file
-        printf("Copy: couldn't create output file %s\n", name);
-        return;
+    bool success;
+    BitMap *freeMap;
+    FileHeader *hdr;
+    int sector;
+    Directory *directory = new Directory(NumDirEntries);
+    directory->FetchFrom(directoryFile);
+
+    if (directory->Find(name) != -1)
+        success = FALSE;          // file is already in directory
+    else {  
+        freeMap = new BitMap(NumSectors);
+        freeMap->FetchFrom(freeMapFile);
+        sector = freeMap->Find();   // find a sector to hold the file header
+        ////////
+        Directory *newDirectory = new Directory(NumDirEntries);
+        OpenFile *newDirSectoryFile = new OpenFile(sector);
+        AddParentDirectory(newDirectory, newDirectoryFile);
+        ///////
+        if (sector == -1) {
+            success = FALSE;        // no free block for file header 
+        }      
+        else if (!directory->Add(name, sector)){
+            success = FALSE;    // no space in directory
+        }else {
+            hdr = new FileHeader;
+            hdr->IsDirectory = TRUE;
+            if (!hdr->Allocate(freeMap, sizeof(newDirectoryFile)))
+                success = FALSE;    // no space on disk for data
+            else {  
+                success = TRUE;
+                hdr->WriteBack(sector);   
+                directory->WriteBack(directoryFile);
+                newDirectory->WriteBack(newDirectoryFile);
+                freeMap->WriteBack(freeMapFile);
+            }
+            delete hdr;
+        }
+        delete freeMap;
     }
+
+    Directory *testDirectory = new Directory(NumDirEntries);
+    Directory *testDirectory2 = new Directory(NumDirEntries);
+    testDirectory->FetchFrom(directoryFile);
+    sector = testDirectory->Find("coucou");
+    OpenFile *testFile = new OpenFile(sector);
+    testFile = Open("coucou");
+    testDirectory->List();
+    testDirectory2->FetchFrom(testFile);
+    testDirectory2->List();
+
+    return success;
 }
 
+void
+FileSystem::AddParentDirectory(Directory *directory, OpenFile *newFile)
+{
+    char *name = new char[2];
+    strcpy(name,"..");
+    directory->Find(name);
+    directory->Add(name, 1);
+    directory->WriteBack(newFile);
+}
+
+bool
+FileSystem::Cd(const char *name)
+{
+    Directory *newDirectory = new Directory(NumDirEntries);
+    OpenFile *openFile = Open(name);
+    if(openFile->isDirectory()){
+        newDirectory->FetchFrom(openFile);    
+        newDirectory->WriteBack(directoryFile);
+    }
+    else{
+        fprintf(stderr, "Erreur, le fichier cible n'est pas un repertoire\n");
+    }       
+    delete newDirectory;
+    return TRUE;
+}
 //----------------------------------------------------------------------
 // FileSystem::Create
 // 	Create a file in the Nachos file system (similar to UNIX create).

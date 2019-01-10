@@ -73,11 +73,12 @@ class FileSystem {
     					// If "format", there is nothing on
 					// the disk, so initialize the directory
     					// and the bitmap of free blocks.
-
     bool Create(const char *name, int initialSize);  	
 					// Create a file (UNIX creat)
     /////////////////
-    void Mkdir(const char *name);
+    bool Mkdir(const char *name);
+    bool Cd(const char *name);
+    void AddParentDirectory(Directory *directory, OpenFile *newFile);
     /////////////////
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 

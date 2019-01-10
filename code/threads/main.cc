@@ -149,6 +149,12 @@ main (int argc, char **argv)
 		fileSystem->Mkdir (*(argv + 1));
 		argCount = 2;
 	    }
+	    else if (!strcmp (*argv, "-cd"))
+	    {			// create nachos directory
+		ASSERT (argc > 1);
+		fileSystem->Cd (*(argv + 1));
+		argCount = 2;
+	    }	    
 	    /////////////////////////
 
 

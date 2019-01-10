@@ -28,3 +28,5 @@ void Syscall_UserThreadCreate();
 void Syscall_UserThreadExit();
 
 void Syscall_UserThreadJoin();
+
+void Syscall_ForkExec();

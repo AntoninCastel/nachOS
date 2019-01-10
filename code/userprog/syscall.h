@@ -42,6 +42,11 @@
 #define SC_UserThreadCreate 17
 #define SC_UserThreadExit 18
 #define SC_UserThreadJoin 19
+#define SC_Sem_Init 20
+#define SC_Sem_P 21
+#define SC_Sem_V 22
+#define SC_Sem_GetValue 23
+#define SC_Sem_Destroy 24
 
 #ifdef IN_USER_MODE
 
@@ -58,6 +63,8 @@
  * are then invoked in the Nachos kernel, after appropriate error checking, 
  * from the system call entry point in exception.cc.
  */
+
+typedef int semaphore;
 
 
 
@@ -181,12 +188,22 @@ char GetChar();
  *  
  *  
  */
+
 void GetString(char *s, int n);
 void PutInt(int n);
 void GetInt(int *n);
+
 int UserThreadCreate(void f(void *arg), void *arg);
 void UserThreadExit();
-void UserThreadJoin();
+void UserThreadJoin(int IdThreadAttendu);
+
+semaphore Sem_Init(int nbJetons);
+int Sem_P(semaphore s);
+int Sem_V(semaphore s);
+int Sem_GetValue(semaphore s);
+int Sem_Destroy(semaphore s);
+
+
 
 #endif // IN_USER_MODE
 

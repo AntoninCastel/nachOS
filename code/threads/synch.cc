@@ -42,7 +42,7 @@ Semaphore::Semaphore (const char *debugName, int initialValue)
 }
 
 //----------------------------------------------------------------------
-// Semaphore::Semaphore
+// Semaphore::~Semaphore
 //      De-allocate semaphore, when no longer needed.  Assume no one
 //      is still waiting on the semaphore!
 //----------------------------------------------------------------------

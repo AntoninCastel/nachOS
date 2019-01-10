@@ -27,7 +27,7 @@
 #define UserStackSize		1024
 
 #define NB_MAX_THREADS 50
-
+#define NB_MAX_USER_SEMAPHORES 20
 
 class Semaphore;
 
@@ -86,14 +86,22 @@ class AddrSpace {
 
     void setSpMaxMain(int SpMain);
 
+    void InitUserSemaphores();
+
 
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
     Semaphore **TabThreads;
 	
+    Semaphore** UserSemaphores;
+    int UserSemaphoresCounter;
+    Semaphore* UserSemaphoreSynch;
+    BitMap* UserActiveSemaphores;
+
 	private:
     FrameProvider *frame_provider;
+
 
 	int SpMaxMain;
 	//Bitmap permettant de placer le SP des nouveaux threads dans la pile

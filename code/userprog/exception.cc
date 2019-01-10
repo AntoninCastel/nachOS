@@ -22,7 +22,6 @@
 // of liability and disclaimer of warranty provisions.
 
 
-#include "userthread.h"
 #include "exception.h"
 //----------------------------------------------------------------------
 // UpdatePC : Increments the Program Counter register in order to resume
@@ -104,6 +103,21 @@ ExceptionHandler(ExceptionType which)
       case SC_UserThreadJoin:
         Syscall_UserThreadJoin();
         break;
+      case SC_Sem_Init:
+        Syscall_Sem_Init();
+        break;
+      case SC_Sem_P:
+        Syscall_Sem_P();
+        break;
+      case SC_Sem_V:
+        Syscall_Sem_V();
+        break;
+      case SC_Sem_GetValue:
+        Syscall_Sem_GetValue();
+        break;
+      case SC_Sem_Destroy:
+        Syscall_Sem_Destroy();
+        break;
       default: 
         printf("Unexpected user mode exception %d %d\n", which, type);
         ASSERT(FALSE);
@@ -176,4 +190,28 @@ void Syscall_UserThreadExit(){
 void Syscall_UserThreadJoin() {
     int param = machine->ReadRegister(4);
     do_UserThreadJoin(param);
+}
+
+void Syscall_Sem_Init(){
+    int param = machine->ReadRegister(4);
+    machine->WriteRegister(2, do_Sem_Init(param));
+}
+
+void Syscall_Sem_P(){
+  int param = machine->ReadRegister(4);
+  machine->WriteRegister(2,do_Sem_P(param));
+}
+
+void Syscall_Sem_V(){
+  int param=machine->ReadRegister(4);
+  machine->WriteRegister(2,do_Sem_V(param));
+}
+void Syscall_Sem_GetValue(){
+  int param=machine->ReadRegister(4);
+  machine->WriteRegister(2,do_Sem_GetValue(param));
+}
+
+void Syscall_Sem_Destroy(){
+  int param=machine->ReadRegister(4);
+  machine->WriteRegister(2,do_Sem_Destroy(param));
 }

@@ -84,6 +84,9 @@ SwapHeader (NoffHeader * noffH) {
 AddrSpace::AddrSpace (OpenFile * executable) {
     InitTabThread();
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
+    InitUserSemaphores();
+    ThreadsPosition = new BitMap(NB_MAX_THREADS);
+
 
     NoffHeader noffH;
     unsigned int i, size;
@@ -174,7 +177,7 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 			            noffH.initData.size, noffH.initData.inFileAddr);
 #endif
       }
-      ThreadsPosition = new BitMap(NB_MAX_THREADS);
+
 }
 
 //----------------------------------------------------------------------
@@ -318,4 +321,12 @@ AddrSpace::getSpMaxMain(){
 void 
 AddrSpace::setSpMaxMain(int SpMain){
     this->SpMaxMain=SpMain-PAGES_PER_THREADS*PageSize;
+}
+
+void
+AddrSpace::InitUserSemaphores(){
+    UserSemaphores = new Semaphore*[NB_MAX_USER_SEMAPHORES];
+    UserSemaphoresCounter=0;
+    UserSemaphoreSynch=new Semaphore("Lock des fonctions de usersemaphores", 1);
+    UserActiveSemaphores=new BitMap(NB_MAX_USER_SEMAPHORES);
 }

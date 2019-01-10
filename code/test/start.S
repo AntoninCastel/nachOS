@@ -210,3 +210,44 @@ UserThreadJoin:
 	syscall
 	j	$31
 	.end UserThreadJoin
+	
+	.globl  Sem_Init
+	.ent	Sem_Init
+Sem_Init:
+	addiu $2,$0,SC_Sem_Init
+	syscall
+	j	$31
+	.end Sem_Init
+
+	.globl  Sem_P
+	.ent	Sem_P
+Sem_P:
+	addiu $2,$0,SC_Sem_P
+	syscall
+	j	$31
+	.end Sem_P
+
+	.globl  Sem_V
+	.ent	Sem_V
+Sem_V:
+	addiu $2,$0,SC_Sem_V
+	syscall
+	j	$31
+	.end Sem_V
+
+	.globl  Sem_GetValue
+	.ent	Sem_GetValue
+Sem_GetValue:
+	addiu $2,$0,SC_Sem_GetValue
+	syscall
+	j	$31
+	.end Sem_GetValue
+
+	.globl  Sem_Destroy
+	.ent	Sem_Destroy
+Sem_Destroy:
+	addiu $2,$0,SC_Sem_Destroy
+	syscall
+	j	$31
+	.end Sem_Destroy
+

@@ -89,6 +89,7 @@ class FileSystem {
     void Print();			// List all the files and their contents
 
   private:
+   int currentDirectorySector;
    OpenFile* freeMapFile;		// Bit map of free disk blocks,
 					// represented as a file
    OpenFile* directoryFile;		// "Root" directory -- list of 

@@ -57,7 +57,9 @@ class FileHeader {
 
     void Print();			// Print the contents of the file.
     bool IsDirectory = FALSE;
-
+    int directorySector;
+    int parentDirectorySector;
+    
   private:
     int numBytes;			// Number of bytes in the file
     int numSectors;			// Number of data sectors in the file

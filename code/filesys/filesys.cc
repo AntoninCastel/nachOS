@@ -79,7 +79,6 @@
 
 FileSystem::FileSystem(bool format)
 { 
-
     DEBUG('f', "Initializing the file system.\n");
     if (format) {
         BitMap *freeMap = new BitMap(NumSectors);
@@ -106,7 +105,9 @@ FileSystem::FileSystem(bool format)
     // on it!).
 
         DEBUG('f', "Writing headers back to disk.\n");
-	mapHdr->WriteBack(FreeMapSector);    
+	mapHdr->WriteBack(FreeMapSector);   
+    dirHdr->directorySector=1;
+    //dirHdr->IsDirectory=TRUE;
 	dirHdr->WriteBack(DirectorySector);
 
     // OK to open the bitmap and directory files now
@@ -146,6 +147,10 @@ FileSystem::FileSystem(bool format)
 bool
 FileSystem::Mkdir(const char *name)
 {
+    OpenFile *tmpFile = new OpenFile(DirectorySector);
+    currentDirectorySector = tmpFile->getDirectorySector();
+    OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
+
     //booleen retourne
     bool success;
     //bitmap des "free chunks" pour l'allocation
@@ -157,7 +162,7 @@ FileSystem::Mkdir(const char *name)
     //repertoire courant
     Directory *directory = new Directory(NumDirEntries);
     //on rempli le repertoire courant
-    directory->FetchFrom(directoryFile);
+    directory->FetchFrom(currentDirectoryFiles);
 
     //on teste si le nom est deja present dans le repertoire
     if (directory->Find(name) != -1)
@@ -184,6 +189,8 @@ FileSystem::Mkdir(const char *name)
             hdr = new FileHeader;
             //on le configure en repertoire
             hdr->IsDirectory = TRUE;
+            hdr->directorySector=sector;
+            hdr->parentDirectorySector=currentDirectorySector;
             //on alloue de la place pour le fichier que l'entree contiendra
             //10 entrees max * (la taille d'une entree + le nombre de caracteres max du nom)
             if (!hdr->Allocate(freeMap, 10*(10+sizeof(DirectoryEntry))))
@@ -202,7 +209,7 @@ FileSystem::Mkdir(const char *name)
                 //on remet le header sur disque
                 hdr->WriteBack(sector);   
                 //on remet le repertoire courant avec la nouvelle entree sur dique
-                directory->WriteBack(directoryFile);
+                directory->WriteBack(currentDirectoryFiles);
                 //on ecrit le contenu du nouveau repertoire sur disque                
                 newDirectory->WriteBack(newDirectoryFile);
                 //on remet la bitmap modifiee sur disque
@@ -213,7 +220,9 @@ FileSystem::Mkdir(const char *name)
         }
         //on delete la bitmap
         delete freeMap;
-    }
+    }    
+    delete tmpFile;
+
     /////////////////////
     ////////TEST/////////
     /////////////////////
@@ -235,28 +244,58 @@ FileSystem::Mkdir(const char *name)
 void
 FileSystem::AddParentDirectory(Directory *directory, OpenFile *newFile)
 {
+    OpenFile *tmpFile = new OpenFile(DirectorySector);
+
     //nouveau nom pour le repertoire parent
     char *name = new char[2];
     // ..
     strcpy(name,"..");
-    //on ajoute au nouveau repertoire une entree pour retourner à "/"
-    directory->Add(name, 1);
+    //on ajoute au nouveau repertoire une entree pour retourner au precedent repertoire
+    directory->Add(name, tmpFile->getDirectorySector());
+
+    //////////TEST///////////
+    fprintf(stderr, "*************************\n" );
+    fprintf(stderr, "AddParentDirectory\n" );
+    fprintf(stderr, "secteur parent : %d\n",tmpFile->getDirectorySector() );
+    fprintf(stderr, "*************************\n" );
+    /////////////////////////
+
     //modification sur disque du nouveau repertoire
-    directory->WriteBack(newFile);
+    directory->WriteBack(newFile);    
+    delete tmpFile;
+
 }
 
 bool
 FileSystem::Cd(const char *name)
 {
+    OpenFile *tmpFile = new OpenFile(DirectorySector);
+    currentDirectorySector = tmpFile->getDirectorySector();
+    OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
+    FileHeader *tmpHeader = tmpFile->getHeader();
+
     Directory *newDirectory = new Directory(NumDirEntries);
-    OpenFile *openFile = Open(name);
-    if(openFile->isDirectory()){
-        newDirectory->FetchFrom(openFile);    
-        newDirectory->WriteBack(directoryFile);
+    newDirectory->FetchFrom(currentDirectoryFiles);
+
+    int sector = newDirectory->Find(name);
+    OpenFile *openFile = new OpenFile(sector);
+    if(openFile->isDirectory() || sector == 1){
+        tmpHeader->directorySector = sector;
+        tmpHeader->WriteBack(1);
+        
+        //////////TEST///////////
+        fprintf(stderr, "*************************\n" );
+        fprintf(stderr, "CD\n" );
+        fprintf(stderr, "nouveau secteur : %d\n",sector);
+        fprintf(stderr, "ancien secteur : %d\n",currentDirectorySector);
+        fprintf(stderr, "*************************\n" );
+        /////////////////////////
     }
     else{
         fprintf(stderr, "Erreur, le fichier cible n'est pas un repertoire\n");
-    }       
+    }   
+    delete tmpHeader;
+    delete currentDirectoryFiles; 
     delete newDirectory;
     return TRUE;
 }
@@ -345,16 +384,23 @@ FileSystem::Create(const char *name, int initialSize)
 OpenFile *
 FileSystem::Open(const char *name)
 { 
+    OpenFile *tmpFile = new OpenFile(DirectorySector);
+    currentDirectorySector = tmpFile->getDirectorySector();
+    OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
+
+
     Directory *directory = new Directory(NumDirEntries);
     OpenFile *openFile = NULL;
     int sector;
 
     DEBUG('f', "Opening file %s\n", name);
-    directory->FetchFrom(directoryFile);
+    directory->FetchFrom(currentDirectoryFiles);
     sector = directory->Find(name); 
     if (sector >= 0) 		
 	openFile = new OpenFile(sector);	// name was found in directory 
-    delete directory;
+   delete tmpFile;
+   delete currentDirectoryFiles;
+   delete directory;
     return openFile;				// return NULL if not found
 }
 
@@ -413,10 +459,22 @@ FileSystem::Remove(const char *name)
 void
 FileSystem::List()
 {
+    OpenFile *tmpFile = new OpenFile(DirectorySector);
+    currentDirectorySector = tmpFile->getDirectorySector();
+    OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
+
     Directory *directory = new Directory(NumDirEntries);
 
-    directory->FetchFrom(directoryFile);
+    directory->FetchFrom(currentDirectoryFiles);
     directory->List();
+    //////////TEST///////////
+    fprintf(stderr, "*************************\n" );
+    fprintf(stderr, "List\n" );
+    fprintf(stderr, "secteur courant : %d\n",currentDirectorySector);
+    fprintf(stderr, "*************************\n" );
+    /////////////////////////
+    delete tmpFile;
+    delete currentDirectoryFiles;
     delete directory;
 }
 

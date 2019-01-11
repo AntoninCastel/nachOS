@@ -86,6 +86,10 @@ class OpenFile {
 					// than the UNIX idiom -- lseek to 
 					// end of file, tell, lseek back 
     bool isDirectory();
+    int getDirectorySector();
+    int getParentDirectorySector();
+    int setDirectorySector(int sector);
+    FileHeader* getHeader();
   private:
     FileHeader *hdr;			// Header for this file 
     int seekPosition;			// Current position within the file

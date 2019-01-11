@@ -53,6 +53,17 @@ Directory::~Directory()
     delete [] table;
 } 
 
+bool 
+Directory::isDirectoryEmpty()
+{
+    bool result = TRUE;
+    for(int i = 0; i < 10 ; i++ ){
+        if(this->table[i].inUse && !strcmp(this->table[i].name,".") && !strcmp(this->table[i].name,".."))
+            result = FALSE;
+    }
+    return result;
+}
+
 //----------------------------------------------------------------------
 // Directory::FetchFrom
 // 	Read the contents of the directory from disk.

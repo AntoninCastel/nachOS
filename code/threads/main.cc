@@ -155,10 +155,6 @@ main (int argc, char **argv)
 		fileSystem->Cd (*(argv + 1));
 		argCount = 2;
 	    }
-	    else if (!strcmp (*argv, "-pwd"))
-	    {			// create nachos directory
-		//fileSystem->pwdsector ();
-	    }	    
 	    /////////////////////////
 
 

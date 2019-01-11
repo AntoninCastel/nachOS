@@ -63,6 +63,8 @@ OpenFile::isDirectory()
     return hdr->IsDirectory;
 }  
 
+
+
 int
 OpenFile::getDirectorySector()
 {

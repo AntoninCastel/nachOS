@@ -79,6 +79,8 @@ class FileSystem {
     bool Mkdir(const char *name);
     bool Cd(const char *name);
     void AddParentDirectory(Directory *directory, OpenFile *newFile);
+    void AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sector);
+
     /////////////////
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 

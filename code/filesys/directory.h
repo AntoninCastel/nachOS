@@ -70,6 +70,7 @@ class Directory {
     void Print();			// Verbose print of the contents
 					//  of the directory -- all the file
 					//  names and their contents.
+    bool isDirectoryEmpty(); //tells whether the directory is empty (if it is a directory)
 
   private:
     int tableSize;			// Number of directory entries

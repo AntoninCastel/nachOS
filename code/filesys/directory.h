@@ -33,7 +33,7 @@ class DirectoryEntry {
   public:
     bool inUse;				// Is this directory entry in use?
     int sector;				// Location on disk to find the 
-					//   FileHeader for this file 
+					       //   FileHeader for this file 
     char name[FileNameMaxLen + 1];	// Text name for file, with +1 for 
 					// the trailing '\0'
 };
@@ -70,6 +70,7 @@ class Directory {
     void Print();			// Verbose print of the contents
 					//  of the directory -- all the file
 					//  names and their contents.
+    bool isDirectoryEmpty(); //tells whether the directory is empty (if it is a directory)
 
   private:
     int tableSize;			// Number of directory entries

@@ -84,13 +84,13 @@ class Lock
     // holds this lock.  Useful for
     // checking in Release, and in
     // Condition variable ops below.
+    int threadHoldingId;
+    //const char *threadHolding;
+    Semaphore *sem;
 
   private:
     const char *name;		// for debugging
     // plus some other stuff you'll need to define
-    Semaphore *sem;
-    const char *threadHolding;
-    int threadHoldingId;
 };
 
 // The following class defines a "condition variable".  A condition

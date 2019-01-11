@@ -109,8 +109,8 @@ Semaphore::getValue()
 // the test case in the network assignment won't work!
 Lock::Lock (const char *debugName)
 {
-    name=debugName;
-    sem=new Semaphore(name,1);
+    //name=debugName;
+    sem=new Semaphore(debugName,1);
 
 }
 
@@ -122,7 +122,7 @@ void
 Lock::Acquire ()
 {
     sem->P();
-    threadHolding= currentThread->getName();
+    //strcpy(threadHolding, currentThread->getName());
     threadHoldingId=currentThread->gettid();
 }
 void
@@ -150,7 +150,7 @@ bool Lock::isHeldByCurrentThread (){
 
 Condition::Condition (const char *debugName)
 {
-    name = debugName;
+    //name = debugName;
     mutex = new Lock(name);
     cond_wait = new Semaphore(name,0);
 

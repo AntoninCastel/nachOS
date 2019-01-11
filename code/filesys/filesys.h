@@ -37,7 +37,7 @@
 
 #include "copyright.h"
 #include "openfile.h"
-
+#include "directory.h"
 #ifdef FILESYS_STUB 		// Temporarily implement file system calls as 
 				// calls to UNIX, until the real file system
 				// implementation is available
@@ -73,10 +73,15 @@ class FileSystem {
     					// If "format", there is nothing on
 					// the disk, so initialize the directory
     					// and the bitmap of free blocks.
-
     bool Create(const char *name, int initialSize);  	
 					// Create a file (UNIX creat)
+    /////////////////
+    bool Mkdir(const char *name);
+    bool Cd(const char *name);
+    void AddParentDirectory(Directory *directory, OpenFile *newFile);
+    void AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sector);
 
+    /////////////////
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 
     bool Remove(const char *name); 	// Delete a file (UNIX unlink)
@@ -86,6 +91,8 @@ class FileSystem {
     void Print();			// List all the files and their contents
 
   private:
+   int currentDirectorySector; // sector of current's working directory
+
    OpenFile* freeMapFile;		// Bit map of free disk blocks,
 					// represented as a file
    OpenFile* directoryFile;		// "Root" directory -- list of 

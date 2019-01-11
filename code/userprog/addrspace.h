@@ -24,7 +24,10 @@
 #include "bitmap.h"
 
 /// increase this as necessary !
-#define UserStackSize		1024
+
+#define UserStackSize		4096
+
+#define MAX_THREADS 50
 
 #define NB_MAX_THREADS 50
 #define NB_MAX_USER_SEMAPHORES 20

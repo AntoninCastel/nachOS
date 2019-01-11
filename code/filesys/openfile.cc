@@ -57,6 +57,31 @@ OpenFile::Seek(int position)
     seekPosition = position;
 }	
 
+bool
+OpenFile::isDirectory()
+{
+    return hdr->IsDirectory;
+}  
+
+
+
+int
+OpenFile::getDirectorySector()
+{
+    return hdr->directorySector;
+} 
+
+int
+OpenFile::getParentDirectorySector()
+{
+    return hdr->parentDirectorySector;
+}
+
+FileHeader* 
+OpenFile::getHeader()
+{
+    return this->hdr;
+}
 //----------------------------------------------------------------------
 // OpenFile::Read/Write
 // 	Read/write a portion of a file, starting from seekPosition.

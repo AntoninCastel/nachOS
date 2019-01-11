@@ -85,7 +85,15 @@ class OpenFile {
 					// file (this interface is simpler 
 					// than the UNIX idiom -- lseek to 
 					// end of file, tell, lseek back 
-    
+
+    bool isDirectory(); // tells whether the file is a directory or not
+
+    int getDirectorySector(); // returns directory's file header sector
+
+    int getParentDirectorySector(); // returns directory's parent's file header sector
+
+    FileHeader* getHeader(); // returns file's header
+
   private:
     FileHeader *hdr;			// Header for this file 
     int seekPosition;			// Current position within the file

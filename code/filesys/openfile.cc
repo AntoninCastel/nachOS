@@ -75,12 +75,6 @@ OpenFile::getParentDirectorySector()
     return hdr->parentDirectorySector;
 }
 
-int 
-OpenFile::setDirectorySector(int sector)
-{
-    return hdr->directorySector = sector;
-}
-
 FileHeader* 
 OpenFile::getHeader()
 {

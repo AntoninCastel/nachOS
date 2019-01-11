@@ -69,7 +69,7 @@ AddrSpace::AddrSpace (OpenFile * executable) {
     NoffHeader noffH;
     unsigned int i, size;
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
-    ThreadsPosition = new BitMap((int)MAX_THREADS); 
+    ThreadsPosition = new BitMap((int)NB_MAX_THREADS); 
     ThreadsPosition->Mark(0); //Le thread qui crée l'addrSpace est le thread 0 (main) donc on met le bit 0 à 1.
 
     if ((noffH.noffMagic != NOFFMAGIC) &&
@@ -124,7 +124,7 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 			       [noffH.initData.virtualAddr]),
 			      noffH.initData.size, noffH.initData.inFileAddr);
       }
-
+      ThreadsPosition = new BitMap(NB_MAX_THREADS);
 }
 
 //----------------------------------------------------------------------
@@ -157,8 +157,8 @@ void
 AddrSpace::InitTabThread(){
     int i;
     char *nom = new char[10]; 
-    TabThreads = new Semaphore*[MAX_THREADS];
-    for (i = 0; i<MAX_THREADS ; i++){
+    TabThreads = new Semaphore*[NB_MAX_THREADS];
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         sprintf(nom,"%d",i);
         TabThreads[i] = new Semaphore(nom, 1);
     }
@@ -166,7 +166,7 @@ AddrSpace::InitTabThread(){
 
 void AddrSpace::PrintTabThread(){
     int i;
-    for (i = 0; i<MAX_THREADS ; i++){
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         fprintf(stderr, "%d ",TabThreads[i]->getValue());
 
     }
@@ -183,7 +183,7 @@ void AddrSpace::ThreadNoLongerExist(int id){
 
 int AddrSpace::CheckNbThreadEnCours(){
     int i,compteur=0;
-    for (i = 0; i<MAX_THREADS ; i++){
+    for (i = 0; i<NB_MAX_THREADS ; i++){
         if(TabThreads[i]->getValue() == 0)
             compteur++;
     }
@@ -214,15 +214,6 @@ AddrSpace::InitRegisters ()
 	   numPages * PageSize - 16);
 }
 
-int
-AddrSpace::GetSpMaxMain(){
-    return this->SpMaxMain;
-}
-
- void 
- AddrSpace::SetSpMaxMain(int SpMain){
-    this->SpMaxMain=SpMain-PAGES_PER_THREAD*PAGE_SIZE;
- }
 
 
 //--------------------------------------------------------------------
@@ -233,26 +224,9 @@ AddrSpace::GetSpMaxMain(){
 
 int 
 AddrSpace::ThreadsCounter(){
-    return (MAX_THREADS- ThreadsPosition->NumClear());
+    return (NB_MAX_THREADS- ThreadsPosition->NumClear());
 }
 
-
-int 
-AddrSpace::numBloc(){
-    return this->ThreadsPosition->Find();
-}
-//---------------------------------------------------------------------
-// AddrSpace::NextThreadSP) 
-//      Retourne l'adresse du SP du thread à placer dans la pile.
-//---------------------------------------------------------------------
-
-int
-AddrSpace::NextThreadSP(){
-    if (currentThread->block==-1)
-        return -1; //il n'y plus de place dans l'adresse space.
-    return (this->GetSpMaxMain()-currentThread->block*PAGES_PER_THREAD*128);
-
-}
 
 //----------------------------------------------------------------------
 // AddrSpace::SaveState
@@ -280,4 +254,19 @@ AddrSpace::RestoreState ()
 {
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
+}
+
+BitMap*
+AddrSpace::getBitMap(){
+    return ThreadsPosition;
+}
+
+int 
+AddrSpace::getSpMaxMain(){
+    return this->SpMaxMain;
+}
+
+void 
+AddrSpace::setSpMaxMain(int SpMain){
+    this->SpMaxMain=SpMain-PAGES_PER_THREADS*PageSize;
 }

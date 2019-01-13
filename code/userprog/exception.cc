@@ -127,8 +127,12 @@ void ExceptionHandler(ExceptionType which) {
 }
 
 void Syscall_Exit(){
-  machine->WriteRegister(2,machine->ReadRegister(4));
-  interrupt->Halt();
+    machine->WriteRegister(2,machine->ReadRegister(4));
+    if(currentThread->isPrimaryThread) {
+        interrupt->Halt();
+    } else {
+        currentThread->Finish();
+    }
 }
 
 void Syscall_Halt(){

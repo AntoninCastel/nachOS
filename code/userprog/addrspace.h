@@ -103,9 +103,6 @@ class AddrSpace {
     BitMap* UserActiveSemaphores;
 
 	private:
-    FrameProvider *frame_provider;
-
-
 	int SpMaxMain;
 	//Bitmap permettant de placer le SP des nouveaux threads dans la pile
 	BitMap* ThreadsPosition;

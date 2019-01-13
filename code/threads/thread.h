@@ -104,20 +104,19 @@ class Thread
 
     void CheckOverflow ();	// Check if thread has 
     // overflowed its stack
-    void setStatus (ThreadStatus st)
-    {
-	status = st;
+    void setStatus (ThreadStatus st) {
+    	status = st;
     }
-    const char *getName ()
-    {
-	return (name);
+
+    const char *getName () {
+    	return (name);
     }
-    void Print ()
-    {
-	printf ("%s, ", name);
+
+    void Print () {
+    	printf ("%s, ", name);
     }
     
-
+    bool isPrimaryThread;
 
   private:
     // some of the private data for this class is listed above

@@ -134,8 +134,12 @@ void ExceptionHandler(ExceptionType which) {
 }
 
 void Syscall_Exit(){
-  machine->WriteRegister(2,machine->ReadRegister(4));
-  interrupt->Halt();
+    machine->WriteRegister(2,machine->ReadRegister(4));
+    if(currentThread->isPrimaryThread) {
+        interrupt->Halt();
+    } else {
+        currentThread->Finish();
+    }
 }
 
 void Syscall_Halt(){
@@ -223,10 +227,10 @@ void Syscall_Sem_Destroy(){
   machine->WriteRegister(2,do_Sem_Destroy(param));
 }
 void Syscall_ForkExec() {
-	int adr = machine->ReadRegister(4);
-	char buffer[MAX_STRING_SIZE];
-	copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
-	do_UserForkExec(buffer);
+    int adr = machine->ReadRegister(4);
+    char buffer[MAX_STRING_SIZE];
+    copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
+    do_UserForkExec(buffer);
 }
 
 void Syscall_Create() {

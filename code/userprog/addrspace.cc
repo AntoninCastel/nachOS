@@ -17,7 +17,6 @@
 
 #include "copyright.h"
 #include "system.h"
-#include "addrspace.h"
 #include "noff.h"
 #include "synch.h"
 
@@ -112,12 +111,15 @@ AddrSpace::AddrSpace (OpenFile * executable) {
     DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
             numPages, size);
     // first, set up the translation 
-    // Initialize the FrameProvider
-    frame_provider = new FrameProvider(numPages, RANDOM_FREE_FRAME);
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-        pageTable[i].physicalPage = frame_provider->GetEmptyFrame();
+#ifdef PAGINATION
+        pageTable[i].physicalPage = machine->frame_provider->GetEmptyFrame();
+#else
+        pageTable[i].physicalPage = i;
+#endif
+        //printf("La super frame trouvée est : %d, il nous reste %d frames dispo !\n", pageTable[i].physicalPage, machine->frame_provider->NumAvailFrame());
         pageTable[i].valid = TRUE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
@@ -188,6 +190,9 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 AddrSpace::~AddrSpace () {
     // LB: Missing [] for delete
     // delete pageTable;
+    for (size_t i = 0; i < numPages; i++) {
+        machine->frame_provider->ReleaseFrame(pageTable[i].physicalPage);
+    }
     delete [] pageTable;
     delete threads_sharing_addrspace;
     delete [] TabThreads;

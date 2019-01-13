@@ -34,6 +34,7 @@
 
 Thread::Thread (const char *threadName)
 {
+    isPrimaryThread = false;
     id = -2;
     name = threadName;
     stackTop = NULL;

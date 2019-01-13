@@ -96,7 +96,9 @@ class FileSystem {
 
 	BitMap *openFileMap;
 
-	OpenFile **openFilesTab;
+	OpenFile **openFileTab;
+
+	char **openFileName;
 
   private:
 

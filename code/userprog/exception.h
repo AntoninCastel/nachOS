@@ -31,3 +31,6 @@ void Syscall_Sem_GetValue();
 void Syscall_Sem_Destroy();
 
 void Syscall_ForkExec();
+
+void Syscall_Create();
+void Syscall_Open();

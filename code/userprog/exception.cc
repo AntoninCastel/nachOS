@@ -22,6 +22,7 @@
 // of liability and disclaimer of warranty provisions.
 
 #include "userthread.h"
+#include "userfile.h"
 #include "userprocess.h"
 #include "exception.h"
 //----------------------------------------------------------------------
@@ -31,12 +32,12 @@
 static void
 UpdatePC ()
 {
-    int pc = machine->ReadRegister (PCReg);
-    machine->WriteRegister (PrevPCReg, pc);
-    pc = machine->ReadRegister (NextPCReg);
-    machine->WriteRegister (PCReg, pc);
-    pc += 4;
-    machine->WriteRegister (NextPCReg, pc);
+	int pc = machine->ReadRegister (PCReg);
+	machine->WriteRegister (PrevPCReg, pc);
+	pc = machine->ReadRegister (NextPCReg);
+	machine->WriteRegister (PCReg, pc);
+	pc += 4;
+	machine->WriteRegister (NextPCReg, pc);
 }
 
 
@@ -66,62 +67,68 @@ UpdatePC ()
 void ExceptionHandler(ExceptionType which) { 
   int type = machine->ReadRegister(2);
   if (which == SyscallException) {
-    switch (type) {
-    case SC_Exit: 
-        Syscall_Exit();
-        break;
-    case SC_Halt: 
-        Syscall_Halt();
-        break;
-    case SC_GetChar:
-        Syscall_GetChar();
-        break;
-    case SC_GetString:
-        Syscall_GetString();
-        break;
-    case SC_PutChar:
-        Syscall_PutChar();
-        break;
-    case SC_PutString:
-        Syscall_PutString();
-        break;
-    case SC_PutInt:
-        Syscall_PutInt();
-        break;
-    case SC_GetInt:
-        Syscall_GetInt();
-        break;
-    case SC_UserThreadCreate:
-        Syscall_UserThreadCreate();
-        break;
-    case SC_UserThreadExit:
-        Syscall_UserThreadExit();
-        break;
-    case SC_UserThreadJoin:
-        Syscall_UserThreadJoin();
-        break;
-      case SC_Sem_Init:
-        Syscall_Sem_Init();
-        break;
-      case SC_Sem_P:
-        Syscall_Sem_P();
-        break;
-      case SC_Sem_V:
-        Syscall_Sem_V();
-        break;
-      case SC_Sem_GetValue:
-        Syscall_Sem_GetValue();
-        break;
-      case SC_Sem_Destroy:
-        Syscall_Sem_Destroy();
-        break;
-    case SC_ForkExec:
-        Syscall_ForkExec();
-        break;
-    default: 
-        printf("Unexpected user mode exception %d %d\n", which, type);
-        ASSERT(FALSE);
-    }
+	switch (type) {
+	case SC_Exit: 
+		Syscall_Exit();
+		break;
+	case SC_Halt: 
+		Syscall_Halt();
+		break;
+	case SC_GetChar:
+		Syscall_GetChar();
+		break;
+	case SC_GetString:
+		Syscall_GetString();
+		break;
+	case SC_PutChar:
+		Syscall_PutChar();
+		break;
+	case SC_PutString:
+		Syscall_PutString();
+		break;
+	case SC_PutInt:
+		Syscall_PutInt();
+		break;
+	case SC_GetInt:
+		Syscall_GetInt();
+		break;
+	case SC_UserThreadCreate:
+		Syscall_UserThreadCreate();
+		break;
+	case SC_UserThreadExit:
+		Syscall_UserThreadExit();
+		break;
+	case SC_UserThreadJoin:
+		Syscall_UserThreadJoin();
+		break;
+	  case SC_Sem_Init:
+		Syscall_Sem_Init();
+		break;
+	  case SC_Sem_P:
+		Syscall_Sem_P();
+		break;
+	  case SC_Sem_V:
+		Syscall_Sem_V();
+		break;
+	  case SC_Sem_GetValue:
+		Syscall_Sem_GetValue();
+		break;
+	  case SC_Sem_Destroy:
+		Syscall_Sem_Destroy();
+		break;
+	case SC_ForkExec:
+		Syscall_ForkExec();
+		break;
+	 case SC_Create:
+		Syscall_Create();
+		break;  
+	 case SC_Open:
+		Syscall_Open();
+		break; 		     
+	default: 
+		printf("Unexpected user mode exception %d %d\n", which, type);
+		ASSERT(FALSE);
+	}
   UpdatePC();
   } 
 }
@@ -184,17 +191,17 @@ void Syscall_UserThreadCreate(){
 }
 
 void Syscall_UserThreadExit(){
-    do_UserThreadExit();
+	do_UserThreadExit();
 }
 
 void Syscall_UserThreadJoin() {
-    int param = machine->ReadRegister(4);
-    do_UserThreadJoin(param);
+	int param = machine->ReadRegister(4);
+	do_UserThreadJoin(param);
 }
 
 void Syscall_Sem_Init(){
-    int param = machine->ReadRegister(4);
-    machine->WriteRegister(2, do_Sem_Init(param));
+	 int param = machine->ReadRegister(4);
+	machine->WriteRegister(2, do_Sem_Init(param));
 }
 
 void Syscall_Sem_P(){
@@ -216,8 +223,22 @@ void Syscall_Sem_Destroy(){
   machine->WriteRegister(2,do_Sem_Destroy(param));
 }
 void Syscall_ForkExec() {
-    int adr = machine->ReadRegister(4);
-    char buffer[MAX_STRING_SIZE];
-    copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
-    do_UserForkExec(buffer);
+	int adr = machine->ReadRegister(4);
+	char buffer[MAX_STRING_SIZE];
+	copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
+	do_UserForkExec(buffer);
+}
+
+void Syscall_Create() {
+	int adr = machine->ReadRegister(4);
+	int size  = machine->ReadRegister(5);
+	char buffer[MAX_STRING_SIZE];
+	copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
+	machine->WriteRegister(2,do_UserCreate(buffer,size));
+}
+void Syscall_Open() {
+	int adr = machine->ReadRegister(4);
+	char name[MAX_STRING_SIZE];
+	copyStringFromMachine(adr, name, MAX_STRING_SIZE);
+	machine->WriteRegister(2,do_UserOpen(name));
 }

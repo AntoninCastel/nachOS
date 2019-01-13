@@ -41,7 +41,7 @@ THREAD_SRC      :=      main.cc list.cc scheduler.cc synch.cc synchlist.cc \
                         system.cc thread.cc utility.cc threadtest.cc interrupt.cc \
                         stats.cc sysdep.cc timer.cc switch.S
 
-USERPROG_SRC    :=      addrspace.cc bitmap.cc exception.cc progtest.cc console.cc 	\							synchconsole.cc machine.cc mipssim.cc translate.cc userthread.cc frameprovider.cc usersemaphore.cc userprocess.cc
+USERPROG_SRC    :=      addrspace.cc bitmap.cc exception.cc progtest.cc console.cc 	\							synchconsole.cc machine.cc mipssim.cc translate.cc userthread.cc frameprovider.cc usersemaphore.cc userprocess.cc userfile.cc
 
 
 VM_SRC          :=

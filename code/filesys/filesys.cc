@@ -79,8 +79,16 @@
 
 FileSystem::FileSystem(bool format)
 { 
-	openFilesTab = new OpenFile*[NbOpenFile];
-	openFileMap = new BitMap(NbOpenFile);
+	openFileTab = new OpenFile*[NbOpenFile+2];	
+
+	openFileName = new char*[NbOpenFile+2];
+	for(int i = 0; i < NbOpenFile; i++){
+		openFileName[i+2] = new char[10];
+	}
+
+	openFileMap = new BitMap(NbOpenFile+2);
+
+
 	DEBUG('f', "Initializing the file system.\n");
 	if (format) {
 		BitMap *freeMap = new BitMap(NumSectors);

@@ -38,14 +38,17 @@
 #include "copyright.h"
 #include "openfile.h"
 #include "directory.h"
+#include "bitmap.h"
+#define NbOpenFile 10
+
 #ifdef FILESYS_STUB 		// Temporarily implement file system calls as 
 				// calls to UNIX, until the real file system
 				// implementation is available
 class FileSystem {
   public:
-    FileSystem(bool format) {}
+	FileSystem(bool format) {}
 
-    bool Create(const char *name, int initialSize) { 
+	bool Create(const char *name, int initialSize) { 
 	int fileDescriptor = OpenForWrite(name);
 
 	if (fileDescriptor == -1) return FALSE;
@@ -53,49 +56,55 @@ class FileSystem {
 	return TRUE; 
 	}
 
-    OpenFile* Open(char *name) {
+	OpenFile* Open(char *name) {
 	  int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	  if (fileDescriptor == -1) return NULL;
 	  return new OpenFile(fileDescriptor);
-      }
+	  }
 
-    bool Remove(char *name) { return Unlink(name) == 0; }
+	bool Remove(char *name) { return Unlink(name) == 0; }
 
 };
 
 #else // FILESYS
 class FileSystem {
   public:
-    FileSystem(bool format);		// Initialize the file system.
+	FileSystem(bool format);		// Initialize the file system.
 					// Must be called *after* "synchDisk" 
 					// has been initialized.
-    					// If "format", there is nothing on
+						// If "format", there is nothing on
 					// the disk, so initialize the directory
-    					// and the bitmap of free blocks.
-    bool Create(const char *name, int initialSize);  	
+						// and the bitmap of free blocks.
+	bool Create(const char *name, int initialSize);  	
 					// Create a file (UNIX creat)
-    /////////////////
-    bool Mkdir(const char *name);
-    bool Cd(const char *name);
-    void AddParentDirectory(Directory *directory, OpenFile *newFile);
-    void AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sector);
+	/////////////////
+	bool Mkdir(const char *name);
+	bool Cd(const char *name);
+	void AddParentDirectory(Directory *directory, OpenFile *newFile);
+	void AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sector);
 
-    /////////////////
-    OpenFile* Open(const char *name); 	// Open a file (UNIX open)
+	/////////////////
+	OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 
-    bool Remove(const char *name); 	// Delete a file (UNIX unlink)
 
-    void List();			// List all the files in the file system
+	bool Remove(const char *name); 	// Delete a file (UNIX unlink)
 
-    void Print();			// List all the files and their contents
+	void List();			// List all the files in the file system
+
+	void Print();			// List all the files and their contents
+
+	BitMap *openFileMap;
+
+	OpenFile **openFilesTab;
 
   private:
-   int currentDirectorySector; // sector of current's working directory
 
-   OpenFile* freeMapFile;		// Bit map of free disk blocks,
+	int currentDirectorySector; // sector of current's working directory
+
+	OpenFile* freeMapFile;		// Bit map of free disk blocks,
 					// represented as a file
-   OpenFile* directoryFile;		// "Root" directory -- list of 
+	OpenFile* directoryFile;		// "Root" directory -- list of 
 					// file names, represented as a file
 };
 

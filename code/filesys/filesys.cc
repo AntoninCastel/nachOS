@@ -442,7 +442,13 @@ FileSystem::Open(const char *name)
 	OpenFile *tmpFile = new OpenFile(DirectorySector);
 	currentDirectorySector = tmpFile->getDirectorySector();
 	OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
-
+	
+	//////////TEST///////////
+	fprintf(stderr, "*************************\n" );
+	fprintf(stderr, "Open\n" );
+	fprintf(stderr, "secteur courant : %d\n",currentDirectorySector);
+	fprintf(stderr, "*************************\n" );
+	/////////////////////////
 
 	Directory *directory = new Directory(NumDirEntries);
 	OpenFile *openFile = NULL;

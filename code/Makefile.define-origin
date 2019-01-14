@@ -95,7 +95,8 @@ vm_CPPFLAGS=-DUSE_TLB
 # *************************************
 # These flavors are the one initially provided in Nachos.
 # Only a part of all Nachos features is available in each of them.
-ORIG_FLAVORS=threads userprog filesys network vm
+ORIG_FLAVORS=threads userprog 
+#filesys network vm
 
 ###########################################################################
 #            Original flavors

@@ -119,6 +119,7 @@ void ExceptionHandler(ExceptionType which) {
 	case SC_ForkExec:
 		Syscall_ForkExec();
 		break;
+#ifdef FILESYS
 	 case SC_Create:
 		Syscall_Create();
 		break;  
@@ -134,6 +135,7 @@ void ExceptionHandler(ExceptionType which) {
 	 case SC_Close:
 	 	Syscall_Close();	
 	 	break;
+#endif
 	default: 
 		printf("Unexpected user mode exception %d %d\n", which, type);
 		ASSERT(FALSE);
@@ -242,6 +244,7 @@ void Syscall_ForkExec() {
     do_UserForkExec(buffer);
 }
 
+#ifdef FILESYS
 void Syscall_Create() {
 	int adr = machine->ReadRegister(4);
 	int size  = machine->ReadRegister(5);
@@ -278,3 +281,4 @@ void Syscall_Close(){
 	int fileid = machine->ReadRegister(4);
 	do_UserClose(fileid);
 }
+#endif

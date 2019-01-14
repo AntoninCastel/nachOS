@@ -219,13 +219,12 @@ FileSystem::Mkdir(const char *name)
 				//on lui ajoute son repertoire parent
 				AddParentDirectory(newDirectory, newDirectoryFile);
 				AddCurrentDirectory(newDirectory, newDirectoryFile,sector);
-			   
 				//on remet le header sur disque
 				hdr->WriteBack(sector);   
 				//on remet le repertoire courant avec la nouvelle entree sur dique
 				directory->WriteBack(currentDirectoryFiles);
 				//on ecrit le contenu du nouveau repertoire sur disque                
-				//newDirectory->WriteBack(newDirectoryFile);
+				newDirectory->WriteBack(newDirectoryFile);
 				//on remet la bitmap modifiee sur disque
 				freeMap->WriteBack(freeMapFile);
 			}
@@ -298,7 +297,7 @@ FileSystem::AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sect
 	/////////////////////////
 
 	//modification sur disque du nouveau repertoire
-	directory->WriteBack(newFile);    
+
 	delete tmpFile;
 
 }

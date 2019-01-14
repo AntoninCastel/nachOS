@@ -41,13 +41,13 @@ THREAD_SRC      :=      main.cc list.cc scheduler.cc synch.cc synchlist.cc \
                         system.cc thread.cc utility.cc threadtest.cc interrupt.cc \
                         stats.cc sysdep.cc timer.cc switch.S
 
-USERPROG_SRC    :=      addrspace.cc bitmap.cc exception.cc progtest.cc console.cc 	\							synchconsole.cc machine.cc mipssim.cc translate.cc userthread.cc frameprovider.cc usersemaphore.cc userprocess.cc userfile.cc
+USERPROG_SRC    :=      addrspace.cc bitmap.cc exception.cc progtest.cc console.cc 	\							synchconsole.cc machine.cc mipssim.cc translate.cc userthread.cc frameprovider.cc usersemaphore.cc userprocess.cc 
 
 
 VM_SRC          :=
 
-FILESYS_SRC     :=      directory.cc filehdr.cc filesys.cc fstest.cc openfile.cc \
-                        synchdisk.cc disk.cc
+FILESYS_SRC     :=      directory.cc filehdr.cc filesys.cc fstest.cc openfile.cc  \
+                        synchdisk.cc disk.cc 
 
 NETWORK_SRC     :=      nettest.cc post.cc network.cc
 #
@@ -66,7 +66,7 @@ thread-test_CPPFLAGS=-DTHREADS
 # userprog feature: add support to load userspace program
 userprog_DEP_ALT=filesys filesys-stub
 userprog_SRC=$(USERPROG_SRC)
-userprog_CPPFLAGS=-DUSER_PROGRAM
+userprog_CPPFLAGS=-DUSER_PROGRAM 
 userprog_INCDIRS=bin userprog
 
 # filesys: add support for filesystem

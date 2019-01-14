@@ -124,7 +124,16 @@ void ExceptionHandler(ExceptionType which) {
 		break;  
 	 case SC_Open:
 		Syscall_Open();
-		break; 		     
+		break; 
+	 case SC_Write:
+	 	Syscall_Write();	
+	 	break;	  
+	 case SC_Read:
+	 	Syscall_Read();	
+	 	break;   
+	 case SC_Close:
+	 	Syscall_Close();	
+	 	break;
 	default: 
 		printf("Unexpected user mode exception %d %d\n", which, type);
 		ASSERT(FALSE);
@@ -245,4 +254,27 @@ void Syscall_Open() {
 	char name[MAX_STRING_SIZE];
 	copyStringFromMachine(adr, name, MAX_STRING_SIZE);
 	machine->WriteRegister(2,do_UserOpen(name));
+}
+
+void Syscall_Write(){
+	int fileid = machine->ReadRegister(6);
+	int size = machine->ReadRegister(5);
+	int adr = machine->ReadRegister(4);
+	char buffer[MAX_STRING_SIZE];
+	copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);	
+	machine->WriteRegister(2,do_UserWrite(fileid,size,buffer));
+}
+
+void Syscall_Read(){
+	int adr = machine->ReadRegister(4);
+	int size = machine->ReadRegister(5);
+	int fileid = machine->ReadRegister(6);
+	char buffer[MAX_STRING_SIZE];
+	do_UserRead(fileid,size,buffer);
+  	copyStringToMachine(adr,buffer,MAX_STRING_SIZE); 
+}
+
+void Syscall_Close(){
+	int fileid = machine->ReadRegister(4);
+	do_UserClose(fileid);
 }

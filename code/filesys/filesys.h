@@ -83,7 +83,9 @@ class FileSystem {
 	bool Cd(const char *name);
 	void AddParentDirectory(Directory *directory, OpenFile *newFile);
 	void AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sector);
-
+	BitMap *openFileMap;
+	OpenFile **openFileTab;
+	char **openFileName;
 	/////////////////
 	OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 
@@ -94,11 +96,7 @@ class FileSystem {
 
 	void Print();			// List all the files and their contents
 
-	BitMap *openFileMap;
 
-	OpenFile **openFileTab;
-
-	char **openFileName;
 
   private:
 

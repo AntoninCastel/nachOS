@@ -82,8 +82,8 @@ FileSystem::FileSystem(bool format)
 	openFileTab = new OpenFile*[NbOpenFile+2];	
 
 	openFileName = new char*[NbOpenFile+2];
-	for(int i = 0; i < NbOpenFile; i++){
-		openFileName[i+2] = new char[10];
+	for(int i = 0; i < NbOpenFile+2; i++){
+		openFileName[i] = new char[10];
 	}
 
 	openFileMap = new BitMap(NbOpenFile+2);
@@ -268,10 +268,10 @@ FileSystem::AddParentDirectory(Directory *directory, OpenFile *newFile)
 	directory->Add(name, tmpFile->getDirectorySector());
 
 	//////////TEST///////////
-	fprintf(stderr, "*************************\n" );
-	fprintf(stderr, "AddParentDirectory\n" );
-	fprintf(stderr, "secteur parent : %d\n",tmpFile->getDirectorySector() );
-	fprintf(stderr, "*************************\n" );
+	DEBUG('k',  "*************************\n" );
+	DEBUG('k',  "AddParentDirectory\n" );
+	DEBUG('k',  "secteur parent : %d\n",tmpFile->getDirectorySector() );
+	DEBUG('k',  "*************************\n" );
 	/////////////////////////
 
 	delete tmpFile;
@@ -291,10 +291,10 @@ FileSystem::AddCurrentDirectory(Directory *directory, OpenFile *newFile,int sect
 	directory->Add(name, sector);
 
 	//////////TEST///////////
-	fprintf(stderr, "*************************\n" );
-	fprintf(stderr, "AddCurrentDirectory\n" );
-	fprintf(stderr, "secteur parent : %d\n",tmpFile->getDirectorySector() );
-	fprintf(stderr, "*************************\n" );
+	DEBUG('k',  "*************************\n" );
+	DEBUG('k',  "AddCurrentDirectory\n" );
+	DEBUG('k',  "secteur parent : %d\n",tmpFile->getDirectorySector() );
+	DEBUG('k',  "*************************\n" );
 	/////////////////////////
 
 	//modification sur disque du nouveau repertoire
@@ -337,11 +337,11 @@ FileSystem::Cd(const char *name)
 			//et on flush la modification sur disque
 			tmpHeader->WriteBack(1);
 			//////////TEST///////////
-			fprintf(stderr, "*************************\n" );
-			fprintf(stderr, "CD\n" );
-			fprintf(stderr, "nouveau secteur : %d\n",sector);
-			fprintf(stderr, "ancien secteur : %d\n",currentDirectorySector);
-			fprintf(stderr, "*************************\n" );
+			DEBUG('k',  "*************************\n" );
+			DEBUG('k',  "CD\n" );
+			DEBUG('k',  "nouveau secteur : %d\n",sector);
+			DEBUG('k',  "ancien secteur : %d\n",currentDirectorySector);
+			DEBUG('k',  "*************************\n" );
 			/////////////////////////
 		}
 		else{
@@ -435,6 +435,7 @@ FileSystem::Create(const char *name, int initialSize)
 //	"name" -- the text name of the file to be opened
 //----------------------------------------------------------------------
 
+
 OpenFile *
 FileSystem::Open(const char *name)
 { 
@@ -444,10 +445,10 @@ FileSystem::Open(const char *name)
 	OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
 	
 	//////////TEST///////////
-	fprintf(stderr, "*************************\n" );
-	fprintf(stderr, "Open\n" );
-	fprintf(stderr, "secteur courant : %d\n",currentDirectorySector);
-	fprintf(stderr, "*************************\n" );
+	DEBUG('k', "*************************\n");
+	DEBUG('k', "Open\n");
+	DEBUG('k', "secteur courant : %d\n",currentDirectorySector);
+	DEBUG('k', "*************************\n");
 	/////////////////////////
 
 	Directory *directory = new Directory(NumDirEntries);
@@ -569,10 +570,10 @@ FileSystem::List()
 	directory->List();
 
 	//////////TEST///////////
-	fprintf(stderr, "*************************\n" );
-	fprintf(stderr, "List\n" );
-	fprintf(stderr, "secteur courant : %d\n",currentDirectorySector);
-	fprintf(stderr, "*************************\n" );
+	DEBUG('k',  "*************************\n" );
+	DEBUG('k',  "List\n" );
+	DEBUG('k',  "secteur courant : %d\n",currentDirectorySector);
+	DEBUG('k',  "*************************\n" );
 	/////////////////////////
 
 	delete tmpFile;

@@ -34,3 +34,6 @@ void Syscall_ForkExec();
 
 void Syscall_Create();
 void Syscall_Open();
+void Syscall_Write();
+void Syscall_Read();
+void Syscall_Close();

@@ -246,7 +246,7 @@ void Syscall_Sem_Destroy(){
 }
 void Syscall_ForkExec() {
     int adr = machine->ReadRegister(4);
-    char buffer[MAX_STRING_SIZE];
+    char *buffer = new char[MAX_STRING_SIZE];
     copyStringFromMachine(adr, buffer, MAX_STRING_SIZE);
     do_UserForkExec(buffer);
 }

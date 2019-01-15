@@ -96,6 +96,7 @@ class Thread
     int gettid();
 
     void Fork (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
+    void ForkProcess (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
     void Yield ();		// Relinquish the CPU if any 
     // other thread is runnable
     void Sleep ();		// Put the thread to sleep and 

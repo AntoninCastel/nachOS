@@ -1,7 +1,32 @@
 #include "thread.h"
+#include "system.h"
 #include "userprocess.h"
+
+void StartForkProcess(int arg) {
+    currentThread->space->InitRegisters();	// set the initial register values
+    currentThread->space->RestoreState();	// load page table register
+    machine->Run();		// jump to the user progam
+    ASSERT(FALSE);		// machine->Run never returns;
+}
 
 void do_UserForkExec(char *buff) {
     Thread* newThread = new Thread(buff);
-    newThread->Fork((VoidFunctionPtr)StartProcess, (int)buff);
+    OpenFile *executable = fileSystem->Open (buff);
+    AddrSpace *space;
+
+    if (executable == NULL) {
+	    printf ("Unable to open file %s\n", buff);
+	    return;
+    }
+
+    //currentThread->space->SaveState();
+
+    space = new AddrSpace (executable);
+    newThread->space = space;
+
+    delete executable;		// close file
+
+    //currentThread->space->RestoreState();	// load page table register
+
+    newThread->Fork((VoidFunctionPtr)StartForkProcess, 0);
 }

@@ -28,6 +28,8 @@ static void ReadAtVirtual(OpenFile *executable, int virtualaddr,
                             TranslationEntry *pageTable,unsigned numPages) {
     int len = numBytes;
     char *buf = new char[len];
+    TranslationEntry *pageTableBackup = machine->pageTable;
+    unsigned pageTableSizeBackup = machine->pageTableSize;
     
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
@@ -37,6 +39,9 @@ static void ReadAtVirtual(OpenFile *executable, int virtualaddr,
         machine->WriteMem(virtualaddr+i, 1, buf[i]);
     }
     delete [] buf;
+
+    machine->pageTable = pageTableBackup;
+    machine->pageTableSize = pageTableSizeBackup;
 }
 #endif
 
@@ -120,7 +125,6 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 #else
         pageTable[i].physicalPage = i;
 #endif
-        //printf("La super frame trouvée est : %d, il nous reste %d frames dispo !\n", pageTable[i].physicalPage, machine->frame_provider->NumAvailFrame());
         pageTable[i].valid = TRUE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
@@ -294,8 +298,9 @@ AddrSpace::ThreadsCounter(){
 //----------------------------------------------------------------------
 
 void
-AddrSpace::SaveState ()
-{
+AddrSpace::SaveState () {
+    pageTable = machine->pageTable;
+    numPages = machine->pageTableSize;
 }
 
 //----------------------------------------------------------------------
@@ -307,8 +312,7 @@ AddrSpace::SaveState ()
 //----------------------------------------------------------------------
 
 void
-AddrSpace::RestoreState ()
-{
+AddrSpace::RestoreState () {
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
 }

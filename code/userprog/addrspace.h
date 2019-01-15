@@ -42,7 +42,7 @@ class AddrSpace {
   	//Sera traduit en string pour donner un nom aux futurs threads 
     int nomThread = 0 ;
     //Semaphore qui represente le nombre de threads total qui ont été lancés 
-    //depuis le début
+    //depuis le début dans cet address space
     Semaphore *threads_sharing_addrspace;    
 
     //Alloue et initialise le tableau de semaphores.
@@ -91,24 +91,38 @@ class AddrSpace {
 
     void InitUserSemaphores();
 
+    bool IsMainExiting();
+
+    void SetExitingMain();
+
+    Semaphore* WaitingMain;
 
     //Tableau de semaphores (une par Thread) pour que threadjoin puisse attendre 
     //la terminaison du thread qu'il attend
     //Tableau indexé par l'ID des threads
     Semaphore **TabThreads;
 	
+    //Tableau contenant les semaphores utilisées au niveau utilisateur
     Semaphore** UserSemaphores;
     int UserSemaphoresCounter;
+    
+    //Sémaphore pour la synchronisation des fonctions UserSemaphore
     Semaphore* UserSemaphoreSynch;
+
+    //BitMap permettant de connaitre les sémaphores utilisateurs actifs 
     BitMap* UserActiveSemaphores;
 
 	private:
-	int SpMaxMain;
-	//Bitmap permettant de placer le SP des nouveaux threads dans la pile
+	//SP Max du main, défini apès la création du premier thread.
+    int SpMaxMain;
+	
+    //Booleen permettant de savoir si le main veut faire un Exit()
+    bool ExitingMain;
+
+    //Bitmap permettant de placer le SP des nouveaux threads dans la pile
 	BitMap* ThreadsPosition;
 
     /// Assume linear page table translation for now !
-    
     TranslationEntry * pageTable; 
 
     /// Number of pages in the virtual address space

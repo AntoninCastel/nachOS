@@ -177,14 +177,11 @@ Thread::Finish ()
 {
     (void) interrupt->SetLevel (IntOff);
     ASSERT (this == currentThread);
-
     DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
-
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 
     ASSERT (threadToBeDestroyed == NULL);
     // End of addition 
-
     threadToBeDestroyed = currentThread;
     Sleep ();			// invokes SWITCH
     // not reached

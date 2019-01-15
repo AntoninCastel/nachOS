@@ -85,13 +85,14 @@ AddrSpace::AddrSpace (OpenFile * executable) {
     threads_sharing_addrspace = new Semaphore("threads sharing addrspace", 0);
     InitUserSemaphores();
     ThreadsPosition = new BitMap(NB_MAX_THREADS);
-
+    ExitingMain=false;
 
     NoffHeader noffH;
     unsigned int i, size;
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
-    ThreadsPosition = new BitMap((int)NB_MAX_THREADS); 
-    ThreadsPosition->Mark(0); //Le thread qui crée l'addrSpace est le thread 0 (main) donc on met le bit 0 à 1.
+    ThreadsPosition = new BitMap(NB_MAX_THREADS); 
+
+    WaitingMain=new Semaphore("main exit",0);
 
     if ((noffH.noffMagic != NOFFMAGIC) &&
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
@@ -149,7 +150,6 @@ AddrSpace::AddrSpace (OpenFile * executable) {
 			                noffH.initData.size, noffH.initData.inFileAddr);
 #endif
     }
-    ThreadsPosition = new BitMap(NB_MAX_THREADS);
 // zero out the entire address space, to zero the unitialized data segment 
 // and the stack segment
     bzero (machine->mainMemory, size);
@@ -334,4 +334,14 @@ AddrSpace::InitUserSemaphores(){
     UserSemaphoresCounter=0;
     UserSemaphoreSynch=new Semaphore("Lock des fonctions de usersemaphores", 1);
     UserActiveSemaphores=new BitMap(NB_MAX_USER_SEMAPHORES);
+}
+
+void
+AddrSpace::SetExitingMain(){
+    ExitingMain=true;
+}
+
+bool 
+AddrSpace::IsMainExiting(){
+    return ExitingMain;
 }

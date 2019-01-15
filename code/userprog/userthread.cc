@@ -46,8 +46,11 @@ void do_UserThreadExit(){
 	ThreadEnding->P();
 	if(currentThread->space->CheckNbThreadEnCours() == 1){
 		currentThread->space->TabThreads[currentThread->gettid()]->V();
+		if (currentThread->space->IsMainExiting()){
+			currentThread->space->WaitingMain->V();
+		}
 	}
-  	currentThread->space->getBitMap()->Clear(currentThread->position);
+    currentThread->space->getBitMap()->Clear(currentThread->position);
 	ThreadEnding->V();
 	currentThread->Finish();
 	

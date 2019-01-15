@@ -55,7 +55,6 @@
 // WATCH OUT IF THIS ISN'T BIG ENOUGH!!!!!
 #define StackSize	(4 * 4096)	// in words
 
-
 // Thread state
 enum ThreadStatus
 { JUST_CREATED, RUNNING, READY, BLOCKED };
@@ -73,6 +72,7 @@ extern void ThreadPrint (int arg);
 //    
 //  Some threads also belong to a user address space; threads
 //  that only run in the kernel have a NULL address space.
+
 
 class Thread
 {

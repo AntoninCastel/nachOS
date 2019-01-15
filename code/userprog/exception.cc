@@ -147,8 +147,15 @@ void ExceptionHandler(ExceptionType which) {
 void Syscall_Exit(){
     machine->WriteRegister(2,machine->ReadRegister(4));
     if(currentThread->isPrimaryThread) {
+        if(currentThread->space->CheckNbThreadEnCours()!=0){
+        	currentThread->space->SetExitingMain(); //Les autres threads en cours savent maintenant 
+        	currentThread->space->WaitingMain->P();  //attente que les derniers threads terminent
+        }
         interrupt->Halt();
-    } else {
+    } else { //un thread fait Exit.
+   	    currentThread->space->getBitMap()->Clear(currentThread->position); 
+        if(currentThread->space->IsMainExiting() && currentThread->space->CheckNbThreadEnCours()==1) 
+        	currentThread->space->WaitingMain->V(); 
         currentThread->Finish();
     }
 }

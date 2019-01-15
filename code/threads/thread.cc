@@ -111,7 +111,9 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     // an already running program, as in the "fork" Unix system call. 
     
     // LB: Observe that currentThread->space may be NULL at that time.
-    this->space = currentThread->space;
+    if(this->space == NULL)
+        this->space = currentThread->space;
+
     this->id = currentThread->space->threads_sharing_addrspace->getValue();    
     this->space->ThreadExist(this->id);
     #endif // USER_PROGRAM
@@ -127,8 +129,6 @@ Thread::gettid()
 {
   return this->id;
 }
-
-
 
 //----------------------------------------------------------------------
 // Thread::CheckOverflow

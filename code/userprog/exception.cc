@@ -153,10 +153,7 @@ void Syscall_Exit(){
         }
         interrupt->Halt();
     } else { //un thread fait Exit.
-   	    currentThread->space->getBitMap()->Clear(currentThread->position); 
-        if(currentThread->space->IsMainExiting() && currentThread->space->CheckNbThreadEnCours()==1) 
-        	currentThread->space->WaitingMain->V(); 
-        currentThread->Finish();
+   	    do_UserThreadExit();
     }
 }
 

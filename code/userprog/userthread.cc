@@ -53,7 +53,6 @@ void do_UserThreadExit(){
     currentThread->space->getBitMap()->Clear(currentThread->position);
 	ThreadEnding->V();
 	currentThread->Finish();
-	
 }
 
 void do_UserThreadJoin(int IdThreadAttendu) {

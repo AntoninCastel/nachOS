@@ -68,8 +68,8 @@
  * from the system call entry point in exception.cc.
  */
 
-typedef int semaphore;
 typedef int pid_t;
+typedef int semaphore_t;
 
 /**
  * \brief Stops Nachos, and print out performance stats
@@ -200,11 +200,11 @@ int UserThreadCreate(void f(void *arg), void *arg);
 void UserThreadExit();
 void UserThreadJoin(int tid);
 
-semaphore Sem_Init(int nbJetons);
-int Sem_P(semaphore s);
-int Sem_V(semaphore s);
-int Sem_GetValue(semaphore s);
-int Sem_Destroy(semaphore s);
+semaphore_t Sem_Init(int nbJetons);
+int Sem_P(semaphore_t s);
+int Sem_V(semaphore_t s);
+int Sem_GetValue(semaphore_t s);
+int Sem_Destroy(semaphore_t s);
 
 pid_t ForkExec(char* file);
 void waitpid(pid_t pid);

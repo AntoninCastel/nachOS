@@ -7,7 +7,6 @@ static Semaphore *readAvail;
 static Semaphore *writeDone;
 static Lock *LectureEnCours;
 static Lock *EcritureEnCours;
-static Lock *EcritureStringEnCours;
 
 
 static void ReadAvail(int arg) { readAvail->V(); }
@@ -17,9 +16,7 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile, int callArg)
 {
     readAvail = new Semaphore("read avail", 0);
     writeDone = new Semaphore("write done", 0);
-    LectureEnCours = new Lock("LectureEnCours");
     EcritureEnCours = new Lock("EcritureEnCours");
-    EcritureStringEnCours = new Lock("EcritureStringEnCours");
 
     console = new Console(readFile,writeFile, ReadAvail, WriteDone, callArg);
 }
@@ -31,7 +28,6 @@ SynchConsole::~SynchConsole()
     delete readAvail;
     delete LectureEnCours;
     delete EcritureEnCours;
-    delete EcritureStringEnCours;
 }
 
 void SynchConsole::SynchPutChar(const char ch)
@@ -45,7 +41,7 @@ void SynchConsole::SynchPutChar(const char ch)
 }
 
 char SynchConsole::SynchGetChar()
-{
+{   
     readAvail->P ();	
     char ch = console->GetChar ();
     return ch;

@@ -1,4 +1,3 @@
-
 % Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
 %
 % In principle, this file can be redistributed and/or modified under
@@ -58,10 +57,10 @@
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
-\institute[Université Grenoble-Alpes] % (optional, but mostly needed)
+\institute[Université Grenoble Alpes] % (optional, but mostly needed)
 {
   UFR IM²AG\\
-  Université Grenoble-Alpes
+  Université Grenoble Alpes
 }
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
@@ -115,8 +114,8 @@
 % Section and subsections will appear in the presentation overview
 % and table of contents.
 
-\section{Nachos Input-Output}
-\subsection{Appels systèmes et choix d’implémentations }
+\section{Nachos Entrées-Sorties}
+\subsection{Appels systèmes et choix d'implémentations }
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -131,50 +130,44 @@
 	\begin{block}{Choix d’implémentation}
 		\begin{itemize}
 			\item Limite de chaîne de caractères traités de 200
-			\item Les espaces sont lus comme les autres caractères 
+			\item Les '$\backslash$n' et les 'EOF' sont pris en compte
+			\item La fonction PutString n'est pas synchrone 
 		\end{itemize}		
 	\end{block}
 \end{frame}
-
-
-
-
-
-
 
 \section{Multi-Threading}
 \subsection{Gestion de la pile}
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}
+			\item Le nombre de Threads est limité à 50 
 			\item L'emplacement dans la pile des Threads est géré avec une Bitmap
 			\item 3 pages sont allouées à chaque Thread utilisateur 
-			\item La valeur maximale de SP que le main peut atteindre est fixée 
-			\item Le Thread Main n’apparaît pas dans la Bitmap
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.23]{images/FS3.png}
+	  	\includegraphics[scale=0.24]{images/FS3.png}
   	\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.23]{images/FS4.png}
+	  	\includegraphics[scale=0.24]{images/FS4.png}
   	\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.25]{images/FS5.png}
+	  	\includegraphics[scale=0.24]{images/FS5.png}
   	\end{center}
 \end{frame}
 
 
-\subsection{Appels Système}
+\subsection{Fonctionnalités}
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -198,11 +191,10 @@
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}[<+->]
-			\item Le nombre de Threads est limité à 50 
-			\item La gestion de la terminaison des Threads est laissée à l'utilisateur, sauf pour le main
-			\item Un Thread peut faire un UserThreadJoin() sur n'importe quel Thread créé lors de l'exécution du programme
 			\item L'identifiant d'un Thread est unique, il n'est jamais réutilisé
-			\item C'est à l'utilisateur d'utiliser correctement UserThreadJoin() 
+			\item La gestion de la terminaison des Threads est laissée à l'utilisateur, sauf pour le main
+			\item Un Thread peut faire un \texttt{UserThreadJoin} sur n'importe quel Thread créé lors de l'exécution du programme
+			\item C'est à l'utilisateur d'utiliser correctement \texttt{UserThreadJoin}
 			\begin{itemize}
 				\item Par exemple, l'utiliser sur un identifiant de Thread incorrect donnera lieu à un comportement indéfini.
 			\end{itemize}			
@@ -210,25 +202,68 @@
 	\end{block}
 \end{frame}
 
-\section{Mémoire virtuelle}
-\subsection{Appels systèmes}
-\begin{frame}{Pagination}
-	\begin{block}{FrameProvicer}
-		\begin{itemize}[<+->]
-			\item FIRST\_FREE\_FRAME
-			\item RANDOM\_FREE\_FRAME
+\begin{frame}{Autres ajouts}
+	\begin{block}{Synchronisation }
+		\begin{itemize}
+			\item<1-> Nouveau type \texttt{semaphore\_t} au niveau utilisateur, avec les appels systèmes qui permettent de le manipuler.
+			\begin{itemize}
+				\item<2-> semaphore\_t Sem\_Init(int nbJetons);
+				\item<3-> int Sem\_P(semaphore\_t s);
+				\item<4-> int Sem\_V(semaphore\_t s);
+				\item<5-> int Sem\_GetValue(semaphore\_t s);
+				\item<6-> int Sem\_Destroy(semaphore\_t s);
+			\end{itemize}
+			\item<7-> Fonctionnement avec une table de sémaphores noyau
 		\end{itemize}
 	\end{block}
+	  	\begin{center}
+	  		\includegraphics[scale=0.14]{images/FS7.png}
+  	\end{center}
 \end{frame}
-\begin{frame}{Multiprocessus}
-	\begin{block}{Appel système}
+
+
+
+\section{Mémoire virtuelle}
+\subsection{Mémoire virtuelle}
+\begin{frame}{Pagination}
+	\begin{block}{Mémoire virtuelle}
 		\begin{itemize}[<+->]
-			\item ForkExec(char* filename)
+			\item Frame Provider
+			\item Politiques d'allocation
 			\begin{itemize}
-				\item<1-> Crée un nouveau processus qui exécute le programme contenu dans le fichier filename.
+				\item FIRST\_FREE\_FRAME
+				\item RANDOM\_FREE\_FRAME			
 			\end{itemize}
 		\end{itemize}
 	\end{block}
+\end{frame}
+\subsection{Multi-Processus}
+
+\begin{frame}{Multi-Processus}
+	\begin{block}{Appel système}
+		\begin{itemize}[<+->]
+			\item Création d'un nouveau type utilisateur pid\_t
+			\item pid\_t ForkExec(char* filename)
+			\begin{itemize}
+				\item<1-> Crée un nouveau processus qui exécute le programme contenu dans le fichier filename.
+				\item<2-> Renvoie le pid\_t correspondant au nouveau processus
+			\end{itemize}
+			\item void waitpid(pid\_t p)
+			\begin{itemize}
+				\item<1-> Attend la terminaison du processus p
+			\end{itemize}
+			\item void Proc\_Exit()
+			\begin{itemize}
+				\item<1-> Termine le processus
+			\end{itemize}			
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Liens de parenté entre processus}
+  	\begin{center}
+	  	\includegraphics[scale=0.19]{images/FS6.png}
+  	\end{center}
 \end{frame}
 \section{Système de fichiers}
 \subsection{Arborescence de répertoires}
@@ -240,7 +275,7 @@
   	\end{itemize}  
   \end{block}
   \begin{center}
-	  \includegraphics[scale=0.2]{images/FS1.png}
+	  \includegraphics[scale=0.21]{images/FS1.png}
   \end{center}
 \end{frame}
 
@@ -259,9 +294,8 @@
   	\end{itemize}
   \end{block}
 \end{frame}
+
 \subsection{Page des fichiers ouverts}
-
-
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -305,6 +339,7 @@
 		\begin{itemize}
 			\item<1-> Interface entre le système de fichiers et le programme utilisateur.
 			\item<1-> Nachos permet l'ouverture de 10 fichiers simultanément au total au niveau des programmes utilisateurs
+			\item<1-> Les indices 0 et 1 se sont jamais utilisés, ils sont réservés.
 		\end{itemize}		
 	\end{block}	
   	\begin{center}
@@ -312,5 +347,8 @@
   	\end{center}	
 \end{frame}
 
+\begin{frame}
+  \titlepage
+\end{frame}
 \end{document}
 

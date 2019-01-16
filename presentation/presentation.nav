@@ -2,18 +2,20 @@
 \headcommand {\beamer@framepages {1}{1}}
 \headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
 \headcommand {\beamer@framepages {2}{2}}
-\headcommand {\sectionentry {1}{Nachos Input-Output}{3}{Nachos Input-Output}{0}}
 \headcommand {\beamer@sectionpages {1}{2}}
 \headcommand {\beamer@subsectionpages {1}{2}}
-\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{Appels syst\IeC {\`e}mes et choix d\begingroup \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode {’}intopreamble]impl\IeC {\'e}mentations }}\headcommand {\beamer@subsectionpages {3}{2}}
+\headcommand {\sectionentry {1}{Nachos Input-Output}{3}{Nachos Input-Output}{0}}
+\headcommand {\beamer@subsectionpages {3}{2}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{Appels syst\IeC {\`e}mes et choix d\begingroup \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode {’}intopreamble]impl\IeC {\'e}mentations }}
 \headcommand {\slideentry {1}{1}{1}{3/3}{Appels syst\IeC {\`e}mes et choix d\begingroup \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode {’}intopreamble]impl\IeC {\'e}mentations }{0}}
 \headcommand {\beamer@framepages {3}{3}}
 \headcommand {\slideentry {1}{1}{2}{4/4}{Appels syst\IeC {\`e}mes et choix d\IeC {\textquoteright }impl\IeC {\'e}mentations }{0}}
 \headcommand {\beamer@framepages {4}{4}}
-\headcommand {\sectionentry {2}{Multi-Threading}{5}{Multi-Threading}{0}}
 \headcommand {\beamer@sectionpages {3}{4}}
 \headcommand {\beamer@subsectionpages {3}{4}}
-\headcommand {\beamer@subsectionentry {0}{2}{1}{5}{Gestion de la pile}}\headcommand {\beamer@subsectionpages {5}{4}}
+\headcommand {\sectionentry {2}{Multi-Threading}{5}{Multi-Threading}{0}}
+\headcommand {\beamer@subsectionpages {5}{4}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{5}{Gestion de la pile}}
 \headcommand {\slideentry {2}{1}{1}{5/5}{Gestion de la pile}{0}}
 \headcommand {\beamer@framepages {5}{5}}
 \headcommand {\slideentry {2}{1}{2}{6/6}{Gestion de la pile}{0}}
@@ -24,44 +26,54 @@
 \headcommand {\beamer@framepages {8}{8}}
 \headcommand {\slideentry {2}{1}{5}{9/9}{Gestion de la pile}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{10}{Appels Syst\IeC {\`e}me}}\headcommand {\beamer@subsectionpages {5}{9}}
+\headcommand {\beamer@subsectionpages {5}{9}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{10}{Appels Syst\IeC {\`e}me}}
 \headcommand {\slideentry {2}{2}{1}{10/10}{Appels Syst\IeC {\`e}me}{0}}
 \headcommand {\beamer@framepages {10}{10}}
 \headcommand {\slideentry {2}{2}{2}{11/13}{Appels Syst\IeC {\`e}me}{0}}
 \headcommand {\beamer@framepages {11}{13}}
-\headcommand {\slideentry {2}{2}{3}{14/19}{Appels Syst\IeC {\`e}me}{0}}
-\headcommand {\beamer@framepages {14}{19}}
-\headcommand {\sectionentry {3}{M\IeC {\'e}moire virtuelle}{20}{M\IeC {\'e}moire virtuelle}{0}}
-\headcommand {\beamer@sectionpages {5}{19}}
-\headcommand {\beamer@subsectionpages {10}{19}}
-\headcommand {\beamer@subsectionentry {0}{3}{1}{20}{Appels syst\IeC {\`e}mes}}\headcommand {\beamer@subsectionpages {20}{19}}
-\headcommand {\slideentry {3}{1}{1}{20/20}{Appels syst\IeC {\`e}mes}{0}}
-\headcommand {\beamer@framepages {20}{20}}
-\headcommand {\slideentry {3}{1}{2}{21/22}{Appels syst\IeC {\`e}mes}{0}}
-\headcommand {\beamer@framepages {21}{22}}
-\headcommand {\slideentry {3}{1}{3}{23/23}{Appels syst\IeC {\`e}mes}{0}}
-\headcommand {\beamer@framepages {23}{23}}
-\headcommand {\sectionentry {4}{Syst\IeC {\`e}me de fichiers}{24}{Syst\IeC {\`e}me de fichiers}{0}}
-\headcommand {\beamer@sectionpages {20}{23}}
-\headcommand {\beamer@subsectionpages {20}{23}}
-\headcommand {\beamer@subsectionentry {0}{4}{1}{24}{Arborescence de r\IeC {\'e}pertoires}}\headcommand {\beamer@subsectionpages {24}{23}}
-\headcommand {\slideentry {4}{1}{1}{24/24}{Arborescence de r\IeC {\'e}pertoires}{0}}
-\headcommand {\beamer@framepages {24}{24}}
-\headcommand {\slideentry {4}{1}{2}{25/25}{Arborescence de r\IeC {\'e}pertoires}{0}}
-\headcommand {\beamer@framepages {25}{25}}
-\headcommand {\slideentry {4}{1}{3}{26/30}{Arborescence de r\IeC {\'e}pertoires}{0}}
-\headcommand {\beamer@framepages {26}{30}}
-\headcommand {\beamer@subsectionentry {0}{4}{2}{31}{Page des fichiers ouverts}}\headcommand {\beamer@subsectionpages {24}{30}}
-\headcommand {\slideentry {4}{2}{1}{31/31}{Page des fichiers ouverts}{0}}
-\headcommand {\beamer@framepages {31}{31}}
-\headcommand {\slideentry {4}{2}{2}{32/33}{Page des fichiers ouverts}{0}}
-\headcommand {\beamer@framepages {32}{33}}
-\headcommand {\slideentry {4}{2}{3}{34/36}{Page des fichiers ouverts}{0}}
-\headcommand {\beamer@framepages {34}{36}}
-\headcommand {\slideentry {4}{2}{4}{37/37}{Page des fichiers ouverts}{0}}
+\headcommand {\slideentry {2}{2}{3}{14/20}{Appels Syst\IeC {\`e}me}{0}}
+\headcommand {\beamer@framepages {14}{20}}
+\headcommand {\slideentry {2}{2}{4}{21/26}{Appels Syst\IeC {\`e}me}{0}}
+\headcommand {\beamer@framepages {21}{26}}
+\headcommand {\beamer@sectionpages {5}{26}}
+\headcommand {\beamer@subsectionpages {10}{26}}
+\headcommand {\sectionentry {3}{M\IeC {\'e}moire virtuelle}{27}{M\IeC {\'e}moire virtuelle}{0}}
+\headcommand {\beamer@subsectionpages {27}{26}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{27}{M\IeC {\'e}moire virtuelle}}
+\headcommand {\slideentry {3}{1}{1}{27/27}{M\IeC {\'e}moire virtuelle}{0}}
+\headcommand {\beamer@framepages {27}{27}}
+\headcommand {\slideentry {3}{1}{2}{28/31}{M\IeC {\'e}moire virtuelle}{0}}
+\headcommand {\beamer@framepages {28}{31}}
+\headcommand {\beamer@subsectionpages {27}{31}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{32}{Multiprocessus}}
+\headcommand {\slideentry {3}{2}{1}{32/32}{Multiprocessus}{0}}
+\headcommand {\beamer@framepages {32}{32}}
+\headcommand {\slideentry {3}{2}{2}{33/35}{Multiprocessus}{0}}
+\headcommand {\beamer@framepages {33}{35}}
+\headcommand {\beamer@sectionpages {27}{35}}
+\headcommand {\beamer@subsectionpages {32}{35}}
+\headcommand {\sectionentry {4}{Syst\IeC {\`e}me de fichiers}{36}{Syst\IeC {\`e}me de fichiers}{0}}
+\headcommand {\beamer@subsectionpages {36}{35}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{36}{Arborescence de r\IeC {\'e}pertoires}}
+\headcommand {\slideentry {4}{1}{1}{36/36}{Arborescence de r\IeC {\'e}pertoires}{0}}
+\headcommand {\beamer@framepages {36}{36}}
+\headcommand {\slideentry {4}{1}{2}{37/37}{Arborescence de r\IeC {\'e}pertoires}{0}}
 \headcommand {\beamer@framepages {37}{37}}
-\headcommand {\beamer@partpages {1}{37}}
-\headcommand {\beamer@subsectionpages {31}{37}}
-\headcommand {\beamer@sectionpages {24}{37}}
-\headcommand {\beamer@documentpages {37}}
-\headcommand {\def \inserttotalframenumber {22}}
+\headcommand {\slideentry {4}{1}{3}{38/42}{Arborescence de r\IeC {\'e}pertoires}{0}}
+\headcommand {\beamer@framepages {38}{42}}
+\headcommand {\beamer@subsectionpages {36}{42}}
+\headcommand {\beamer@subsectionentry {0}{4}{2}{43}{Page des fichiers ouverts}}
+\headcommand {\slideentry {4}{2}{1}{43/43}{Page des fichiers ouverts}{0}}
+\headcommand {\beamer@framepages {43}{43}}
+\headcommand {\slideentry {4}{2}{2}{44/45}{Page des fichiers ouverts}{0}}
+\headcommand {\beamer@framepages {44}{45}}
+\headcommand {\slideentry {4}{2}{3}{46/48}{Page des fichiers ouverts}{0}}
+\headcommand {\beamer@framepages {46}{48}}
+\headcommand {\slideentry {4}{2}{4}{49/49}{Page des fichiers ouverts}{0}}
+\headcommand {\beamer@framepages {49}{49}}
+\headcommand {\beamer@partpages {1}{49}}
+\headcommand {\beamer@subsectionpages {43}{49}}
+\headcommand {\beamer@sectionpages {36}{49}}
+\headcommand {\beamer@documentpages {49}}
+\headcommand {\gdef \inserttotalframenumber {24}}

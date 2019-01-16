@@ -1,6 +1,6 @@
 #include "syscall.h" 
 
-semaphore sem;
+semaphore_t sem;
 
 void fonction3() {
 	Sem_P(sem);
@@ -29,6 +29,7 @@ void fonction() {
 
   	UserThreadExit();
 }
+
 int main() {
 	sem=Sem_Init(1);
 	UserThreadCreate(fonction, 0);		

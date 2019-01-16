@@ -1,6 +1,6 @@
 #include "syscall.h" 
 
-semaphore sem;
+semaphore_t sem;
 int a,b,c,d;
 
 void fonction4() {

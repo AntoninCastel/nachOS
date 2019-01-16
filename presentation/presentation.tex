@@ -195,6 +195,22 @@
 	\end{block}
 \end{frame}
 
+\begin{frame}{Autres ajouts}
+	\begin{block}{Synchronisation }
+		\begin{itemize}
+			\item<1-> Nouveau type "semaphore" au niveau utilisateur, avec les appels systèmes qui permettent de le manipuler.
+			\begin{itemize}
+				\item<2-> semaphore Sem\_Init(int nbJetons);
+				\item<3-> int Sem\_P(semaphore s);
+				\item<4-> int Sem\_V(semaphore s);
+				\item<5-> int Sem\_GetValue(semaphore s);
+				\item<6-> int Sem\_Destroy(semaphore s);
+			\end{itemize}
+			\item<7-> Fonctionnement avec une table de sémaphores noyau
+		\end{itemize}
+	\end{block}
+\end{frame}
+
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}[<+->]
@@ -211,25 +227,38 @@
 \end{frame}
 
 \section{Mémoire virtuelle}
-\subsection{Appels systèmes}
+\subsection{Mémoire virtuelle}
 \begin{frame}{Pagination}
-	\begin{block}{FrameProvicer}
+	\begin{block}{Mémoire virtuelle}
 		\begin{itemize}[<+->]
-			\item FIRST\_FREE\_FRAME
-			\item RANDOM\_FREE\_FRAME
-		\end{itemize}
-	\end{block}
-\end{frame}
-\begin{frame}{Multiprocessus}
-	\begin{block}{Appel système}
-		\begin{itemize}[<+->]
-			\item ForkExec(char* filename)
+			\item Frame Provider
+			\item Politiques d'allocation
 			\begin{itemize}
-				\item<1-> Crée un nouveau processus qui exécute le programme contenu dans le fichier filename.
+				\item FIRST\_FREE\_FRAME
+				\item RANDOM\_FREE\_FRAME			
 			\end{itemize}
 		\end{itemize}
 	\end{block}
 \end{frame}
+\subsection{Multiprocessus}
+
+\begin{frame}{Multiprocessus}
+	\begin{block}{Appel système}
+		\begin{itemize}[<+->]
+			\item Création d'un nouveau type utilisateur pid\_t
+			\item pid\_t ForkExec(char* filename)
+			\begin{itemize}
+				\item<1-> Crée un nouveau processus qui exécute le programme contenu dans le fichier filename.
+				\item<2-> Renvoie le pid\_t correspondant au nouveau processus
+			\end{itemize}
+			\item void waitpid(pid\_t p)
+			\begin{itemize}
+				\item<1-> Attend la terminaison du processus p
+			\end{itemize}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
 \section{Système de fichiers}
 \subsection{Arborescence de répertoires}
 \begin{frame}
@@ -305,6 +334,7 @@
 		\begin{itemize}
 			\item<1-> Interface entre le système de fichiers et le programme utilisateur.
 			\item<1-> Nachos permet l'ouverture de 10 fichiers simultanément au total au niveau des programmes utilisateurs
+			\item<1-> Les indices 0 et 1 se sont jamais utilisés, ils sont réservés.
 		\end{itemize}		
 	\end{block}	
   	\begin{center}

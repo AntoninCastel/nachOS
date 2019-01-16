@@ -58,10 +58,10 @@
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
-\institute[Université Grenoble-Alpes] % (optional, but mostly needed)
+\institute[Université Grenoble Alpes] % (optional, but mostly needed)
 {
   UFR IM²AG\\
-  Université Grenoble-Alpes
+  Université Grenoble Alpes
 }
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
@@ -198,13 +198,13 @@
 \begin{frame}{Autres ajouts}
 	\begin{block}{Synchronisation }
 		\begin{itemize}
-			\item<1-> Nouveau type "semaphore" au niveau utilisateur, avec les appels systèmes qui permettent de le manipuler.
+			\item<1-> Nouveau type \texttt{semaphore\_t} au niveau utilisateur, avec les appels systèmes qui permettent de le manipuler.
 			\begin{itemize}
-				\item<2-> semaphore Sem\_Init(int nbJetons);
-				\item<3-> int Sem\_P(semaphore s);
-				\item<4-> int Sem\_V(semaphore s);
-				\item<5-> int Sem\_GetValue(semaphore s);
-				\item<6-> int Sem\_Destroy(semaphore s);
+				\item<2-> semaphore\_t Sem\_Init(int nbJetons);
+				\item<3-> int Sem\_P(semaphore\_t s);
+				\item<4-> int Sem\_V(semaphore\_t s);
+				\item<5-> int Sem\_GetValue(semaphore\_t s);
+				\item<6-> int Sem\_Destroy(semaphore\_t s);
 			\end{itemize}
 			\item<7-> Fonctionnement avec une table de sémaphores noyau
 		\end{itemize}

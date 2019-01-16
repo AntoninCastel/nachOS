@@ -1,6 +1,6 @@
 #include "syscall.h"
 
-semaphore s;
+semaphore_t s;
 
 void f1(){
 	int i;

@@ -2,9 +2,9 @@
 
 #define N 100                         /* nombre de places dans le tampon */
 
-semaphore mutex;  /* contrôle d'accès au tampon */ 
-semaphore vide;     /* nb de places libres */
-semaphore plein;   /* nb de places occupées */
+semaphore_t mutex;  /* contrôle d'accès au tampon */ 
+semaphore_t vide;     /* nb de places libres */
+semaphore_t plein;   /* nb de places occupées */
  
 int buffer[100];
 

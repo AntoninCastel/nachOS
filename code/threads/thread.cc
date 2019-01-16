@@ -19,6 +19,7 @@
 #include "switch.h"
 #include "synch.h"
 #include "system.h"
+#include "synch.h"
 
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
@@ -34,12 +35,13 @@
 
 Thread::Thread (const char *threadName)
 {
-    isPrimaryThread = false;
+    isPrimaryProcess = false;
     id = -2;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    edit_semaphores = new Semaphore("Edit Semaphore", 1);
 #ifdef USER_PROGRAM
     space = NULL;
     // FBT: Need to initialize special registers of simulator to 0

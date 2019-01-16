@@ -119,6 +119,12 @@ void ExceptionHandler(ExceptionType which) {
 	case SC_ForkExec:
 		Syscall_ForkExec();
 		break;
+	case SC_waitpid:
+		Syscall_waitpid();
+		break;
+	case SC_Proc_Exit:
+		Syscall_Proc_Exit();
+		break;
 #ifdef FILESYS
 	 case SC_Create:
 		Syscall_Create();
@@ -146,15 +152,12 @@ void ExceptionHandler(ExceptionType which) {
 
 void Syscall_Exit(){
     machine->WriteRegister(2,machine->ReadRegister(4));
-    if(currentThread->isPrimaryThread) {
-        if(currentThread->space->CheckNbThreadEnCours()!=0){
-        	currentThread->space->SetExitingMain(); //Les autres threads en cours savent maintenant 
-        	currentThread->space->WaitingMain->P();  //attente que les derniers threads terminent
-        }
+    if(currentThread->space->CheckNbThreadEnCours()!=0){
+        currentThread->space->SetExitingMain(); //Les autres threads en cours savent maintenant 
+        currentThread->space->WaitingMain->P();  //attente que les derniers threads terminent
+    }
+    if(currentThread->isPrimaryProcess) {
         interrupt->Halt();
-    } else { //un thread fait Exit.
-   	    //do_UserThreadExit();
-        currentThread->Finish();
     }
 }
 
@@ -287,3 +290,12 @@ void Syscall_Close(){
 	do_UserClose(fileid);
 }
 #endif
+
+void Syscall_waitpid() {
+	int pid = machine->ReadRegister(4);
+    do_waitpid(pid);
+}
+
+void Syscall_Proc_Exit() {
+    do_process_exit();
+}

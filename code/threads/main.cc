@@ -99,7 +99,7 @@ main (int argc, char **argv)
 	  if (!strcmp (*argv, "-x"))
 	    {			// run a user program
 		ASSERT (argc > 1);
-        currentThread->isPrimaryThread = true;
+        currentThread->isPrimaryProcess = true;
 		StartProcess (*(argv + 1));
 		argCount = 2;
 	    }

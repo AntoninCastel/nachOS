@@ -2,11 +2,12 @@
 
 int main() {
     int i;
-    ForkExec("./infiniteA");
-    ForkExec("./infiniteB");
+    pid_t pid = ForkExec("./infiniteA");
+    pid_t pid2 = ForkExec("./infiniteB");
     for(i = 0; i < 100; ++i) {
         PutChar('c');
     }
-    while(1) {}
+    waitpid(pid);
+    waitpid(pid2);
     return 0;
 }

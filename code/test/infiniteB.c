@@ -5,5 +5,6 @@ int main() {
     for(i = 0; i < 10; ++i) {
         PutChar('b');
     }
+    Proc_Exit();
     return 0;
 }

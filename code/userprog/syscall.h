@@ -48,6 +48,8 @@
 #define SC_Sem_GetValue 23
 #define SC_Sem_Destroy 24
 #define SC_ForkExec 25
+#define SC_waitpid 26
+#define SC_Proc_Exit 27
 
 
 #ifdef IN_USER_MODE
@@ -67,8 +69,7 @@
  */
 
 typedef int semaphore;
-
-
+typedef int pid_t;
 
 /**
  * \brief Stops Nachos, and print out performance stats
@@ -205,7 +206,9 @@ int Sem_V(semaphore s);
 int Sem_GetValue(semaphore s);
 int Sem_Destroy(semaphore s);
 
-void ForkExec(char* file);
+pid_t ForkExec(char* file);
+void waitpid(pid_t pid);
+void Proc_Exit();
 
 #endif // IN_USER_MODE
 

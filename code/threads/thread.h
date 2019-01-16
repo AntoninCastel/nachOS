@@ -37,6 +37,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 
+#include <map>
 #include "copyright.h"
 #include "utility.h"
 
@@ -73,6 +74,7 @@ extern void ThreadPrint (int arg);
 //  Some threads also belong to a user address space; threads
 //  that only run in the kernel have a NULL address space.
 
+class Semaphore;
 
 class Thread
 {
@@ -88,6 +90,9 @@ class Thread
     // NOTE -- thread being deleted
     // must not be running when delete 
     // is called
+
+     // PID utilisé pour la manipulation de processus
+     pid_t pid;
 
     // basic thread operations
     int id;
@@ -117,7 +122,14 @@ class Thread
     	printf ("%s, ", name);
     }
     
-    bool isPrimaryThread;
+    // Semaphores qui permet d'attendre les fils 
+    std::map<pid_t, Semaphore*> sem_children;
+    // Semaphore qui correspond à son sémaphore dans la map de son parent
+    Semaphore* self_sem_for_parent; 
+    // Semaphore qui protege les modifications des semaphores des processus fils
+    Semaphore* edit_semaphores;
+
+    bool isPrimaryProcess;
 
   private:
     // some of the private data for this class is listed above

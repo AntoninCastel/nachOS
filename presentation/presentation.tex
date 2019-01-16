@@ -115,7 +115,7 @@
 % and table of contents.
 
 \section{Nachos Input-Output}
-\subsection{Appels systèmes et choix d’implémentations }
+\subsection{Appels systèmes et choix d'implémentations }
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -130,7 +130,8 @@
 	\begin{block}{Choix d’implémentation}
 		\begin{itemize}
 			\item Limite de chaîne de caractères traités de 200
-			\item Les espaces sont lus comme les autres caractères 
+			\item Les '$\backslash$0' et les 'EOF' sont pris en compte
+			\item La fonction PutString n'est pas synchrone 
 		\end{itemize}		
 	\end{block}
 \end{frame}
@@ -146,34 +147,34 @@
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}
+			\item L'identifiant d'un Thread est unique, il n'est jamais réutilisé
+			\item Le nombre de Threads est limité à 50 
 			\item L'emplacement dans la pile des Threads est géré avec une Bitmap
 			\item 3 pages sont allouées à chaque Thread utilisateur 
-			\item La valeur maximale de SP que le main peut atteindre est fixée 
-			\item Le Thread Main n’apparaît pas dans la Bitmap
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
 	  	\includegraphics[scale=0.23]{images/FS3.png}
   	\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
 	  	\includegraphics[scale=0.23]{images/FS4.png}
   	\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Illustration du placement des Threads}
   	\begin{center}
 	  	\includegraphics[scale=0.25]{images/FS5.png}
   	\end{center}
 \end{frame}
 
 
-\subsection{Appels Système}
+\subsection{Fonctionnalités}
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -194,6 +195,19 @@
 	\end{block}
 \end{frame}
 
+\begin{frame}
+	\begin{block}{Choix d’implémentation }
+		\begin{itemize}[<+->]
+			\item La gestion de la terminaison des Threads est laissée à l'utilisateur, sauf pour le main
+			\item Un Thread peut faire un \texttt{UserThreadJoin} sur n'importe quel Thread créé lors de l'exécution du programme
+			\item C'est à l'utilisateur d'utiliser correctement \texttt{UserThreadJoin}
+			\begin{itemize}
+				\item Par exemple, l'utiliser sur un identifiant de Thread incorrect donnera lieu à un comportement indéfini.
+			\end{itemize}			
+		\end{itemize}
+	\end{block}
+\end{frame}
+
 \begin{frame}{Autres ajouts}
 	\begin{block}{Synchronisation }
 		\begin{itemize}
@@ -210,20 +224,7 @@
 	\end{block}
 \end{frame}
 
-\begin{frame}
-	\begin{block}{Choix d’implémentation }
-		\begin{itemize}[<+->]
-			\item Le nombre de Threads est limité à 50 
-			\item La gestion de la terminaison des Threads est laissée à l'utilisateur, sauf pour le main
-			\item Un Thread peut faire un UserThreadJoin() sur n'importe quel Thread créé lors de l'exécution du programme
-			\item L'identifiant d'un Thread est unique, il n'est jamais réutilisé
-			\item C'est à l'utilisateur d'utiliser correctement UserThreadJoin() 
-			\begin{itemize}
-				\item Par exemple, l'utiliser sur un identifiant de Thread incorrect donnera lieu à un comportement indéfini.
-			\end{itemize}			
-		\end{itemize}
-	\end{block}
-\end{frame}
+
 
 \section{Mémoire virtuelle}
 \subsection{Mémoire virtuelle}
@@ -254,10 +255,19 @@
 			\begin{itemize}
 				\item<1-> Attend la terminaison du processus p
 			\end{itemize}
+			\item void Proc\_Exit()
+			\begin{itemize}
+				\item<1-> Termine le processus
+			\end{itemize}			
 		\end{itemize}
 	\end{block}
 \end{frame}
 
+\begin{frame}{Liens de parenté entre processus}
+  	\begin{center}
+	  	\includegraphics[scale=0.19]{images/FS6.png}
+  	\end{center}
+\end{frame}
 \section{Système de fichiers}
 \subsection{Arborescence de répertoires}
 \begin{frame}
@@ -287,9 +297,8 @@
   	\end{itemize}
   \end{block}
 \end{frame}
+
 \subsection{Page des fichiers ouverts}
-
-
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}

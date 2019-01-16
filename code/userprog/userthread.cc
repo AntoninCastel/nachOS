@@ -33,6 +33,7 @@ static void StartUserThread(int f) {
 	}
 	machine->WriteRegister(PCReg, p->fn);
 	machine->WriteRegister(NextPCReg, p->fn+4);
+	machine->WriteRegister(4,p->param);
 	currentThread->position=currentThread->space ->getBitMap()-> Find();; //met à jour le numéro de bloc du thread (position)
 	int ThreadSP = (currentThread->space->getSpMaxMain()-currentThread->position * (PAGES_PER_THREADS*PageSize) );
 	machine->WriteRegister(StackReg,  ThreadSP);

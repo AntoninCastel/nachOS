@@ -20,6 +20,7 @@ void producteur ()
     PutString("**debut sc PRODUCTEUR**\n");
     while(i<N && buffer[i]){i++;}
     buffer[i]=objet;				   /* mettre l'objet dans le tampon */ 
+    i=0;
     PutString("\t**fin sc PRODUCTEUR**\n");
     Sem_V(mutex) ;                     /* sortie de section critique */ 
     Sem_V(plein) ;                     /* inc. nb place occupées */ 

@@ -183,7 +183,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 	
 \myparagraph{Sem\_P}\\
 \textsc{Synopsis}\\	
-	\texttt{int Sem\P(semaphore s)}\\
+	\texttt{int Sem\_P(semaphore s)}\\
 
 \textsc{Description}\\
 	Permet de prendre une unité sur le sémaphore dont l'identifiant \texttt{s} est passé en paramètre.\\
@@ -328,6 +328,9 @@ Nous avons également implémenté les appels système \textbf{PutInt} et \textb
 Pour ces fonctions, nous avons du écrire une fonction \textbf{CopyStringToMachine}, qui est l'inverse de \textbf{CopyStringFromMachine}, elle écrit une chaîne d'une certaine taille dans la mémoire de la machine MIPS à partir d'une adresse données.\\
 Cette fonction est nécessaire pour écrire l'entier lu (de 4 octets) à l'adresse passée en paramètre de GetInt.
 \subsection*{Multi-Threading}
+\myparagraph{Gestion des Threads}
+\myparagraph{Synchronisation des Threads}
+Pour synchroniser son utilisation de plusieurs threads, l'utilisateur dispose de sémaphores. Pour cela, nous avons crée au niveau noyau un tableau de \texttt{Semaphore*} 
 
 \subsection*{Mémoire virtuelle}
 

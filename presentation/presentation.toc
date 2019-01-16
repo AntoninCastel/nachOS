@@ -1,3 +1,4 @@
+\beamer@endinputifotherversion {3.36pt}
 \beamer@sectionintoc {1}{Nachos Input-Output}{3}{0}{1}
 \beamer@subsectionintoc {1}{1}{Appels syst\IeC {\`e}mes et choix d\begingroup \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode {’}intopreamble]impl\IeC {\'e}mentations }{3}{0}{1}
 \beamer@sectionintoc {2}{Multi-Threading}{5}{0}{2}

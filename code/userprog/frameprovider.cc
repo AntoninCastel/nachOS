@@ -1,6 +1,8 @@
 #include "frameprovider.h"
+#include "synch.h"
 
 FrameProvider::FrameProvider(int nb_frames, allocation_policy policy) {
+    m_lock = new Semaphore("FrameProvider", 1);
     srand(time(NULL));
     m_frames = new BitMap(nb_frames);
     m_alloc_policy = policy;
@@ -9,22 +11,38 @@ FrameProvider::FrameProvider(int nb_frames, allocation_policy policy) {
 
 FrameProvider::~FrameProvider() {
     delete m_frames;
+    delete m_lock;
 }
 
 int FrameProvider::GetEmptyFrame() {
+    m_lock->P();
+    int frame;
     switch(m_alloc_policy) {
-    case FIRST_FREE_FRAME:  return first_free_frame();
-    case RANDOM_FREE_FRAME: return random_free_frame();
-    default:    return -1;
+    case FIRST_FREE_FRAME:
+        frame = first_free_frame(); 
+        break;
+    case RANDOM_FREE_FRAME: 
+        frame = random_free_frame();
+        break;
+    default:
+        frame = -1;
     }
+    //fprintf(stderr, "frame %d attribuée\n", frame);
+    m_lock->V();
+    return frame;
 }
 
 void FrameProvider::ReleaseFrame(int frame_id) {
+    m_lock->P();
     m_frames->Clear(frame_id);
+    m_lock->V();
 }
 
 int FrameProvider::NumAvailFrame() {
-    return m_frames->NumClear();
+    m_lock->P();
+    int nb_avail_frames = m_frames->NumClear();
+    m_lock->V();
+    return nb_avail_frames;
 }
 
 int FrameProvider::first_free_frame() {

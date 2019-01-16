@@ -1,6 +1,7 @@
 #include "thread.h"
 #include "system.h"
 #include "userprocess.h"
+#include "synch.h"
 
 void StartForkProcess(int arg) {
     currentThread->space->InitRegisters();	// set the initial register values
@@ -10,6 +11,8 @@ void StartForkProcess(int arg) {
 }
 
 void do_UserForkExec(char *buff) {
+    IntStatus oldlevel = interrupt->SetLevel(IntOff);
+
     Thread* newThread = new Thread(buff);
     OpenFile *executable = fileSystem->Open (buff);
     AddrSpace *space;
@@ -19,14 +22,10 @@ void do_UserForkExec(char *buff) {
 	    return;
     }
 
-    //currentThread->space->SaveState();
-
     space = new AddrSpace (executable);
     newThread->space = space;
-
     delete executable;		// close file
 
-    //currentThread->space->RestoreState();	// load page table register
-
+    interrupt->SetLevel(oldlevel);
     newThread->Fork((VoidFunctionPtr)StartForkProcess, 0);
 }

@@ -185,6 +185,9 @@ Machine::DumpState()
 	    printf("\tRA(%d):\t0x%x%s", i, registers[i],
 		   ((i % 4) == 3) ? "\n" : "");
 	    break;
+        sition);
+        (gdb) c
+
 	  
 	  default:
 	    printf("\t%d:\t0x%x%s", i, registers[i],

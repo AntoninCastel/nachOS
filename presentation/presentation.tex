@@ -114,7 +114,7 @@
 % Section and subsections will appear in the presentation overview
 % and table of contents.
 
-\section{Nachos Input-Output}
+\section{Nachos Entrées-Sorties}
 \subsection{Appels systèmes et choix d'implémentations }
 \begin{frame}
 	\begin{block}{Appels systèmes}
@@ -130,24 +130,17 @@
 	\begin{block}{Choix d’implémentation}
 		\begin{itemize}
 			\item Limite de chaîne de caractères traités de 200
-			\item Les '$\backslash$0' et les 'EOF' sont pris en compte
+			\item Les '$\backslash$n' et les 'EOF' sont pris en compte
 			\item La fonction PutString n'est pas synchrone 
 		\end{itemize}		
 	\end{block}
 \end{frame}
-
-
-
-
-
-
 
 \section{Multi-Threading}
 \subsection{Gestion de la pile}
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}
-			\item L'identifiant d'un Thread est unique, il n'est jamais réutilisé
 			\item Le nombre de Threads est limité à 50 
 			\item L'emplacement dans la pile des Threads est géré avec une Bitmap
 			\item 3 pages sont allouées à chaque Thread utilisateur 
@@ -157,19 +150,19 @@
 
 \begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.23]{images/FS3.png}
+	  	\includegraphics[scale=0.24]{images/FS3.png}
   	\end{center}
 \end{frame}
 
 \begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.23]{images/FS4.png}
+	  	\includegraphics[scale=0.24]{images/FS4.png}
   	\end{center}
 \end{frame}
 
 \begin{frame}{Illustration du placement des Threads}
   	\begin{center}
-	  	\includegraphics[scale=0.25]{images/FS5.png}
+	  	\includegraphics[scale=0.24]{images/FS5.png}
   	\end{center}
 \end{frame}
 
@@ -198,6 +191,7 @@
 \begin{frame}
 	\begin{block}{Choix d’implémentation }
 		\begin{itemize}[<+->]
+			\item L'identifiant d'un Thread est unique, il n'est jamais réutilisé
 			\item La gestion de la terminaison des Threads est laissée à l'utilisateur, sauf pour le main
 			\item Un Thread peut faire un \texttt{UserThreadJoin} sur n'importe quel Thread créé lors de l'exécution du programme
 			\item C'est à l'utilisateur d'utiliser correctement \texttt{UserThreadJoin}
@@ -222,6 +216,9 @@
 			\item<7-> Fonctionnement avec une table de sémaphores noyau
 		\end{itemize}
 	\end{block}
+	  	\begin{center}
+	  		\includegraphics[scale=0.14]{images/FS7.png}
+  	\end{center}
 \end{frame}
 
 
@@ -240,9 +237,9 @@
 		\end{itemize}
 	\end{block}
 \end{frame}
-\subsection{Multiprocessus}
+\subsection{Multi-Processus}
 
-\begin{frame}{Multiprocessus}
+\begin{frame}{Multi-Processus}
 	\begin{block}{Appel système}
 		\begin{itemize}[<+->]
 			\item Création d'un nouveau type utilisateur pid\_t
@@ -278,7 +275,7 @@
   	\end{itemize}  
   \end{block}
   \begin{center}
-	  \includegraphics[scale=0.2]{images/FS1.png}
+	  \includegraphics[scale=0.21]{images/FS1.png}
   \end{center}
 \end{frame}
 
@@ -350,5 +347,8 @@
   	\end{center}	
 \end{frame}
 
+\begin{frame}
+  \titlepage
+\end{frame}
 \end{document}
 

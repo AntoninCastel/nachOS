@@ -206,11 +206,13 @@ void AddrSpace::PrintTabThread(){
 }
 
 void AddrSpace::ThreadExist(int id){
-    TabThreads[id]->P();
+    if(id >= 0)
+        TabThreads[id]->P();
 }
 
 void AddrSpace::ThreadNoLongerExist(int id){
-    TabThreads[id]->V();
+    if(id >= 0)
+        TabThreads[id]->V();
 }
 
 int AddrSpace::CheckNbThreadEnCours(){

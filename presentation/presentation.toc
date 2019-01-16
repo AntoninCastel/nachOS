@@ -1,0 +1,10 @@
+\beamer@sectionintoc {1}{Nachos Input-Output}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Appels syst\IeC {\`e}mes et choix d\begingroup \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode {’}intopreamble]impl\IeC {\'e}mentations }{3}{0}{1}
+\beamer@sectionintoc {2}{Multi-Threading}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{Gestion de la pile}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{Appels Syst\IeC {\`e}me}{10}{0}{2}
+\beamer@sectionintoc {3}{M\IeC {\'e}moire virtuelle}{20}{0}{3}
+\beamer@subsectionintoc {3}{1}{Appels syst\IeC {\`e}mes}{20}{0}{3}
+\beamer@sectionintoc {4}{Syst\IeC {\`e}me de fichiers}{24}{0}{4}
+\beamer@subsectionintoc {4}{1}{Arborescence de r\IeC {\'e}pertoires}{24}{0}{4}
+\beamer@subsectionintoc {4}{2}{Page des fichiers ouverts}{31}{0}{4}

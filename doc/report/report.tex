@@ -224,18 +224,78 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 	
 \textsc{Note}\\
 	Les fonctions \texttt{Sem\_P}, \texttt{Sem\_V} ou \texttt{Sem\_GetValue} renverront une erreur après destruction de \texttt{s}.\\
+\newpage
+
+\subsection*{Système de fichiers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Create}\\
+
+\textsc{Synopsis}\\	
+	\texttt{int Create(char *name, int size)}\\
 	
+\textsc{Description}\\
+	Permet de créer un fichier Nachos de taille \textit{size} et de nom \textit{name} dans le répertoire courant.\\	
 
+\textsc{Valeur de retour}\\
+1 si la création du fichier est possible, 0 sinon.\\
 
+\textsc{Note}\\
+	Les répertoires Nachos sont limités à 8 entrées utilisateur.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Open}\\
 
+\textsc{Synopsis}\\	
+	\texttt{OpenFileId Open (char *name)}\\
+	
+\textsc{Description}\\
+	Ouvre le fichier \textit{name} du répertoire courant.\\	
 
+\textsc{Valeur de retour}\\
+	Retourne un OpenFileId permettant de manipuler le fichier si l'ouverture est possible. Cet OpenFileId vaut -1 si l'ouverture est impossible.\\	
 
+\textsc{Note}\\
+	Il existe une limite de 10 fichiers ouverts simultanément dans le système. Si cette fonction est utilisée alors que cette limite est atteinte, la valeur renvoyée sera 0.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Write}\\
 
+\textsc{Synopsis}\\	
+	\texttt{int Write (char *buffer, int size, OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Écrit le contenu de \textit{buffer}, de taille \textit{size} à la position courant dans le fichier \textit{id}.  \\	
 
+\textsc{Valeur de retour}\\
+	Retourne le nombre de bytes effectivement écrits.\\	
 
+\textsc{Note}\\
+	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Read}\\
+
+\textsc{Synopsis}\\	
+	\texttt{int Read (char *buffer, int size, OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Récupère un nombre \textit{size} d'octets depuis la position courante du fichier \textit{id} et les place dans \textit{buffer}.  \\	
+
+\textsc{Valeur de retour}\\
+	Retourne le nombre de bytes effectivement lus.\\
+	
+\textsc{Note}\\
+	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Close}\\
+
+\textsc{Synopsis}\\	
+	\texttt{void Close (OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Ferme le fichier \textit{id} pour tout les programmes utilisateurs.  \\	
+	
+\textsc{Note}\\
+	Le fichier ne sera pas plus manipulable après cette fonction. Il est nécessaire d'utiliser en paramètres un \textbf{OpenFileId} initialement retourné par la fonction Open.\\	
 	
 	
-
 \section*{Tests utilisateurs}
 \subsection*{Entrées/sorties}
 Nous avons réalisé des programmes de tests qui
@@ -256,7 +316,49 @@ Les tests effectués sont des cas de
 Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} Peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
 
 \section*{Implémentation}
+\subsection*{Entrées/sorties}
 
+Pour créer les entrées sorties synchrones, nous avons utilisé les opérations asynchrones fournies par la console de base de Nachos.\\
+Nous avons rendu ces opérations synchrones grâce à des Sémaphores et des Verrous.\\
+Les opérations synchrones \textbf{GetString} et \textbf{PutString} sont respectivement des enchaînements de \textbf{GetChar} et \textbf{PutChar} synchrones.
+Nous avons pris la décision de ne protéger que \textbf{PutChar} au niveau des accès concurrents, et pas \textbf{PutString}. Plusieurs \textbf{PutString} peuvent avoir lieu en même temps, les chaînes de caractères seront donc potentiellement entremêlées à l'écran.\\
+Les fonction permettant de manipuler des chaînes de caractères sont capable de gérer des chaînes d'au maximum 200 caractères.\\
+
+Nous avons également implémenté les appels système \textbf{PutInt} et \textbf{GetInt}, permettant d'écrire et de lire des entier.\\
+Pour ces fonctions, nous avons du écrire une fonction \textbf{CopyStringToMachine}, qui est l'inverse de \textbf{CopyStringFromMachine}, elle écrit une chaîne d'une certaine taille dans la mémoire de la machine MIPS à partir d'une adresse données.\\
+Cette fonction est nécessaire pour écrire l'entier lu (de 4 octets) à l'adresse passée en paramètre de GetInt.
+\subsection*{Multi-Threading}
+
+\subsection*{Mémoire virtuelle}
+
+\subsection*{Système de fichiers}
+\myparagraph{Arborescence de répertoires}\\
+	
+Pour créer une arborescence de fichiers, nous avons ajouté aux \textit{i}-nodes des fichiers plusieurs champs.
+\begin{itemize}
+\item \textbf{IsDirectory} permettant de savoir si le fichier correspondant à l'\textit{i}-node est un répertoire.
+\item \textbf{DirectorySector} permettant de savoir sur quel secteur du disque se trouve cette \textit{i}-node.
+\item \textbf{ParentDirectorySector} permettant de savoir sur quel secteur du disque trouver l'\textit{i}-node du fichier correspondant au répertoire parent.
+\end{itemize}
+Quand les fichiers ne représentent pas un répertoire, ces champs sont laissés vide. \\
+Le répertoire Root contient l'information sur le secteur contenant l'\textit{i}-node du fichier représentant le répertoire courant, on peut donc y acceder via le répertoire \textbf{Root}, qu'on sait tout le temps où trouver car l'\textit{i}-node correspondante est toujours sur le secteur 1.	\\	
+L'opération \textbf{cd} est donc simplement un changement du numéro de "secteur courant" dans le fichier du répertoire \textbf{Root}.  \\
+L'opération \textbf{mkdir} créé donc un nouveau répertoire dans le répertoire courant, qui contient deux fichiers, "." et "..", qui sont respectivement le répertoire courant et le répertoire parent.
+	
+\myparagraph{Table système des fichiers ouverts}\\	
+Pour créer la table des fichiers ouverts, nous avons ajouté plusieurs champs à la classe \textbf{filesys} :
+\begin{itemize}
+\item Une table de noms, contenant les noms des fichiers ouverts.
+\item Une Bitmap, permettant de savoir quelle entrées de la table sont disponibles
+\item Une table d'OpenFile*, permettant d’accéder à un fichier ouvert.
+\end{itemize}
+L'utilisateur lui, ne manipule que les indices de ces tableaux.\\
+Cette table permet de faire l'interface entre le programme utilisateur et le système de fichiers.\\
+
+Par exemple, si un programme utilisateur veut faire un \textbf{Open} sur un fichier qui n'est pas ouvert, alors on va chercher dans la Bitmap un indice libre, mettre le nom du fichier à cet indice dans la table des noms, l'ouvrir, et mettre le OpenFile* correspondant à cet indice dans la table d'OpenFile.
+La valeur renvoyée à l'utilisateur sera l'indice.\\
+
+Si, en revanche, le fichier apparaît déjà dans la table des noms, alors l'indice où ce fichier à été trouvé est renvoyé à l'utilisateur, car ça signifie qu'il est déjà ouvert.
 
 \section*{Organisation du travail}
 Le travail s'organise le plus souvent avec deux machines. Ces deux machines permettent à tout le groupe d'avancer dans la programmation d'une fonctionnalité et de faire de la recherche d'autre part (prototype exact, fichiers à inclure etc...). La machine où se fait le développement et le débuggage est souvent branchée à un second écran plus grand afin que tout le groupe puisse voir clairement le code ou les étapes de débuggage.\\

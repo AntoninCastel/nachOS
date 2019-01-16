@@ -259,6 +259,26 @@
 	\end{block}
 \end{frame}
 
+\subsection{Multiprocessus}
+
+\begin{frame}{Multiprocessus}
+	\begin{block}{Appel système}
+		\begin{itemize}[<+->]
+			\item Création d'un nouveau type utilisateur pid\_t
+			\item pid\_t ForkExec(char* filename)
+			\begin{itemize}
+				\item<1-> Crée un nouveau processus qui exécute le programme contenu dans le fichier filename.
+				\item<2-> Renvoie le pid\_t correspondant au nouveau processus
+			\end{itemize}
+			\item void waitpid(pid\_t p)
+			\begin{itemize}
+				\item<1-> Attend la terminaison du processus p
+			\end{itemize}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+
 \section{Système de fichiers}
 \subsection{Arborescence de répertoires}
 \begin{frame}
@@ -288,6 +308,7 @@
   	\end{itemize}
   \end{block}
 \end{frame}
+
 \subsection{Page des fichiers ouverts}
 
 

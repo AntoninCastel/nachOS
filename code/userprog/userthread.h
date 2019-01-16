@@ -5,8 +5,8 @@
 class Semaphore;
 
 //Semaphore garantssant qu'un seul thread à la fois ne peut se trouver dans UserThreadCreate
-static Semaphore* ThreadCreation = new Semaphore ("lock thread create", 1);
-static Semaphore* ThreadEnding = new Semaphore ("lock thread exit",1);
+extern Semaphore* ThreadCreation;
+extern Semaphore* ThreadEnding;
 
 
 

@@ -329,6 +329,20 @@ Pour ces fonctions, nous avons du écrire une fonction \textbf{CopyStringToMachi
 Cette fonction est nécessaire pour écrire l'entier lu (de 4 octets) à l'adresse passée en paramètre de GetInt.
 \subsection*{Multi-Threading}
 \myparagraph{Gestion des Threads}
+
+\noindent
+Les étapes de création d'un nouveau Thread utilisateur sont les suivantes : 
+\begin{itemize}
+	\item Création d'un nouvel objet Thread
+	\item Création d'une structure de paramètres, avec un pointeur MIPS vers la fonction à exécuter dans ce nouveau Thread et ses arguments.
+	\item Fork de ce nouveau Thread, pour qu'il exécute la fonction StartUserThread, avec comme paramètre la structure créée auparavant.
+	\item La fonction StartUserThread écrit les registres PC et nextPC pour que la prochaine instruction soit la première instruction de la fonction passée en paramètre, ainsi que le SP du nouveau Thread.
+	\item On invoque ensuite machine$\rightarrow$run() pour lancer le nouveau Thread
+\end{itemize}
+Nous avons donné à chaque nouveau Thread utilisateur un identifiant unique, qui n'est jamais réutilisé.\\
+Chaque Thread utilisateur doit se terminer par la fonction \textbf{UserThreadExit}.
+Nous avons aussi créé un tableau de sémaphores 
+
 \myparagraph{Synchronisation des Threads}
 Pour synchroniser son utilisation de plusieurs threads, l'utilisateur dispose de sémaphores. Pour cela, nous avons crée au niveau noyau un tableau de \texttt{Semaphore*} 
 

@@ -153,7 +153,8 @@ void Syscall_Exit(){
         }
         interrupt->Halt();
     } else { //un thread fait Exit.
-   	    do_UserThreadExit();
+   	    //do_UserThreadExit();
+        currentThread->Finish();
     }
 }
 

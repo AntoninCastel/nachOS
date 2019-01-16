@@ -4,6 +4,8 @@
 #include <string>
 
 static void StartUserThread(int f);
+Semaphore* ThreadCreation = new Semaphore ("lock thread create", 1);
+Semaphore* ThreadEnding = new Semaphore ("lock thread exit",1);
 
 int do_UserThreadCreate(int f, int arg) {
     ThreadCreation->P();
@@ -58,9 +60,10 @@ void do_UserThreadExit(){
 
 void do_UserThreadJoin(int IdThreadAttendu) {
 	//fprintf(stderr, "Le main attend le thread %d\n",IdThreadAttendu );
-    ASSERT(IdThreadAttendu < NB_MAX_THREADS);
-    currentThread->space->TabThreads[IdThreadAttendu]->P();	
-    currentThread->space->TabThreads[IdThreadAttendu]->V();	
-	//fprintf(stderr, "Le thread %d s'est surement terminé\n",IdThreadAttendu );
+    if(IdThreadAttendu < NB_MAX_THREADS) {
+        currentThread->space->TabThreads[IdThreadAttendu]->P();	
+        currentThread->space->TabThreads[IdThreadAttendu]->V();	
+	    //fprintf(stderr, "Le thread %d s'est surement terminé\n",IdThreadAttendu );
+    }
 }
 

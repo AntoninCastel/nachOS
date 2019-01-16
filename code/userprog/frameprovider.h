@@ -4,6 +4,8 @@
 #include <ctime>
 #include "bitmap.h"
 
+class Semaphore;
+
 typedef enum {
     FIRST_FREE_FRAME,
     RANDOM_FREE_FRAME
@@ -19,6 +21,7 @@ public:
     int     NumAvailFrame();
 
 private:
+    Semaphore*          m_lock;
     int                 m_nb_frames;
     BitMap*             m_frames;
     allocation_policy   m_alloc_policy;

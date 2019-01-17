@@ -163,7 +163,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \myparagraph{Sem\_Init}
 	
 	\textsc{Synopsis}\\
-		\texttt{semaphore_t Sem\_Init(int n)}\\
+		\texttt{semaphore\_t Sem\_Init(int n)}\\
 
 \textsc{Description}\\
 	Permet d'initialiser un sémaphore avec \texttt{n} unités disponibles.\\
@@ -176,7 +176,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 	
 \myparagraph{Sem\_P}\\
 \textsc{Synopsis}\\	
-	\texttt{int Sem\_P(semaphore_t s)}\\
+	\texttt{int Sem\_P(semaphore\_t s)}\\
 
 \textsc{Description}\\
 	Permet de prendre une unité sur le sémaphore dont l'identifiant \texttt{s} est passé en paramètre.\\
@@ -187,7 +187,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \myparagraph{Sem\_V}\\
 \textsc{Synopsis}\\	
 
-\texttt{int Sem\_V(semaphore_t s)}\\
+\texttt{int Sem\_V(semaphore\_t s)}\\
 
 \textsc{Description}\\
 	Permet de rajouter une unité sur le sémaphore dont l'identifiant \texttt{s} est passé en paramètre.\\
@@ -197,7 +197,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 
 \myparagraph{Sem\_GetValue}\\
 \textsc{Synopsis}\\	
-	\texttt{int Sem\_GetValue(semaphore_t s)}\\
+	\texttt{int Sem\_GetValue(semaphore\_t s)}\\
 
 \textsc{Description}\\
 	Permet d'obtenir le nombre d'unité du sémaphore dont l'identifiant \texttt{s} est donné en paramètre.\\
@@ -207,7 +207,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 
 \myparagraph{Sem\_Destroy}\\
 \textsc{Synopsis}\\	
-	\texttt{int Sem\_Destroy(semaphore_t s)}\\
+	\texttt{int Sem\_Destroy(semaphore\_t s)}\\
 
 \textsc{Description}\\
 	Permet de libérer le sémaphore dont l'identifiant \texttt{s} est passé en paramètre.\\
@@ -332,13 +332,20 @@ Les étapes de création d'un nouveau Thread utilisateur sont les suivantes :
 	\item La fonction \texttt{StartUserThread} écrit les registres PC et nextPC pour que la prochaine instruction soit la première instruction de la fonction passée en paramètre, ainsi que le SP du nouveau Thread.
 	\item On invoque ensuite \texttt{machine$\rightarrow$run()} pour lancer le nouveau Thread
 \end{itemize}
-Nous avons donné à chaque nouveau Thread utilisateur un identifiant unique, qui n'est jamais réutilisé.\\
-Chaque Thread utilisateur doit se terminer par la fonction \textbf{UserThreadExit}.
-Nous avons aussi créé un tableau de sémaphores 
 
-\myparagraph{Synchronisation des Threads}
-Pour synchroniser son utilisation de plusieurs threads, l'utilisateur dispose de sémaphores. Pour cela, nous avons crée au niveau noyau un tableau de \texttt{Semaphore*} et l'utilisateur ne manipule que l'indice du sémaphore dans ce tableau. Un 
+Nous avons donné à chaque nouveau Thread utilisateur un identifiant unique, qui n'est jamais réutilisé. Le nombre de threads par processus qui peuvent être crées est fixé à 50.\\
 
+La pile du processus est découpée en bloc de 3 pages qui sont destinés à accueillir les piles de chaque thread utilisateur. Les séparations de ces blocs étant à des adresses précises et fixes, il faut savoir à quelle adresse doit commencer le premier bloc. Pour cela, nous avons décidé qu'après la création du premier thread utilisateur que cette borne soit placée 3 pages après le SP du thread "main" du processus. Pour gérer les allocations de blocs mémoire, on utilise une bitmap : un bit à 1 à l'indice \textit{i} indique que le bloc \textit{i} est alloué pour un thread utilisateur (et inversement pour un bit à 0). Le numéro de bloc alloué pour un thread est sauvegardé dans le thread. De cette manière, dès qu'un thread se termine il libère son bloc qui peut alors être ré-alloué par un autre thread. \\ 
+   
+Pour ce qui est de la terminaison des threads, ceux qui sont crées directement par le thread "main", ils terminent proprement sans que l'utilisateur n'ait à le demander (mais cela ne lui empêche pas de le faire). En effet, lorsque le thread "main" du processus se termine, l'espace d'adressage du processus est détruit : si des threads ne sont pas terminés à ce moment là et qu'ils tentent d'accéder à leur mémoire, cela produira un accès invalide à la mémoire et une erreur de segmentation fatale au système.\\
+Cependant, la terminaison des threads crées par un thread X hors thread "main" n'est pas attendue automatiquement attendu lors de la terminaison de X s'ils n'ont pas été attendus (l'espace d'adressage du processus n'est pas détruit dans ce cas là). C'est à l'utilisateur d'utiliser \texttt{UserThreadJoin} avec les \textit{tid} correspondants pour s'assurer de la bonne terminaison de ces threads. Un thread peut attendre n'importe quel autre thread crée par l'utilisateur (pas forcément les threads qu'il a lui même crée) et deux threads peuvent attendre la terminaison d'un même thread. Il faut remarquer que la terminaison d'un thread n'est "captée" par un \texttt{UserThreadJoin} que si le thread attendu à utilisé un appel à \texttt{UserThreadExit} pour se terminer proprement.
+ 
+
+\myparagraph{Synchronisation des Threads}\\
+Pour synchroniser l'utilisation de plusieurs threads, le système permet à l'utilisateur de créer des sémaphores qu'il pourra contrôler avec les appels système \texttt{Sem\_Init},\texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy}. Pour créer ces appels système, nous avons crée au niveau noyau un tableau où sont stockés les sémaphores noyau destinés à être contrôlés au niveau utilisateur.  Comme pour les threads utilisateurs, les identifiants de sémaphores utilisateur sont unique : le nombre de sémaphores utilisateur par processus est fixé à 20. Lors d'un appel à \texttt{Sem\_Init}, on renvoie un identifiant de sémaphore associé un sémaphore noyau du tableau. \\
+
+Pour savoir quels sont les sémaphores en cours d'utilisation, on utilise une bitmap où le numéro de chaque bit correspond à un indice dans le tableau. Si pour un indice donné, le bit est à 1 si le sémaphore est initialisé au niveau utilisateur, 0 sinon. Cela permet de vérifier à chaque appel des fonctions \texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy} que le sémaphore que l'utilisateur souhaite manipuler a bien été initialisé et n'a pas été détruit. Si un mauvais accès est effectué (si le bit correspondant est à 0), alors ces appels systèmes retournent -1 et protègent le système.
+ 
 \subsection*{Mémoire virtuelle}
 
 \subsection*{Système de fichiers}

@@ -60,6 +60,25 @@ case "$1" in
     kill -2 $pid
     read -e
     echo
+    echo "Création de threads en cascade qui sont tous attendus par le thread initial"
+    read -e
+    echo "Code source :"
+    cat $build/../test/thread_arborescence.c
+    echo -n "================================="
+    read -e
+    $prog -rs 1 -x $build/thread_arborescence &
+    read -e
+    echo
+    echo "Création de threads en cascade qui attendent leur fils"
+    read -e
+    echo "Code source :"
+    cat $build/../test/thread_cascade.c
+    echo -n "================================="
+    read -e
+    $prog -rs 1 -x $build/thread_cascade &
+    read -e
+    echo
+
 ;&
 "3")
     clear
@@ -79,8 +98,8 @@ case "$1" in
     read -e
     $prog -rs 1 -x $build/waitpid
     pid=$!
-    sleep 3
-    kill -2 $pid
+    sleep 1
+    #kill -2 $pid
     echo
     read -e
     echo
@@ -96,7 +115,7 @@ case "$1" in
     echo -n "================================="
     read -e
     $prog -rs 1 -x $build/fork2
-    sleep 3
-    kill -2 $pid
+    sleep 1
+    #kill -2 $pid
 ;&
 esac

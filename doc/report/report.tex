@@ -16,10 +16,18 @@
 \maketitle
 
 \section*{Fonctionnalités}
-Notre implémentation de NachOS permet de lancer des programmes écrits en C par l'utilisateur.
-Cette implémentation fournit des fonctionnalités d'entrées/sorties, de programmation avec plusieurs threads et plusieurs processus ainsi qu'un système de fichiers.
+Notre implémentation de NachOS fournit des fonctionnalités d'entrées/sorties, de programmation avec plusieurs threads et plusieurs processus afin de lancer des programmes écrits en C par l'utilisateur.
+Elle permet aussi de manipuler un système de fichiers.\\
+
+Pour utiliser nachOS, deux flavours sont disponibles;
+\begin{itemize}
+ \item  \texttt{nachos-userprog} qui permet d'exécuter des programmes utilisateur.
+ \item \texttt{nachos-FS} qui permet de manipuler les fichiers.
+ \end{itemize}
 
 \section*{Spécifications}
+
+
 \subsection*{Terminaison}
 \myparagraph{Exit}
 
@@ -27,7 +35,7 @@ Cette implémentation fournit des fonctionnalités d'entrées/sorties, de progra
 	\texttt{void Exit(int code)}\\
 	
 \textsc{Description}\\
-	Permet de terminer le programme utilisateur en renvoyant le code d'erreur \texttt{code}\\
+	Permet de terminer le programme utilisateur en renvoyant le code d'erreur \textit{code}\\
 	
 \textsc{Notes}\\
 	Dans le cas où cette fonction est appelée par le thread "main" du processus principal, elle consiste en un appel à \texttt{Halt} précédé d'une récupération du code d'erreur afin de faire retourner ce code par le programme. Si \texttt{code} = 0, alors le programme s'est terminé sans erreur.
@@ -43,7 +51,7 @@ Cette implémentation fournit des fonctionnalités d'entrées/sorties, de progra
 \subsection*{Entrées/sorties}
 \myparagraph{PutChar}
 
-\textsc{Synopsis}\\
+\textsc{Synopsis}\\ 
 	\texttt{void PutChar(char c)}\\
 	
 \textsc{Description}\\

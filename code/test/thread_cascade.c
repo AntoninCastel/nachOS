@@ -21,6 +21,7 @@ void fonction3() {
 	Sem_P(sem);
  	PutString("Troisieme\n");
 	Sem_V(sem);
+	UserThreadJoin(d);
   	UserThreadExit();
 }
 
@@ -45,6 +46,5 @@ int main() {
 	sem=Sem_Init(1);
 	a = UserThreadCreate(fonction, 0);		
   	UserThreadJoin(a);
-  	UserThreadJoin(d);
 	return 0;
 }

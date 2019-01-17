@@ -353,6 +353,18 @@ Les tests effectués sont des cas de
 \end{itemize}
 Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
 
+\subsection*{Multithreading}
+\noindent
+Pour tester la gestion et la synchronisation de plusieurs threads utilisateur, nous avons écrit plusieurs programmes de test permettant d'illustrer : 
+\begin{itemize}
+ \item La création de threads par le thread "main" et l'attente de leur terminaison dans le "main". Cela montre le bon fonctionnement de la création d'un thread par le "main", de sa terminaison et de son attente par "main".
+ \item  La création de threads en cascade (un thread créé dans "main" crée lui même un thread, qui crée lui-même un thread, etc.).  Chaque thread est attendu par son créateur. Cela met en valeur le fait que des threads créés par l'utilisateur peuvent eux même créer d'autres threads et attendre leur terminaison. Le système ne passe pas ce test, l’exécution se bloque après la création de tous les threads créés au moment de faire les \texttt{UserThreadJoin} : nous pensons qu'un interblocage se produit à ce moment là. 
+ \item La création de threads en cascade où tous les threads crées sont attendus par le "main". Cela permet de voir qu'un thread n'est pas obligé d'attendre seulement les threads qu'il a crée. Contrairement au test précédent, ce test est passé avec succès par le système.
+
+\item La synchronisation de l'affichage de chaînes de caractères par plusieurs threads, cela nous permet de tester le bon fonctionnement des sémaphores utilisateur lorsque plusieurs threads tentent d'afficher une chaîne à l'écran : sans synchronisation, les chaînes auraient de grandes chances d'être entremêlées (\texttt{PutString} n'est pas synchrone) mais en utilisant les sémaphores, les chaînes sont affichées sans être coupées.
+
+\item La synchronisation de threads utilisateur en utilisant un producteur-consommateur. Cela nous permet de mettre en évidence le bon fonctionnement des structures de synchronisation.
+\end{itemize}
 \subsection*{Système de fichiers}
 
 
@@ -369,7 +381,7 @@ Les fonctions permettant de manipuler des chaînes de caractères sont capable d
 Nous avons également implémenté les appels système \textbf{PutInt} et \textbf{GetInt}, permettant d'écrire et de lire des entiers.\\
 Pour ces fonctions, nous avons dû écrire une fonction \textbf{CopyStringToMachine}, qui est l'inverse de \textbf{CopyStringFromMachine}, elle écrit une chaîne d'une certaine taille dans la mémoire de la machine MIPS à partir d'une adresse données.\\
 Cette fonction est nécessaire pour écrire l'entier lu (de 4 octets) à l'adresse passée en paramètre de GetInt.
-\subsection*{Multi-Threading}
+\subsection*{Multithreading}
 \myparagraph{Gestion des Threads}
 
 \noindent

@@ -57,9 +57,11 @@ bool
 Directory::isDirectoryEmpty()
 {
     bool result = TRUE;
-    for(int i = 0; i < 10 ; i++ ){
-        if(this->table[i].inUse && !strcmp(this->table[i].name,".") && !strcmp(this->table[i].name,".."))
-            result = FALSE;
+    for(int i = 2; i < 10 ; i++ ){
+        if(this->table[i].inUse){
+            fprintf(stderr, "nom : %s\n",this->table[i].name );
+            return FALSE;
+        }
     }
     return result;
 }
@@ -122,7 +124,7 @@ Directory::Find(const char *name)
     int i = FindIndex(name);
 
     if (i != -1)
-	return table[i].sector;
+	   return table[i].sector;
     return -1;
 }
 

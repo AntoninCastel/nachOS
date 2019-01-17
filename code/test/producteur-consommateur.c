@@ -2,9 +2,9 @@
 
 #define N 100                         /* nombre de places dans le tampon */
 
-semaphore_t mutex;  /* contrôle d'accès au tampon */ 
-semaphore_t vide;     /* nb de places libres */
-semaphore_t plein;   /* nb de places occupées */
+semaphore_t mutex;                    /* contrôle d'accès au tampon */ 
+semaphore_t vide;                     /* nb de places libres */
+semaphore_t plein;                    /* nb de places occupées */
  
 int buffer[100];
 
@@ -22,7 +22,7 @@ void producteur ()
     Sem_P (mutex) ;                   /* entrée en section critique */ 
     PutString("**debut sc PRODUCTEUR**\n");
     while(i<N && buffer[i]){i++;}
-    buffer[i]=objet;				   /* mettre l'objet dans le tampon */ 
+    buffer[i]=objet;				           /* mettre l'objet dans le tampon */ 
     i=0;
     PutString("\t**fin sc PRODUCTEUR**\n");
     Sem_V(mutex) ;                     /* sortie de section critique */ 
@@ -50,7 +50,7 @@ void consommateur (void* p)
     PutChar('\n');
     Sem_V(mutex) ;                     /* sortie de la section critique */ 
     Sem_V(vide) ;                      /* inc. nb emplacements libres */ 
-    objet=objet-1;        					/* utiliser l'objet */  
+    objet=objet-1;        					   /* utiliser l'objet */  
   }
 }
 

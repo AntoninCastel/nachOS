@@ -361,6 +361,13 @@ Les tests effectués sont des cas de
 \end{itemize}
 Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
 
+\subsection*{Mémoire virtuelle}
+Pour tester si la mémoire virtuelle fonctionne correctement, nous avons utilisé les outils de debug à notre disposition, afin de constater que les frames son allouées correctement aux différents espaces d'adressage.\\
+
+En ce qui concerne le multi-processus, le test initial était un programme qui en appelait deux autres. Le programme principal et les deux autres affichaient respectivement 100 'c', 10 'a' et 10'b'. Au fur et à mesure de l'avancement des multi-processus, ce test nous a permis de détecter les erreurs en observant le défaut de comportement qu'il produisait. Le test ne se préoccupait pas de la terminaison des processus, ils terminaient par des boucles infinies. Au fur et à mesure du debuggage des autres fonctionnalités des multi-processus, ce test à fini par ne plus passer.\\
+Nous avons employé un test pour vérifier le comportement de \texttt{Proc\_Exit()} (qu'il attend bien la terminaison de ses fils). Il apparait que l'appel système ne se comporte pas comme attendu.\\
+Le même schéma de test a été déployé pour \texttt{waitpid}, avec création de processus en cascade. Ce test montre que \texttt{waitpid} ne fonctionne pas correctement lorsque plusieurs processus sont créés en cascade.
+
 \subsection*{Système de fichiers}
 
 

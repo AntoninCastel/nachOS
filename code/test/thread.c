@@ -1,3 +1,6 @@
+/* Création de plusieurs threads depuis le thread main, 
+ * et join sur chaque thread juste après.
+ */
 #include "syscall.h" 
 
 void fonction() {

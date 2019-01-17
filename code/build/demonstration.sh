@@ -13,6 +13,7 @@ progfs="$build/nachos-FS"
 
 case "$1" in
 "1")
+    clear
     echo "////////////////////////////////////////////////"
     echo "//                ENTREES/SORTIES             //"
     echo "////////////////////////////////////////////////"
@@ -40,6 +41,7 @@ case "$1" in
     echo
 ;&
 "2")
+    clear
     echo "////////////////////////////////////////////////"
     echo "//                MULTITHREADING              //"
     echo "////////////////////////////////////////////////"
@@ -49,50 +51,52 @@ case "$1" in
     read -e
     echo "Code source :"
     cat $build/../test/producteur-consommateur.c
-    echo "================================="
+    echo -n "================================="
     read -e
     $prog -rs 1 -x $build/producteur-consommateur &
     pid=$!
-    sleep 0.015
-    kill $pid
     echo
+    sleep 3
+    kill -2 $pid
     read -e
     echo
 ;&
 "3")
+    clear
     echo "////////////////////////////////////////////////"
     echo "//                VIRTUAL MEMORY              //"
     echo "////////////////////////////////////////////////"
     echo
     read -e
     echo "Processus qui appelle un programme externe pour le charger en memoire et l'executer"
+    read -e
+    echo "Code source :"
+    echo "Programme principal:"
+    cat $build/../test/waitpid.c
+    echo "progA.c:"
+    cat $build/../test/progA.c
+    echo -n "================================="
+    read -e
     $prog -rs 1 -x $build/waitpid
     pid=$!
-    sleep 0.02
-    kill -2 $pid    # ne marche pas....
+    sleep 3
+    kill -2 $pid
     echo
     read -e
     echo
-;&
-"4")
-    echo "////////////////////////////////////////////////"
-    echo "//             SYSTEME DE FICHIERS            //"
-    echo "////////////////////////////////////////////////"
-    echo "Restauration du systeme de fichiers"
-    $progfs -f
-    pid=$!
-    kill -2 $pid
-
+    echo "Processus qui appelle deux programmes pour les exécuter"
     read -e
-    echo "Copie dans le répertoire / des fichiers necessaires au test"
-    $progfs -cp $build/FS1 FS1
-    pid=$!
-    kill -2 $pid
-    $progfs -cp $build/FS2 FS2
-    pid=$!
-    kill -2 $pid
-    $progfs -cp $build/FS3 FS3
-    pid=$!
+    echo "Code source :"
+    echo "Programme principal:"
+    cat $build/../test/fork2.c
+    echo "PutCharA.c:"
+    cat $build/../test/PutCharA.c
+    echo "PutCharB.c:"
+    cat $build/../test/PutCharB.c
+    echo -n "================================="
+    read -e
+    $prog -rs 1 -x $build/fork2
+    sleep 3
     kill -2 $pid
 ;&
 esac

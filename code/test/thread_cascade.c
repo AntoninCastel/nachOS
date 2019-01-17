@@ -1,3 +1,9 @@
+/* Creation de plusieurs threads en cascade, chaque thread qui lance d'autres
+ * threads fait un join sur ceux-ci, sauf pour des threads crée en dernier
+ *  qui est attendu pas le main. 
+ * ATTENTION : Il y a un bug qui bloque l'execution quand on fait join dans 
+ * un thread autre que main, pas eu le temps de debugger.
+ */
 #include "syscall.h" 
 
 semaphore_t sem;
@@ -23,6 +29,7 @@ void fonction2() {
 	Sem_P(sem);
 	PutString("Deuxieme");
 	Sem_V(sem);
+	UserThreadJoin(c);
   	UserThreadExit();
 }
 
@@ -31,15 +38,13 @@ void fonction() {
 	Sem_P(sem);
 	PutString("Premier");
 	Sem_V(sem);
+	UserThreadJoin(b);
   	UserThreadExit();
 }
 int main() {
 	sem=Sem_Init(1);
 	a = UserThreadCreate(fonction, 0);		
-
   	UserThreadJoin(a);
-	UserThreadJoin(b);
-	UserThreadJoin(c);
   	UserThreadJoin(d);
 	return 0;
 }

@@ -262,7 +262,7 @@
 
 \begin{frame}{Liens de parenté entre processus}
   	\begin{center}
-	  	\includegraphics[scale=0.19]{images/FS6.png}
+	  	\includegraphics[scale=0.18]{images/FS6.png}
   	\end{center}
 \end{frame}
 \section{Système de fichiers}
@@ -284,18 +284,24 @@
   	\begin{itemize}[<+->]
   		\item Création de répertoire (mkdir)
   		\begin{itemize}
-  			\item Le nouveau répertoire contiendra deux fichiers : "." et ".."
+  			\item<1-> Le nouveau répertoire contiendra deux fichiers : "." et ".."
   		\end{itemize}
-  		\item Changement de répertoire courant (cd)
+  		\item<2-> Changement de répertoire courant (cd)
   		\begin{itemize}
-  			\item Parcours de l'arborescence grâce aux fichiers spéciaux "." et ".."
-  			\item Le répertoire racine s'appelle "/"
+  			\item<3-> Parcours de l'arborescence grâce aux fichiers spéciaux "." et ".."
+  			\item<4-> Le répertoire racine s'appelle "/"
   		\end{itemize}
   	\end{itemize}
   \end{block}
+  \begin{block}{Choix d'implémentation}
+  	  \begin{itemize}
+  	  	  \item<5-> Le répertoire courant est commun à tout le système
+  	  	  \item<6-> Pas de chemin
+  	  \end{itemize}
+  \end{block}
 \end{frame}
 
-\subsection{Page des fichiers ouverts}
+\subsection{Table des fichiers ouverts}
 \begin{frame}
 	\begin{block}{Appels systèmes}
 		\begin{itemize}
@@ -340,6 +346,7 @@
 			\item<1-> Interface entre le système de fichiers et le programme utilisateur.
 			\item<1-> Nachos permet l'ouverture de 10 fichiers simultanément au total au niveau des programmes utilisateurs
 			\item<1-> Les indices 0 et 1 se sont jamais utilisés, ils sont réservés.
+			\item<1-> Commune à tout le système
 		\end{itemize}		
 	\end{block}	
   	\begin{center}

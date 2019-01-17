@@ -21,8 +21,8 @@ Elle permet aussi de manipuler un système de fichiers.\\
 
 Pour utiliser nachOS, deux flavours sont disponibles;
 \begin{itemize}
- \item  \texttt{nachos-userprog} qui permet d'exécuter des programmes utilisateur.
- \item \texttt{nachos-FS} qui permet de manipuler les fichiers.
+ \item  \texttt{nachos-userprog} qui permet d'exécuter des programmes utilisateur, avec mémoire virtuelle.
+ \item \texttt{nachos-FS} qui permet de manipuler le système de fichiers.
  \end{itemize}
 
 \section*{Spécifications}
@@ -382,9 +382,28 @@ Nous avons employé un test pour vérifier le comportement de \texttt{Proc\_Exit
 Le même schéma de test a été déployé pour \texttt{waitpid}, avec création de processus en cascade. Ce test montre que \texttt{waitpid} ne fonctionne pas correctement lorsque plusieurs processus sont créés en cascade.
 
 \subsection*{Système de fichiers}
+Nous avons fait plusieurs tests pour tester le systeme de fichiers, ces tests permettent de mettre à l’épreuve l'arborescence de répertoire que nous avons créé, ainsi que la table des fichiers système.\\
+\myparagraph{Arborescence de répertoire}
 
+Pour tester la fonctionnalité de notre système gérant l'arborescence de répertoires, nous avons fais plusieurs tests.
+\begin{itemize}
+	\item Nous avons créé un script qui créé un grand nombre de répertoires imbriqués, et qui remonte à la racine via les répertoires ".."
+	\item Nous avons fait différents tests pour voir si les comportements attendus dans différentes situations étaient corrects.\\
+	Par exemple,
+	\begin{itemize}
+		\item Tentative de suppression d'un répertoire plein.
+		\item Tentative de changement de répertoire dans un une entrée qui n'est pas un répertoire.
+		\item Création d'un fichier dont le nom existe déjà.
+		\item Ajout d'une entrée de répertoire si celui ci est plein.
+	\end{itemize}
+\end{itemize}
+Tout ces comportements sont corrects et ne posent pas de problèmes particuliers.
+\myparagraph{Table des fichiers ouverts}
 
+Pour tester cette partie, nous avons fait plusieurs programmes utilisateurs qui tentent d'ouvrir, de créer et de fermer des fichiers Nachos.\\
+Ces tests utilisent aussi les fichiers ouvert, en écrivant dedans et en lisant.\\
 
+Ces tests n'ont pas montré de comportements indésirables. 
 \section*{Implémentation}
 \subsection*{Entrées/sorties}
 

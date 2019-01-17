@@ -16,7 +16,8 @@
 \maketitle
 
 \section*{Fonctionnalités}
-Notre implémentation de NachOS permet de lancer des programmes écrits en C permettant des entrées et sorties ainsi que de la programmation avec plusieurs threads. Les fonctions d'entrées et sorties sont thread-safes et peuvent être utilisées sans effort côté utilisateur.
+Notre implémentation de NachOS permet de lancer des programmes écrits en C par l'utilisateur.
+Cette implémentation fournit des fonctionnalités d'entrées/sorties, de programmation avec plusieurs threads et plusieurs processus ainsi qu'un système de fichiers.
 
 \section*{Spécifications}
 \subsection*{Terminaison}
@@ -49,7 +50,7 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Permet d'imprimer sur la sortie standard le caractère codé par le paramètre \texttt{c}.\\
 	
 \textsc{Notes}\\
-	Lorsque le caractère passé en paramètre est \texttt{EOF}, le caractère n'est pas imprimé. Dans tous les autres cas, il l'est.
+	Lorsque le caractère passé en paramètre est \texttt{EOF}, le caractère n'est pas imprimé.
 
 
 
@@ -89,11 +90,13 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	\texttt{void GetString(char *string, int len)}\\
 	
 \textsc{Description}\\
-	Permet de récupérer jusqu'à \texttt{len} caractères de l'entrée standard afin de les stocker dans la chaine de caractères \texttt{string}.\\
+	Permet de récupérer jusqu'à \texttt{len} caractères de l'entrée standard afin de les stocker dans la chaîne de caractères \texttt{string}.\\
 	
 \textsc{Notes}\\
-	Lorsque \texttt{EOF} est lu sur l'entrée standard, la lecture s'arrête même si moins de \texttt{n} caractères ont été lus.\\
-	Le nombre maximum de caractères pouvant être lus est 200.\\
+	La lecture s'arrête si les caractères \texttt{'$\backslash$0'} ou \texttt{'$\backslash$n'} sont detectés.\\
+	La taille limite des chaînes de caractères traîtées est de 200.	\\
+	%Lorsque \texttt{EOF} est lu sur l'entrée standard, la lecture s'arrête même si moins de \texttt{n} caractères ont été lus.\\
+	%Le nombre maximum de caractères pouvant être lus est 200.\\
 	
 	
 	
@@ -141,7 +144,7 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	\texttt{void UserThreadExit()}\\
 	
 \textsc{Description}\\
-	Permet de quitter un thread correctement.\\
+	Permet de terminer un thread.\\
 	
 \textsc{Notes}\\
 	Cette fonction doit toujours être appelée dans un chemin d’exécution d'une fonction appelée au moyen de l'appel système \texttt{UserThreadCreate}.
@@ -156,7 +159,7 @@ Notre implémentation de NachOS permet de lancer des programmes écrits en C per
 	Permet au thread courant d'attendre la fin de l'exécution du thread dont l'identifiant de thread est \texttt{tid} passé en paramètre.\\
 	
 \textsc{Notes}\\
-	Si le thread avec pour numéro d'identification \texttt{tid} n'est pas terminé, la fonction est bloquante, jusqu'à ce que le thread termine. Si \texttt{tid} est supérieur ou égal à 50 provoque une erreur.\\
+	Si le thread avec pour numéro d'identification \texttt{tid} n'est pas terminé, la fonction est bloquante jusqu'à sa terminaison. Un \texttt{tid} supérieur ou égal à 50 provoque une erreur.\\
 Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent être attendus avec un \texttt{UserThreadJoin}. Le comportement n'est pas garanti si cette condition n'est pas respectée.
 
 
@@ -172,7 +175,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 	Un identifiant de sémaphore (int), -1 en cas d'erreur.\\
 
 \textsc{Notes}\\
-	Les identifiants de sémaphores sont uniques dans la session en cours. Le nombre maximal de sémaphores créées par session est fixé à 20.\\
+	Les identifiants de sémaphores sont uniques dans le processus en cours. Le nombre de sémaphores est limité à 20 par processus.\\
 	
 \myparagraph{Sem\_P}
 \textsc{Synopsis}\\	
@@ -218,78 +221,8 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 0 si la fonction se déroule normalement, -1 en cas d'erreur.\\
 	
 \textsc{Note}\\
-	Les fonctions \texttt{Sem\_P}, \texttt{Sem\_V} ou \texttt{Sem\_GetValue} renverront une erreur après destruction de \texttt{s}.\\
+	Les fonctions \texttt{Sem\_P}, \texttt{Sem\_V} ou \texttt{Sem\_GetValue} renvoient une erreur après destruction de \texttt{s}.\\
 \newpage
-
-\subsection*{Système de fichiers}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Create}
-
-\textsc{Synopsis}\\	
-	\texttt{int Create(char *name, int size)}\\
-	
-\textsc{Description}\\
-	Permet de créer un fichier Nachos de taille \textit{size} et de nom \textit{name} dans le répertoire courant.\\	
-
-\textsc{Valeur de retour}\\
-1 si la création du fichier est possible, 0 sinon.\\
-
-\textsc{Note}\\
-	Les répertoires Nachos sont limités à 8 entrées utilisateur.\\
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Open}
-
-\textsc{Synopsis}\\	
-	\texttt{OpenFileId Open (char *name)}\\
-	
-\textsc{Description}\\
-	Ouvre le fichier \textit{name} du répertoire courant.\\	
-
-\textsc{Valeur de retour}\\
-	Retourne un OpenFileId permettant de manipuler le fichier si l'ouverture est possible. Cet OpenFileId vaut -1 si l'ouverture est impossible.\\	
-
-\textsc{Note}\\
-	Il existe une limite de 10 fichiers ouverts simultanément dans le système. Si cette fonction est utilisée alors que cette limite est atteinte, la valeur renvoyée sera 0.\\
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Write}
-
-\textsc{Synopsis}\\	
-	\texttt{int Write (char *buffer, int size, OpenFileId id)}\\
-	
-\textsc{Description}\\
-	Écrit le contenu de \textit{buffer}, de taille \textit{size} à la position courant dans le fichier \textit{id}.  \\	
-
-\textsc{Valeur de retour}\\
-	Retourne le nombre de bytes effectivement écrits.\\	
-
-\textsc{Note}\\
-	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Read}
-
-\textsc{Synopsis}\\	
-	\texttt{int Read (char *buffer, int size, OpenFileId id)}\\
-	
-\textsc{Description}\\
-	Récupère un nombre \textit{size} d'octets depuis la position courante du fichier \textit{id} et les place dans \textit{buffer}.  \\	
-
-\textsc{Valeur de retour}\\
-	Retourne le nombre de bytes effectivement lus.\\
-	
-\textsc{Note}\\
-	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Close}
-
-\textsc{Synopsis}\\	
-	\texttt{void Close (OpenFileId id)}\\
-	
-\textsc{Description}\\
-	Ferme le fichier \textit{id} pour tout les programmes utilisateurs.  \\	
-	
-\textsc{Note}\\
-	Le fichier ne sera pas plus manipulable après cette fonction. Il est nécessaire d'utiliser en paramètres un \textbf{OpenFileId} initialement retourné par la fonction Open.\\	
-	
 \subsection*{Mémoire virtuelle}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \myparagraph{ForkExec}
@@ -330,25 +263,95 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 	L'appel système est implémenté mais non suffisamment testé, son utilisation ne produit pas le résultat attendu.\\
 	
 	
+\subsection*{Système de fichiers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Create}
+
+\textsc{Synopsis}\\	
+	\texttt{int Create(char *name, int size)}\\
+	
+\textsc{Description}\\
+	Permet de créer un fichier NachOS de taille \textit{size} et de nom \textit{name} dans le répertoire courant.\\	
+
+\textsc{Valeur de retour}\\
+1 si la création du fichier est possible, 0 sinon.\\
+
+\textsc{Note}\\
+	Les répertoires NachOS sont limités à 8 entrées utilisateur.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Open}
+
+\textsc{Synopsis}\\	
+	\texttt{OpenFileId Open (char *name)}\\
+	
+\textsc{Description}\\
+	Ouvre le fichier \textit{name} du répertoire courant.\\	
+
+\textsc{Valeur de retour}\\
+	Retourne un OpenFileId permettant de manipuler le fichier si l'ouverture est possible. Cet OpenFileId vaut -1 si l'ouverture est impossible.\\	
+
+\textsc{Note}\\
+	Il existe une limite de 10 fichiers ouverts simultanément dans le système. Si cette fonction est utilisée alors que cette limite est atteinte, la valeur renvoyée sera 0.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Write}
+
+\textsc{Synopsis}\\	
+	\texttt{int Write (char *buffer, int size, OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Écrit le contenu de \textit{buffer}, de taille \textit{size} à la position courant dans le fichier \textit{id}.  \\	
+
+\textsc{Valeur de retour}\\
+	Retourne le nombre de bytes effectivement écrits.\\	
+
+\textsc{Note}\\
+	Les fichiers ouverts sont communs pour tout le système, un autre programme peut donc modifier le contenu et la position courante du fichier utilisé.\\	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Read}
+
+\textsc{Synopsis}\\	
+	\texttt{int Read (char *buffer, int size, OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Récupère un nombre \textit{size} d'octets depuis la position courante du fichier \textit{id} et les place dans \textit{buffer}.  \\	
+
+\textsc{Valeur de retour}\\
+	Retourne le nombre de bytes effectivement lus.\\
+	
+\textsc{Note}\\
+	Les fichiers ouverts sont communs pour tout le système, un autre programme peut donc modifier le contenu et la position courante du fichier utilisé.\\	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{Close}
+
+\textsc{Synopsis}\\	
+	\texttt{void Close (OpenFileId id)}\\
+	
+\textsc{Description}\\
+	Ferme le fichier \textit{id} pour tout les programmes utilisateurs.  \\	
+	
+\textsc{Note}\\
+	Le fichier ne sera pas plus manipulable après cette fonction. Il est nécessaire d'utiliser en paramètres un \textbf{OpenFileId} initialement retourné par la fonction Open.\\	
+	
+
 \section*{Tests utilisateurs}
 \subsection*{Entrées/sorties}
 \noindent
-Nous avons réalisé des programmes de tests qui
+Nous avons réalisé des programmes de tests, ils permettent de
 \begin{itemize}
- \item Lit un caractère sur l'entrée standard et l'imprime sur la sortie standard
- \item Lit un entier sur l'entrée standard et l'imprime sur la sortie standard
- \item Lit une chaîne de caractères sur l'entrée standard et l'imprime sur la sortie
- standard
- \item Imprime les entiers -2147483648 et 2147483647 sur la sortie standard.
+ \item Lire un caractère sur l'entrée standard et l'imprimer sur la sortie standard.
+ \item Lire un entier sur l'entrée standard et l'imprimer sur la sortie standard.
+ \item Lire une chaîne de caractères sur l'entrée standard et l'imprimer sur la sortie
+ standard.
+ \item Imprimer les entiers -2147483648 et 2147483647 sur la sortie standard.
 \end{itemize}
 Le script \texttt{nachos-step1} teste toutes les fonctionnalités implémentées dans l'étape 1, soit les appels systèmes \texttt{PutChar}, \texttt{PutInt}, \texttt{GetChar}, \texttt{GetInt}, \texttt{PutString} et \texttt{GetString}.
 Les tests effectués sont des cas de
 \begin{itemize}
- \item \textbf{Bonne utilisation des appels systèmes}: permet de constater que les appels systèmes, lorsqu'ils sont appelés correctement, fonctionnent. Des caractères spéciaux, des chiffres correspondant aux bornes limites, négatifs, positifs sont testés pour vérifier que l'implémentation colle à la spécification.
+ \item \textbf{Bonne utilisation des appels systèmes}: permet de constater que les appels systèmes, lorsqu'ils sont appelés correctement, fonctionnent. Des caractères spéciaux, des chiffres correspondant aux bornes limites, négatifs, positifs sont testés pour vérifier que l'implémentation respecte la spécification.
  \item \textbf{Dépassement du nombre de caractères maximum à lire}: permet de connaître le type de problème qui peut survenir lorsque la fonction n'est pas utilisée correctement par l'utilisateur. Cela permet de rendre plus robuste les appels systèmes.
- \item \textbf{Dépassement de capacité des entiers}: Pareil que pour le type de test précédent, nous a permet de détecter le comportement lorsqu'un entier trop grand est soumis à la lecture ou à l'écriture.
+ \item \textbf{Dépassement de capacité des entiers}: Pareil que pour le type de test précédent, nous permet de détecter le comportement lorsqu'un entier trop grand est soumis à la lecture ou à l'écriture.
 \end{itemize}
-Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} Peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
+Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}, confirmé par le test sur \texttt{PutInt}. \texttt{GetInt} peut correctement lire les entiers de -2147417856 à 2147483647 (au lieu de -2147483648 à 2147483647).
 
 \subsection*{Système de fichiers}
 
@@ -357,14 +360,14 @@ Les tests effectués nous ont permis de détecter une erreur sur \texttt{GetInt}
 \section*{Implémentation}
 \subsection*{Entrées/sorties}
 
-Pour créer les entrées sorties synchrones, nous avons utilisé les opérations asynchrones fournies par la console de base de Nachos.\\
+Pour créer les entrées sorties synchrones, nous avons utilisé les opérations asynchrones fournies par la console de base de NachOS.\\
 Nous avons rendu ces opérations synchrones grâce à des Sémaphores et des Verrous.\\
 Les opérations synchrones \textbf{GetString} et \textbf{PutString} sont respectivement des enchaînements de \textbf{GetChar} et \textbf{PutChar} synchrones.
-Nous avons pris la décision de ne protéger que \textbf{PutChar} au niveau des accès concurrents, et pas \textbf{PutString}. Plusieurs \textbf{PutString} peuvent avoir lieu en même temps, les chaînes de caractères seront donc potentiellement entremêlées à l'écran.\\
-Les fonction permettant de manipuler des chaînes de caractères sont capable de gérer des chaînes d'au maximum 200 caractères.\\
+Nous avons pris la décision de ne protéger que \textbf{PutChar} au niveau des accès concurrents, et pas \textbf{PutString}. Plusieurs \textbf{PutString} peuvent donc avoir lieu en même temps, dans ce cas les chaînes de caractères sont entremêlées à l'écran.\\
+Les fonctions permettant de manipuler des chaînes de caractères sont capable de gérer des chaînes d'au maximum 200 caractères.\\
 
-Nous avons également implémenté les appels système \textbf{PutInt} et \textbf{GetInt}, permettant d'écrire et de lire des entier.\\
-Pour ces fonctions, nous avons du écrire une fonction \textbf{CopyStringToMachine}, qui est l'inverse de \textbf{CopyStringFromMachine}, elle écrit une chaîne d'une certaine taille dans la mémoire de la machine MIPS à partir d'une adresse données.\\
+Nous avons également implémenté les appels système \textbf{PutInt} et \textbf{GetInt}, permettant d'écrire et de lire des entiers.\\
+Pour ces fonctions, nous avons dû écrire une fonction \textbf{CopyStringToMachine}, qui est l'inverse de \textbf{CopyStringFromMachine}, elle écrit une chaîne d'une certaine taille dans la mémoire de la machine MIPS à partir d'une adresse données.\\
 Cette fonction est nécessaire pour écrire l'entier lu (de 4 octets) à l'adresse passée en paramètre de GetInt.
 \subsection*{Multi-Threading}
 \myparagraph{Gestion des Threads}
@@ -379,32 +382,35 @@ Les étapes de création d'un nouveau Thread utilisateur sont les suivantes :
 	\item On invoque ensuite \texttt{machine$\rightarrow$run()} pour lancer le nouveau Thread
 \end{itemize}
 
-Nous avons donné à chaque nouveau Thread utilisateur un identifiant unique, qui n'est jamais réutilisé. Le nombre de threads par processus qui peuvent être crées est fixé à 50.\\
+Nous avons donné à chaque nouveau Thread utilisateur un identifiant unique et jamais réutilisé. Le nombre de threads par processus qui peuvent être créés est fixé à 50.\\
 
 La pile du processus est découpée en bloc de 3 pages qui sont destinés à accueillir les piles de chaque thread utilisateur. Les séparations de ces blocs étant à des adresses précises et fixes, il faut savoir à quelle adresse doit commencer le premier bloc. Pour cela, nous avons décidé qu'après la création du premier thread utilisateur que cette borne soit placée 3 pages après le SP du thread "main" du processus. Pour gérer les allocations de blocs mémoire, on utilise une bitmap : un bit à 1 à l'indice \textit{i} indique que le bloc \textit{i} est alloué pour un thread utilisateur (et inversement pour un bit à 0). Le numéro de bloc alloué pour un thread est sauvegardé dans le thread. De cette manière, dès qu'un thread se termine il libère son bloc qui peut alors être ré-alloué par un autre thread. \\ 
    
-Pour ce qui est de la terminaison des threads, ceux qui sont crées directement par le thread "main", ils terminent proprement sans que l'utilisateur n'ait à le demander (mais cela ne lui empêche pas de le faire). En effet, lorsque le thread "main" du processus se termine, l'espace d'adressage du processus est détruit : si des threads ne sont pas terminés à ce moment là et qu'ils tentent d'accéder à leur mémoire, cela produira un accès invalide à la mémoire et une erreur de segmentation fatale au système.\\
-Cependant, la terminaison des threads crées par un thread X hors thread "main" n'est pas attendue automatiquement attendu lors de la terminaison de X s'ils n'ont pas été attendus (l'espace d'adressage du processus n'est pas détruit dans ce cas là). C'est à l'utilisateur d'utiliser \texttt{UserThreadJoin} avec les \textit{tid} correspondants pour s'assurer de la bonne terminaison de ces threads. Un thread peut attendre n'importe quel autre thread crée par l'utilisateur (pas forcément les threads qu'il a lui même crée) et deux threads peuvent attendre la terminaison d'un même thread. Il faut remarquer que la terminaison d'un thread n'est "captée" par un \texttt{UserThreadJoin} que si le thread attendu à utilisé un appel à \texttt{UserThreadExit} pour se terminer proprement.
+Le thread "main" attend la terminaison des threads qu'il a créé sans que l'utilisateur n'ait besoin de le demander (il peut tout de même le faire). En effet, lorsque le thread "main" du processus se termine, l'espace d'adressage du processus est détruit : si des threads ne sont pas terminés à ce moment là et qu'ils tentent d'accéder à leur mémoire, cela produira un accès invalide à la mémoire et une erreur de segmentation fatale au système.\\
+%Cependant, la terminaison des threads créés par un thread X hors thread "main" n'est pas attendue automatiquement.  Lors de la terminaison de X s'ils n'ont pas été attendus (l'espace d'adressage du processus n'est pas détruit dans ce cas là). 
+Un thread X hors thread "main" qui créé d'autres threads n'attend pas automatiquement leurs terminaisons, cela s'explique par le fait que l'espace d'adressage du processus n'est pas détruit. C'est donc à l'utilisateur d'utiliser \texttt{UserThreadJoin} avec les \textit{tid} correspondants pour s'assurer de la bonne terminaison de ces threads. Un thread peut attendre n'importe quel autre thread crée par l'utilisateur (pas forcément les threads qu'il a lui même crée) et deux threads peuvent attendre la terminaison d'un même thread. Il faut remarquer que la terminaison d'un thread n'est "captée" par un \texttt{UserThreadJoin} que si le thread attendu à utilisé un appel à \texttt{UserThreadExit}.
  
 
 \myparagraph{Synchronisation des Threads}\\
-Pour synchroniser l'utilisation de plusieurs threads, le système permet à l'utilisateur de créer des sémaphores qu'il pourra contrôler avec les appels système \texttt{Sem\_Init},\texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy}. Pour créer ces appels système, nous avons crée au niveau noyau un tableau où sont stockés les sémaphores noyau destinés à être contrôlés au niveau utilisateur.  Comme pour les threads utilisateurs, les identifiants de sémaphores utilisateur sont unique : le nombre de sémaphores utilisateur par processus est fixé à 20. Lors d'un appel à \texttt{Sem\_Init}, on renvoie un identifiant de sémaphore associé un sémaphore noyau du tableau. \\
+Pour synchroniser l'utilisation de plusieurs threads, le système permet à l'utilisateur de créer des sémaphores qu'il pourra contrôler avec les appels système \texttt{Sem\_Init},\texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy}. Pour créer ces appels système, nous avons créé au niveau noyau un tableau où sont stockés les sémaphores noyau destinés à être contrôlés au niveau utilisateur. Comme pour les threads utilisateurs, les identifiants de sémaphores utilisateur sont uniques : le nombre de sémaphores utilisateur par processus est fixé à 20. Lors d'un appel à \texttt{Sem\_Init}, on renvoie un identifiant de sémaphore associé un sémaphore noyau du tableau. \\
 
-Pour savoir quels sont les sémaphores en cours d'utilisation, on utilise une bitmap où le numéro de chaque bit correspond à un indice dans le tableau. Si pour un indice donné, le bit est à 1 si le sémaphore est initialisé au niveau utilisateur, 0 sinon. Cela permet de vérifier à chaque appel des fonctions \texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy} que le sémaphore que l'utilisateur souhaite manipuler a bien été initialisé et n'a pas été détruit. Si un mauvais accès est effectué (si le bit correspondant est à 0), alors ces appels systèmes retournent -1 et protègent le système.
+Pour savoir quels sont les sémaphores en cours d'utilisation, on utilise une bitmap où le numéro de chaque bit correspond à un indice dans le tableau.Le bit est à 1 si le sémaphore est initialisé au niveau utilisateur, 0 sinon. Cela permet de vérifier à chaque appel des fonctions \texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy} que le sémaphore que l'utilisateur souhaite manipuler a bien été initialisé et n'a pas été détruit. Si un mauvais accès est effectué (le bit correspondant est à 0), alors ces appels systèmes retournent -1 et protègent le système.
  
 \subsection*{Mémoire virtuelle}
 Les espaces d'adressages utilisent un \texttt{FrameProvider} qui leur alloue des pages physiques de la mémoire. De ce fait, on peut avoir plusieurs processus qui partagent la mémoire physique de la machine.\\
 Chaque processus possède:
 \begin{itemize}
-	\item Un pid qui identifie le processus
-	\item Un sémaphore qui permet d'attendre la fin de ce processus
-	\item Une map qui index les pids de ses fils à leurs sémaphores
+	\item Un pid qui identifie le processus,
+	\item Un sémaphore qui permet d'attendre la fin de ce processus,
+	\item Une map qui indexe les pids de ses fils à leurs sémaphores.
 \end{itemize}
-Les conséquences de cette organisation sont que les pids sont réservés aux processus pères, ainsi, un processus ne peut pas contrôler les processus fils de ses fils, car les pids auquel il a accès lui sont locaux.\\
-Les pids commencent à zéro pour tous les processus et il n'y a pas de nombre maximum de processus tant que la mémoire physique permet de les charger.\\
+Les conséquences de cette organisation sont que les pids sont réservés aux processus pères. Les pids étant locaux à chaque processus, un processus père n'a pas accès aux pids des processus fils de ses fils.\\
+ %un processus ne peut pas contrôler les processus fils de ses fils, car les pids auquel il a accès lui sont locaux.
+Les pids commencent à zéro pour tous les processus. Le nombre de processus est limité par la taille de la mémoire physique.\\
 
 Malgré le fait que l'implémentation n'est pas fonctionnelle, le choix que nous avons fait pour la terminaison des processus est le suivant.
-Lorsqu'un processus se termine, il attend la fin de tous ses fils. Il le fait par le biais des sémaphores auquel il a accès. Celà implique l'arrêt de ses petits-fils, car le fils du processus principal ne peut se terminer que si ses propres fils sont terminés.
+Lorsqu'un processus se termine, il attend la fin de tous ses fils par le biais des sémaphores auxquels il a accès.
+De la même manière, ses fils doivent attendre la fin de leurs processus fils. Ainsi il n'y a pas de processus orphelin.
 
 \subsection*{Système de fichiers}
 \myparagraph{Arborescence de répertoires}
@@ -425,14 +431,15 @@ L'opération \textbf{mkdir} créé donc un nouveau répertoire dans le répertoi
 	Le répertoire courant est commun à tout le système, chaque processus ou thread utilisant la fonction \texttt{Open} simultanément prendront donc en considération les fichiers présent dans le même répertoire.//
 De plus, la notion de chemin n'existe pas, tout les noms de fichiers sont des noms relatifs au répertoire courant.\\
 
-Les opérations \textbf{cd} et \textbf{mkdir} ne sont pas des appels système mais des options d'exécution de Nachos. Il faut leur donner en argument le nom du répertoire voulu.\\
+Les opérations \textbf{cd} et \textbf{mkdir} ne sont pas des appels système mais des options d'exécution de NachOS. Il faut leur donner en argument le nom du répertoire voulu.\\
 
-Il est à noter que les noms ".", "..", "/" ainsi que la chaine de caractères vide ne sont pas des noms de fichier (ou répertoires) corrects.
+Il est à noter que les noms ".", "..", "/" ainsi que la chaine de caractères vide ne sont pas des noms de fichier (ou répertoires) valides.
 \myparagraph{Table système des fichiers ouverts}\\	
 Pour créer la table système des fichiers ouverts, nous avons ajouté plusieurs champs à la classe \textbf{filesys} :
 \begin{itemize}
 \item Une table de noms, contenant les noms des fichiers ouverts.
-\item Une Bitmap, permettant de savoir quelle entrées de la table sont disponibles
+\item Une Bitmap, permettant de savoir quelles entrées de la table sont disponibles
+
 \item Une table d'OpenFile*, permettant d’accéder à un fichier ouvert.
 \end{itemize}
 L'utilisateur lui, ne manipule que les indices de ces tableaux.\\
@@ -441,17 +448,16 @@ Cette table permet de faire l'interface entre le programme utilisateur et le sys
 Par exemple, si un programme utilisateur veut faire un \textbf{Open} sur un fichier qui n'est pas ouvert, alors on va chercher dans la Bitmap un indice libre, mettre le nom du fichier à cet indice dans la table des noms, l'ouvrir, et mettre le OpenFile* correspondant à cet indice dans la table d'OpenFile.
 La valeur renvoyée à l'utilisateur sera l'indice.\\
 
-Si, en revanche, le fichier apparaît déjà dans la table des noms, alors l'indice où ce fichier à été trouvé est renvoyé à l'utilisateur, car ça signifie qu'il est déjà ouvert.
+En revanche, si le fichier apparaît déjà dans la table des noms, alors l'indice où ce fichier à été trouvé est renvoyé à l'utilisateur, car ça signifie qu'il est déjà ouvert.\\
 
-Comme la table est globale, il se peut qu'il y ai des conflits entre deux processus qui voudraient accéder au même fichier, si l'un d'entre eux ferme le fichier avant que le second écrive dedans.\\
-Dans ce cas, le second programme n'aura plus accès au fichier.
+Comme la table est globale, il se peut qu'il y ait des conflits entre deux processus qui voudraient accéder au même fichier. Si l'un d'entre eux ferme le fichier, le second n'y aura plus accès.\\
 \section*{Organisation du travail}
-Le travail s'organise le plus souvent avec deux machines. Ces deux machines permettent à tout le groupe d'avancer dans la programmation d'une fonctionnalité et de faire de la recherche d'autre part (prototype exact, fichiers à inclure etc...). La machine où se fait le développement et le débuggage est souvent branchée à un second écran plus grand afin que tout le groupe puisse voir clairement le code ou les étapes de débuggage.\\
+Lors de la première moitié sur projet, le travail s'est organisé le plus souvent avec deux machines. Ces deux machines permettent à tout le groupe d'avancer dans la programmation d'une fonctionnalité et de faire de la recherche d'autre part (prototype exact, fichiers à inclure etc...). La machine où se fait le développement et le débuggage est souvent branchée à un second écran plus grand afin que tout le groupe puisse voir clairement le code ou les étapes de débuggage.\\
+Le travail a été collectif et non systématiquement réparti fonctionnalités par fonctionnalités à certains membres du groupe. Il est arrivé qu'un membre du groupe s'approprie une tâche, mais les autres membres lui ont apporté de l'aide, que ça soit directement en debuggant le code, ou par le biais d'idées et de discussion à propos de la fonctionnalité. C'est le cas des fonctionnalités plus petites, comme certains appels systèmes d'entrées/sorties.\\
 
-Dépendamment de l'étape dans laquelle nous nous trouvons, nous augmentons le nombre de machines afin d'avoir une capacité de lecture/compréhension du code existant plus grande avec une personne du groupe par machine.\\
+Lors de la seconde moitié du projet, le travail a été partitionnés en plusieurs points; la mémoire virtuelle, le système de fichier et les tests et corrections.\\
 
-Le groupe alterne les phases de discussions/débats dans le but de dégager les différents problèmes ou implications de chaque fonctionnalités à développer. Cette étape permet d'orienter la réflexion du groupe vers la même direction ainsi que d'harmoniser les connaissances de chacun et de lever des doutes et clarifier des concepts du cours ou de NachOS que tout le monde n'a pas forcément assimilé de la même façon.\\
 
-Le travail est collectif et n'est pas systématiquement réparti fonctionnalité par fonctionnalité à certains membres du groupe. Il arrive qu'un membre du groupe s'approprie une tâche, mais les autres membres lui apportent de l'aide, que ça soit directement en debuggant le code, ou par le biais d'idées et de discussion à propos de la fonctionnalité. C'est le cas des fonctionnalités plus petites, comme certains appels systèmes d'entrées/sorties.
+Le groupe a alterné les phases de discussions/débats dans le but de dégager les différents problèmes ou implications de chaque fonctionnalités à développer. Cette étape a permis d'orienter la réflexion du groupe dans la même direction ainsi que d'harmoniser les connaissances de chacun et de lever des doutes et clarifier des concepts du cours ou de NachOS que tout le monde n'a pas forcément assimilé de la même façon.\\
 
 \end{document}

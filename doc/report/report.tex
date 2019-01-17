@@ -174,7 +174,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \textsc{Notes}\\
 	Les identifiants de sémaphores sont uniques dans la session en cours. Le nombre maximal de sémaphores créées par session est fixé à 20.\\
 	
-\myparagraph{Sem\_P}\\
+\myparagraph{Sem\_P}
 \textsc{Synopsis}\\	
 	\texttt{int Sem\_P(semaphore\_t s)}\\
 
@@ -184,7 +184,7 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \textsc{Valeur de retour}\\
 0 si la fonction se déroule normalement, -1 en cas d'erreur.\\
 
-\myparagraph{Sem\_V}\\
+\myparagraph{Sem\_V}
 \textsc{Synopsis}\\	
 
 \texttt{int Sem\_V(semaphore\_t s)}\\
@@ -195,7 +195,8 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \textsc{Valeur de retour}\\
 0 si la fonction se déroule normalement, -1 en cas d'erreur.\\
 
-\myparagraph{Sem\_GetValue}\\
+\myparagraph{Sem\_GetValue}
+
 \textsc{Synopsis}\\	
 	\texttt{int Sem\_GetValue(semaphore\_t s)}\\
 
@@ -205,7 +206,8 @@ Seuls les threads se terminant par l'appel à \texttt{UserThreadExit} peuvent ê
 \textsc{Valeur de retour}\\
 Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 
-\myparagraph{Sem\_Destroy}\\
+\myparagraph{Sem\_Destroy}
+
 \textsc{Synopsis}\\	
 	\texttt{int Sem\_Destroy(semaphore\_t s)}\\
 
@@ -221,7 +223,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 
 \subsection*{Système de fichiers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Create}\\
+\myparagraph{Create}
 
 \textsc{Synopsis}\\	
 	\texttt{int Create(char *name, int size)}\\
@@ -235,7 +237,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 \textsc{Note}\\
 	Les répertoires Nachos sont limités à 8 entrées utilisateur.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Open}\\
+\myparagraph{Open}
 
 \textsc{Synopsis}\\	
 	\texttt{OpenFileId Open (char *name)}\\
@@ -249,7 +251,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 \textsc{Note}\\
 	Il existe une limite de 10 fichiers ouverts simultanément dans le système. Si cette fonction est utilisée alors que cette limite est atteinte, la valeur renvoyée sera 0.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Write}\\
+\myparagraph{Write}
 
 \textsc{Synopsis}\\	
 	\texttt{int Write (char *buffer, int size, OpenFileId id)}\\
@@ -263,7 +265,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 \textsc{Note}\\
 	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Read}\\
+\myparagraph{Read}
 
 \textsc{Synopsis}\\	
 	\texttt{int Read (char *buffer, int size, OpenFileId id)}\\
@@ -277,7 +279,7 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 \textsc{Note}\\
 	Les fichiers ouverts sont communs pour tout le système, donc un autre programme peut potentiellement modifier lui aussi le contenu et la position courante du fichier utilisé.\\	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\myparagraph{Close}\\
+\myparagraph{Close}
 
 \textsc{Synopsis}\\	
 	\texttt{void Close (OpenFileId id)}\\
@@ -287,6 +289,45 @@ Le nombre d'unité du sémaphore \texttt{s}, -1 en cas d'erreur.\\
 	
 \textsc{Note}\\
 	Le fichier ne sera pas plus manipulable après cette fonction. Il est nécessaire d'utiliser en paramètres un \textbf{OpenFileId} initialement retourné par la fonction Open.\\	
+	
+\subsection*{Système de fichiers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\myparagraph{ForkExec}
+
+\textsc{Synopsis}\\	
+	\texttt{pid\_t ForkExec(char* filename)}\\
+	
+\textsc{Description}\\
+	Ouvre le fichier executable \texttt{filename}, le charge dans la mémoire et le fait tourner en parallèle du processus appelant.\\
+	
+\textsc{Valeur de retour}\\
+	Retourne un \texttt{pid\_t} identifiant le processus lancé.\\
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\myparagraph{waitpid}
+
+\textsc{Synopsis}\\	
+	\texttt{void waitpid(pid\_t pid)}\\
+	
+\textsc{Description}\\
+	Fait une attente bloquante tant que le processus identifié par \texttt{pid} n'est pas terminé.\\
+	
+\textsc{Notes}\\
+	L'appel système est implémenté mais non suffisamment testé, son utilisation peut ne pas produire le résultat attendu.\\
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\myparagraph{Proc\_Exit}
+
+\textsc{Synopsis}\\	
+	\texttt{void Proc\_Exit()}\\
+	
+\textsc{Description}\\
+	Fait une attente bloquante tant que les processus fils du processus appelant ne sont pas terminés, puis termine le processus.\\
+	
+\textsc{Notes}\\
+	L'appel système est implémenté mais non suffisamment testé, son utilisation ne produit pas le résultat attendu.\\
 	
 	
 \section*{Tests utilisateurs}
@@ -347,9 +388,21 @@ Pour synchroniser l'utilisation de plusieurs threads, le système permet à l'ut
 Pour savoir quels sont les sémaphores en cours d'utilisation, on utilise une bitmap où le numéro de chaque bit correspond à un indice dans le tableau. Si pour un indice donné, le bit est à 1 si le sémaphore est initialisé au niveau utilisateur, 0 sinon. Cela permet de vérifier à chaque appel des fonctions \texttt{Sem\_P}, \texttt{Sem\_V}, \texttt{Sem\_GetValue} et \texttt{Sem\_Destroy} que le sémaphore que l'utilisateur souhaite manipuler a bien été initialisé et n'a pas été détruit. Si un mauvais accès est effectué (si le bit correspondant est à 0), alors ces appels systèmes retournent -1 et protègent le système.
  
 \subsection*{Mémoire virtuelle}
+Les espaces d'adressages utilisent un \texttt{FrameProvider} qui leur alloue des pages physiques de la mémoire. De ce fait, on peut avoir plusieurs processus qui partagent la mémoire physique de la machine.\\
+Chaque processus possède:
+\begin{itemize}
+	\item Un pid qui identifie le processus
+	\item Un sémaphore qui permet d'attendre la fin de ce processus
+	\item Une map qui index les pids de ses fils à leurs sémaphores
+\end{itemize}
+Les conséquences de cette organisation sont que les pids sont réservés aux processus pères, ainsi, un processus ne peut pas contrôler les processus fils de ses fils, car les pids auquel il a accès lui sont locaux.\\
+Les pids commencent à zéro pour tous les processus et il n'y a pas de nombre maximum de processus tant que la mémoire physique permet de les charger.\\
+
+Malgré le fait que l'implémentation n'est pas fonctionnelle, le choix que nous avons fait pour la terminaison des processus est le suivant.
+Lorsqu'un processus se termine, il attend la fin de tous ses fils. Il le fait par le biais des sémaphores auquel il a accès. Celà implique l'arrêt de ses petits-fils, car le fils du processus principal ne peut se terminer que si ses propres fils sont terminés.
 
 \subsection*{Système de fichiers}
-\myparagraph{Arborescence de répertoires}\\
+\myparagraph{Arborescence de répertoires}
 	
 Pour créer une arborescence de fichiers, nous avons ajouté aux \textit{i}-nodes des fichiers plusieurs champs.
 \begin{itemize}

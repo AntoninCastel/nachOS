@@ -258,3 +258,19 @@ ForkExec:
 	syscall
 	j	$31
 	.end ForkExec
+
+	.globl  waitpid
+	.ent	waitpid
+waitpid:
+	addiu $2,$0,SC_waitpid
+	syscall
+	j	$31
+	.end waitpid
+
+	.globl  Proc_Exit
+	.ent	Proc_Exit
+Proc_Exit:
+	addiu $2,$0,SC_Proc_Exit
+	syscall
+	j	$31
+	.end Proc_Exit

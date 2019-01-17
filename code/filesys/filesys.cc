@@ -158,6 +158,10 @@ FileSystem::FileSystem(bool format)
 bool
 FileSystem::Mkdir(const char *name)
 {
+	if(!strcmp(name,"") || !strcmp(name,".")|| !strcmp(name,"..")|| !strcmp(name,"/")){
+		fprintf(stderr, "Impossible de créer un fichier appelé %s\n",name );
+		return FALSE;
+	}
 	OpenFile *tmpFile = new OpenFile(DirectorySector);
 	currentDirectorySector = tmpFile->getDirectorySector();
 	OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
@@ -176,9 +180,11 @@ FileSystem::Mkdir(const char *name)
 	directory->FetchFrom(currentDirectoryFiles);
 
 	//on teste si le nom est deja present dans le repertoire
-	if (directory->Find(name) != -1)
+	if (directory->Find(name) != -1){
 		//si oui, on fail
-		success = FALSE;          
+		fprintf(stderr, "Impossible : entrée déjà présente dans le répertoire\n" );
+		success = FALSE;   
+	}       
 	else {  
 		//sinon, allocation d'une bitmap
 		freeMap = new BitMap(NumSectors);
@@ -194,6 +200,7 @@ FileSystem::Mkdir(const char *name)
 		//on ajoute le nom au repertoire courant, sur le secteur trouve   
 		else if (!directory->Add(name, sector)){
 			//fail si pas de place dans le repertoire
+			fprintf(stderr, "Impossible : pas de place dans le répertoire\n" );
 			success = FALSE;    
 		}else {
 			//sinon, on cree un nouveau file header
@@ -206,7 +213,7 @@ FileSystem::Mkdir(const char *name)
 
 			//on alloue de la place pour le fichier que l'entree contiendra
 			//10 entrees max * (la taille d'une entree + le nombre de caracteres max du nom)
-			if (!hdr->Allocate(freeMap, 10*(11+sizeof(DirectoryEntry))))
+			if (!hdr->Allocate(freeMap, 10*(10+sizeof(DirectoryEntry))))
 				//fail si pas de place
 				success = FALSE;    
 			else {  
@@ -320,6 +327,7 @@ FileSystem::Cd(const char *name)
 	newDirectory->FetchFrom(currentDirectoryFiles);
 	//recuperation du secteur sur lequel se trouve le header du repertoire voulu
 	if(!strcmp(name,"/")){
+		fprintf(stderr, "Retour au répertoire Root\n");
 		//si oui, on change le repertoire courant 
 		tmpHeader->directorySector = 1;
 		//et on flush la modification sur disque
@@ -328,23 +336,30 @@ FileSystem::Cd(const char *name)
 	else{
 		int sector = newDirectory->Find(name);
 		//ouverture du fichier 
-		OpenFile *openFile = new OpenFile(sector);
-		//on verifie s'il s'agit bien de la racine ou d'un repertoire
-		if(openFile->isDirectory() || sector == 1){
-			//si oui, on change le repertoire courant 
-			tmpHeader->directorySector = sector;
-			//et on flush la modification sur disque
-			tmpHeader->WriteBack(1);
-			//////////TEST///////////
-			DEBUG('k',  "*************************\n" );
-			DEBUG('k',  "CD\n" );
-			DEBUG('k',  "nouveau secteur : %d\n",sector);
-			DEBUG('k',  "ancien secteur : %d\n",currentDirectorySector);
-			DEBUG('k',  "*************************\n" );
-			/////////////////////////
-		}
-		else{
-			fprintf(stderr, "Erreur, le fichier cible n'est pas un repertoire\n");
+		if(sector >= 0){
+			OpenFile *openFile = new OpenFile(sector);
+			//on verifie s'il s'agit bien de la racine ou d'un repertoire
+			if(openFile->isDirectory() || sector == 1){
+				if(sector == 1)
+					fprintf(stderr, "Retour au répertoire Root\n" );
+				//si oui, on change le repertoire courant 
+				tmpHeader->directorySector = sector;
+				//et on flush la modification sur disque
+				tmpHeader->WriteBack(1);
+				//////////TEST///////////
+				DEBUG('k',  "*************************\n" );
+				DEBUG('k',  "CD\n" );
+				DEBUG('k',  "nouveau secteur : %d\n",sector);
+				DEBUG('k',  "ancien secteur : %d\n",currentDirectorySector);
+				DEBUG('k',  "*************************\n" );
+				/////////////////////////
+			}
+			else{
+				fprintf(stderr, "Erreur, le fichier cible n'est pas un repertoire\n");
+				return FALSE;
+			}
+		}else{
+			fprintf(stderr, "Impossible : l'entrée n'existe pas dans le répertoire\n");
 		}
 	}   
 	delete tmpHeader;
@@ -395,16 +410,19 @@ FileSystem::Create(const char *name, int initialSize)
 	directory = new Directory(NumDirEntries);
 	directory->FetchFrom(directoryFile);
 
-	if (directory->Find(name) != -1)
-	  success = FALSE;			// file is already in directory
-	else {	
+	if (directory->Find(name) != -1){
+		fprintf(stderr, "Impossible : entrée déjà présente dans le répertoire\n" );
+	  	success = FALSE;			// file is already in directory
+	}else {	
 		freeMap = new BitMap(NumSectors);
 		freeMap->FetchFrom(freeMapFile);
 		sector = freeMap->Find();	// find a sector to hold the file header
 		if (sector == -1) 		
 			success = FALSE;		// no free block for file header 
-		else if (!directory->Add(name, sector))
+		else if (!directory->Add(name, sector)){
+			fprintf(stderr, "Impossible : pas de place dans le répertoire\n" );
 			success = FALSE;	// no space in directory
+		}
 	else {
 			hdr = new FileHeader;
 		if (!hdr->Allocate(freeMap, initialSize))

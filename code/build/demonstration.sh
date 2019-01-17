@@ -11,6 +11,8 @@ progfs="$build/nachos-FS"
 #    cat $build/../test/cat.c
 #    echo "================================="
 
+make clean
+make
 case "$1" in
 "1")
     clear

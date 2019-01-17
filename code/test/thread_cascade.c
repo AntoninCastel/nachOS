@@ -1,8 +1,6 @@
 /* Creation de plusieurs threads en cascade, chaque thread qui lance d'autres
  * threads fait un join sur ceux-ci, sauf pour des threads crée en dernier
- *  qui est attendu pas le main. 
- * ATTENTION : Il y a un bug qui bloque l'execution quand on fait join dans 
- * un thread autre que main, pas eu le temps de debugger.
+ * qui est attendu pas le main. 
  */
 #include "syscall.h" 
 

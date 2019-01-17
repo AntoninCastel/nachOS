@@ -16,10 +16,18 @@
 \maketitle
 
 \section*{Fonctionnalités}
-Notre implémentation de NachOS permet de lancer des programmes écrits en C par l'utilisateur.
-Cette implémentation fournit des fonctionnalités d'entrées/sorties, de programmation avec plusieurs threads et plusieurs processus ainsi qu'un système de fichiers.
+Notre implémentation de NachOS fournit des fonctionnalités d'entrées/sorties, de programmation avec plusieurs threads et plusieurs processus afin de lancer des programmes écrits en C par l'utilisateur.
+Elle permet aussi de manipuler un système de fichiers.\\
+
+Pour utiliser nachOS, deux flavours sont disponibles;
+\begin{itemize}
+ \item  \texttt{nachos-userprog} qui permet d'exécuter des programmes utilisateur.
+ \item \texttt{nachos-FS} qui permet de manipuler les fichiers.
+ \end{itemize}
 
 \section*{Spécifications}
+
+
 \subsection*{Terminaison}
 \myparagraph{Exit}
 
@@ -27,7 +35,7 @@ Cette implémentation fournit des fonctionnalités d'entrées/sorties, de progra
 	\texttt{void Exit(int code)}\\
 	
 \textsc{Description}\\
-	Permet de terminer le programme utilisateur en renvoyant le code d'erreur \texttt{code}\\
+	Permet de terminer le programme utilisateur en renvoyant le code d'erreur \textit{code}\\
 	
 \textsc{Notes}\\
 	Dans le cas où cette fonction est appelée par le thread "main" du processus principal, elle consiste en un appel à \texttt{Halt} précédé d'une récupération du code d'erreur afin de faire retourner ce code par le programme. Si \texttt{code} = 0, alors le programme s'est terminé sans erreur.
@@ -43,7 +51,7 @@ Cette implémentation fournit des fonctionnalités d'entrées/sorties, de progra
 \subsection*{Entrées/sorties}
 \myparagraph{PutChar}
 
-\textsc{Synopsis}\\
+\textsc{Synopsis}\\ 
 	\texttt{void PutChar(char c)}\\
 	
 \textsc{Description}\\
@@ -365,6 +373,14 @@ Pour tester la gestion et la synchronisation de plusieurs threads utilisateur, n
 
 \item La synchronisation de threads utilisateur en utilisant un producteur-consommateur. Cela nous permet de mettre en évidence le bon fonctionnement des structures de synchronisation.
 \end{itemize}
+
+\subsection*{Mémoire virtuelle}
+Pour tester si la mémoire virtuelle fonctionne correctement, nous avons utilisé les outils de debug à notre disposition, afin de constater que les frames son allouées correctement aux différents espaces d'adressage.\\
+
+En ce qui concerne le multi-processus, le test initial était un programme qui en appelait deux autres. Le programme principal et les deux autres affichaient respectivement 100 'c', 10 'a' et 10'b'. Au fur et à mesure de l'avancement des multi-processus, ce test nous a permis de détecter les erreurs en observant le défaut de comportement qu'il produisait. Le test ne se préoccupait pas de la terminaison des processus, ils terminaient par des boucles infinies. Au fur et à mesure du debuggage des autres fonctionnalités des multi-processus, ce test à fini par ne plus passer.\\
+Nous avons employé un test pour vérifier le comportement de \texttt{Proc\_Exit()} (qu'il attend bien la terminaison de ses fils). Il apparait que l'appel système ne se comporte pas comme attendu.\\
+Le même schéma de test a été déployé pour \texttt{waitpid}, avec création de processus en cascade. Ce test montre que \texttt{waitpid} ne fonctionne pas correctement lorsque plusieurs processus sont créés en cascade.
+
 \subsection*{Système de fichiers}
 
 

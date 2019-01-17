@@ -213,7 +213,7 @@ FileSystem::Mkdir(const char *name)
 
 			//on alloue de la place pour le fichier que l'entree contiendra
 			//10 entrees max * (la taille d'une entree + le nombre de caracteres max du nom)
-			if (!hdr->Allocate(freeMap, 10*(10+sizeof(DirectoryEntry))))
+			if (!hdr->Allocate(freeMap, 10*(11+sizeof(DirectoryEntry))))
 				//fail si pas de place
 				success = FALSE;    
 			else {  
@@ -346,13 +346,7 @@ FileSystem::Cd(const char *name)
 				tmpHeader->directorySector = sector;
 				//et on flush la modification sur disque
 				tmpHeader->WriteBack(1);
-				//////////TEST///////////
-				DEBUG('k',  "*************************\n" );
-				DEBUG('k',  "CD\n" );
-				DEBUG('k',  "nouveau secteur : %d\n",sector);
-				DEBUG('k',  "ancien secteur : %d\n",currentDirectorySector);
-				DEBUG('k',  "*************************\n" );
-				/////////////////////////
+
 			}
 			else{
 				fprintf(stderr, "Erreur, le fichier cible n'est pas un repertoire\n");
@@ -405,10 +399,14 @@ FileSystem::Create(const char *name, int initialSize)
 	int sector;
 	bool success;
 
+	OpenFile *tmpFile = new OpenFile(DirectorySector);
+	currentDirectorySector = tmpFile->getDirectorySector();
+	OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
+
 	DEBUG('f', "Creating file %s, size %d\n", name, initialSize);
 
 	directory = new Directory(NumDirEntries);
-	directory->FetchFrom(directoryFile);
+	directory->FetchFrom(currentDirectoryFiles);
 
 	if (directory->Find(name) != -1){
 		fprintf(stderr, "Impossible : entrée déjà présente dans le répertoire\n" );
@@ -431,13 +429,14 @@ FileSystem::Create(const char *name, int initialSize)
 			success = TRUE;
 		// everthing worked, flush all changes back to disk
 				hdr->WriteBack(sector); 		
-				directory->WriteBack(directoryFile);
+				directory->WriteBack(currentDirectoryFiles);
 				freeMap->WriteBack(freeMapFile);
 		}
 			delete hdr;
 	}
 		delete freeMap;
 	}
+	delete tmpFile;
 	delete directory;
 	return success;
 }
@@ -461,12 +460,6 @@ FileSystem::Open(const char *name)
 	currentDirectorySector = tmpFile->getDirectorySector();
 	OpenFile *currentDirectoryFiles = new OpenFile(currentDirectorySector);
 	
-	//////////TEST///////////
-	DEBUG('k', "*************************\n");
-	DEBUG('k', "Open\n");
-	DEBUG('k', "secteur courant : %d\n",currentDirectorySector);
-	DEBUG('k', "*************************\n");
-	/////////////////////////
 
 	Directory *directory = new Directory(NumDirEntries);
 	OpenFile *openFile = NULL;

@@ -1,0 +1,205 @@
+#!/bin/bash
+
+tmp=`tempfile`
+
+echo "TEST I/O 1: un seul caractère lu sur l'entrée standard est imprimé"
+echo
+
+echo "=> 1 caractère entré par l'utilisateur (caractère 'a')"
+echo -n "Sortie: "
+echo a | build/nachos-userprog -x build/get_putchar 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "a" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+echo "=> 2 caractère entré par l'utilisateur (caractères 'aa')"
+echo -n "Sortie: "
+echo aa | build/nachos-userprog -x build/get_putchar 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "a" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+echo "=> 1 entier entré par l'utilisateur (entier 25)"
+echo -n "Sortie: "
+echo 25 | build/nachos-userprog -x build/get_putchar 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "2" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+echo "TEST I/O 2: un entier lu sur l'entrée standard est imprimé"
+echo
+
+echo "=> 1 entier positif entré par l'utilisateur (entier 25)"
+echo -n "Sortie: "
+echo 25 | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "25" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+entree=-452
+echo "=> 1 entier négatif entré par l'utilisateur (entier $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "-452" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+entree=356464563278
+echo "=> 1 entier trop grand pour être code sur 32 bits entré par l'utilisateur (entier $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` != "$entree" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo "/!\\ Il est normal que la sortie soit différente car $entree est codé sur plus de 32 bits et le programme manipule des entiers 32bits"
+echo
+
+read -n 1 -s
+
+entree="4 6"
+echo "=> 2 entiers entrés par l'utilisateur (entiers $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "4" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+entree=-356464563278
+echo "=> 1 entier negatif trop grand pour être code sur 32 bits entré par l'utilisateur (entier $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` != "$entree" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo "/!\\ Il est normal que la sortie soit différente car $entree est codé sur plus de 32 bits et le programme manipule des entiers 32bits"
+echo
+
+read -n 1 -s
+
+#res=1
+#entree=-2147456690
+#while [ $res -eq 1 ]
+#do
+#    echo "=> 1 entier limite négatif entré par l'utilisateur (entier $entree)"
+#    echo -n "Sortie: "
+#    echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+#    echo
+#    [ `cat $tmp` == "$entree" ]
+#    res=$?
+#    if [ $res -eq 0 ]
+#    then
+#        echo "Test passé !"
+#    else
+#        echo "Test raté !"
+#    fi
+#    echo "Sortie attendue: $entree"
+#    echo
+#    entree=$(($entree+1))
+#done
+
+entree="u"
+echo "=> 2 entiers entrés par l'utilisateur (entiers $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putint 2> /dev/null | tee $tmp
+echo
+echo "Test passé !"
+echo "/!\\ Aucune sortie particulière attendue"
+echo
+
+read -n 1 -s
+
+echo "TEST I/O 3: une chaine de caracteres lue sur l'entrée standard est imprimée"
+echo
+
+entree="J'aime NachOS !"
+echo "=> chaine de caractères séparée par des espaces entrée par l'utilisateur (entrée: $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putstring 2> /dev/null | tee $tmp
+echo
+if [ "`cat $tmp`" == "$entree" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+entree="J"
+echo "=> Un unique caractère entré par l'utilisateur (entrée: $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putstring 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` == "J" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo
+
+read -n 1 -s
+
+entree="Loremipsumdolorsitamet,consecteturadipiscingelit,seddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquabuildUtenimadminimveniam,quisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequatbuildDuisauteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariaturbuildExcepteursintoccaecatcupidatatnonproident,suntinculpaquiofficiadeseruntmollitanimidestlaborumbuild"
+echo "=> Trop de caractères entrés par l'utilisateur (entrée: $entree)"
+echo -n "Sortie: "
+echo $entree | build/nachos-userprog -x build/get_putstring 2> /dev/null | tee $tmp
+echo
+if [ `cat $tmp` != "$entree" ]
+then
+    echo "Test passé !"
+else
+    echo "Test raté !"
+fi
+echo

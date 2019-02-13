@@ -1,6 +1,6 @@
 # Description 
-NachOS est un système d'exploitation minimal à but d'apprentissage.  
-Il est composé d'une base de code déjà fonctionnelle mais peu fournie, cette dernière ne permet par exemple pas l'utilisation de plusieurs Threads, la mémoire est gérée d'une façon très basique et ne permet d'exécuter qu'un processus simulatanement et il n'existe pas de système de fichiers.  
+NachOS est un système d'exploitation minimal à but éducatif.  
+Il est composé d'une base de code déjà fonctionnelle mais peu fournie, cette dernière ne permet par exemple pas l'utilisation de plusieurs Threads, la mémoire est gérée d'une façon très basique et ne permet d'exécuter qu'un seul processus simulatanement, et il n'existe pas de système de fichiers.  
 Le but de ce projet est de rendre ce système simulé plus efficace.  
 Ce dernier est simulé dans un terminal pour des raisons de simplicité de debug, en revanche, il s'agit bien d'un OS à part entière, le système simule tout les élements d'une véritable machine physique.  
 En particulier, le simulateur du processeur de nachOS est un processeur ***MIPS***, les programmes utilisateurs doivent donc être compilés pour ce jeu d'instructions. 

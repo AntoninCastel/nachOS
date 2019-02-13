@@ -6,7 +6,7 @@ Ce dernier est simulé dans un terminal pour des raisons de simplicité de debug
 En particulier, le simulateur du processeur de nachOS est un processeur ***MIPS***, les programmes utilisateurs doivent donc être compilés pour ce jeu d'instructions. 
 
 # Utilisation 
-Le script README.Debian du répertoire **nachos** permet d'installer un *Cross-Compiler* ***MIPS*** pour permettre d'exécuter nachOS (l'exécuter deux fois, en root).  
+Le script README.Debian du répertoire **nachos** permet d'installer un *Cross-Compiler* ***MIPS*** pour permettre de compiler et d'exécuter nachOS (l'exécuter deux fois, en root).  
 La commande ***make*** compilera toutes les cibles utiles à l'exécution.  
 Dans le répertoire **build**, on peut utiliser **./nachos-FS** pour lancer nachOS, mais cela ne fera rien.  
 Quelques exemples d'utilisation :  
